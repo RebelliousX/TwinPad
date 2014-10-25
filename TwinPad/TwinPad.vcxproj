@@ -43,11 +43,13 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(IncludePath)</IncludePath>
     <LibraryPath>$(WXWIN)\lib\vc_lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(IncludePath)</IncludePath>
     <LibraryPath>$(WXWIN)\lib\vc_lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
