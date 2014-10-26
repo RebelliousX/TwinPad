@@ -2,6 +2,7 @@
 #define __COMBO_GRID_H_
 
 #include "wx/grid.h"
+#include "wx/mstream.h"		//for wxMemoryInputStream
 
 #ifndef WX_PRECOM
 	#include "wx/wx.h"
@@ -10,6 +11,8 @@
 #endif
 
 #include <vector>
+
+#include "resources.h"
 
 class CCellValue
 {
@@ -37,9 +40,9 @@ public:
 	virtual bool IsEmptyCell(int row, int col) { return GetValue(row, col).empty(); }
 	//These two functions I have to override since they are pure virtuals. I don't need them for TwinPad.
 	virtual void SetValue(int row, int col, const wxString &val) 
-		{ customCellValue[row][col].resourceFile = val; /*Should Not be called*/ }
+		{ customCellValue[row][col].resourceFile = val; /*Should Not be called from outside*/ }
 	virtual wxString GetValue(int row, int col) 
-		{ return customCellValue[row][col].resourceFile; /*Should Not be called*/ }
+		{ return customCellValue[row][col].resourceFile; /*Should Not be called from outside*/ }
 	
 	virtual void  SetValueAsCustom( int row, int col, const wxString& typeName, void* value )
 	{
@@ -157,6 +160,7 @@ public:
 	{ }
 };
 
+/// Custom Cell Renderer for draw images (not strings) on Cells
 class CComboCellRenderer : public wxGridCellStringRenderer
 {
 public:
@@ -165,9 +169,110 @@ public:
 		wxGridCellStringRenderer::Draw(grid, attr, dc, rect, row, col, isSelected);
 
 		CCellValue *val = (CCellValue *) grid.GetTable()->GetValueAsCustom(row, col, wxGRID_VALUE_STRING);
-		
-		wxImage bmp(val->resourceFile, wxBITMAP_TYPE_GIF);
 
+		//holds image data
+		void *data = 0;
+		unsigned length;
+
+		switch (val->buttonValue)
+		{
+		case 0:
+			data = (void*)L2_GIF;
+			length = sizeof(L2_GIF);
+			break;
+		case 1:
+			data = (void*)R2_GIF;
+			length = sizeof(R2_GIF);
+			break;
+		case 2:
+			data = (void*)L1_GIF;
+			length = sizeof(L1_GIF);
+			break;
+		case 3:
+			data = (void*)R1_GIF;
+			length = sizeof(R1_GIF);
+			break;
+		case 4:
+			data = (void*)TRIANGLE_GIF;
+			length = sizeof(TRIANGLE_GIF);
+			break;
+		case 5:
+			data = (void*)CIRCLE_GIF;
+			length = sizeof(CIRCLE_GIF);
+			break;
+		case 6:
+			data = (void*)CROSS_GIF;
+			length = sizeof(CROSS_GIF);
+			break;
+		case 7:
+			data = (void*)SQUARE_GIF;
+			length = sizeof(SQUARE_GIF);
+			break;
+		case 8:
+			data = (void*)SELECT_GIF;
+			length = sizeof(SELECT_GIF);
+			break;
+		case 9:
+			data = (void*)L3_GIF;
+			length = sizeof(L3_GIF);
+			break;
+		case 10:
+			data = (void*)R3_GIF;
+			length = sizeof(R3_GIF);
+			break;
+		case 11:
+			data = (void*)START_GIF;
+			length = sizeof(START_GIF);
+			break;
+		case 12:
+			data = (void*)UP_GIF;
+			length = sizeof(UP_GIF);
+			break;
+		case 13:
+			data = (void*)RIGHT_GIF;
+			length = sizeof(RIGHT_GIF);
+			break;
+		case 14:
+			data = (void*)DOWN_GIF;
+			length = sizeof(DOWN_GIF);
+			break;
+		case 15:
+			data = (void*)LEFT_GIF;
+			length = sizeof(LEFT_GIF);
+			break;
+		case 16:
+		case 20:
+			data = (void*)ANALOG_UP_GIF;
+			length = sizeof(ANALOG_UP_GIF);
+			break;
+		case 17:
+		case 21:
+			data = (void*)ANALOG_RIGHT_GIF;
+			length = sizeof(ANALOG_RIGHT_GIF);
+			break;
+		case 18:
+		case 22:
+			data = (void*)ANALOG_DOWN_GIF;
+			length = sizeof(ANALOG_DOWN_GIF);
+			break;
+		case 19:
+		case 23:
+			data = (void*)ANALOG_LEFT_GIF;
+			length = sizeof(ANALOG_LEFT_GIF);
+			break;
+		default:
+			wxMessageBox("Unknown button number in OnClick_psComboButtons()");
+			break;
+		}
+
+		unsigned char *buffer = new unsigned char[length];
+		memcpy(buffer, data, length);
+
+		wxMemoryInputStream iStream(buffer, length);
+
+		wxImage bmp;
+		bmp.LoadFile(iStream, wxBITMAP_TYPE_GIF);
+		
 		dc.DrawBitmap(bmp, wxPoint(rect.x, rect.y));
 	}
 };

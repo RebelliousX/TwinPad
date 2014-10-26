@@ -234,7 +234,7 @@ void Loading_Gui()
 		GUI_Config.m_mouse[i] = val;
 	}
 
-	for(int i = 0; i < 9; i++)
+	for(int i = 0; i < 7; i++)
 	{
 		line = file.GetNextLine();
 		line.ToLong(&val, 10);
@@ -910,6 +910,9 @@ void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 		//Minimum requirement: to have at least 1 action to have a combo, even if it is empty
 		if (GUI_Controls.virtualGrid->GetNumberRows() == 0)
 			AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
+
+		//if current location was deleted with the deleted action, relocate to a valid location (last row, 2nd column)
+		Cell_Locator.TestAndCorrectLocation();
 	}
 	catch (exception &e)
 	{
@@ -922,7 +925,6 @@ void OnClickNewCombo(wxCommandEvent &ev)
 {
 	try
 	{
-
 		wxString strResponse = wxGetTextFromUser("Enter a name for the new Combo:",
 			"New COMBO name", "I am a Combo!");
 
@@ -971,7 +973,7 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 		GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
 
 		//After deletion, select the last combo by default
-		if (GUI_Controls.cmbComboName->GetCount() >= 0)
+		if (GUI_Controls.cmbComboName->GetCount() >= 1)
 			GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->GetCount() - 1);
 
 		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
@@ -1030,7 +1032,27 @@ void OnClick_psComboButtons(int winID)
 		if (winID >= 1024 && winID < 1047)	//Combo tab
 		{
 			//Implement adding psComboButtons into the grid
-			wxMessageBox(PS_LABEL[winID - 1024].name + " was clicked!");
+			//wxMessageBox(PS_LABEL[winID - 1024].name + " was clicked!");
+
+			
+			CCellValue val;
+			val.resourceFile = PS_LABEL[winID - 1024].name;
+			val.buttonValue = winID - 1024;
+
+			wxGridCellCoords coords;
+			Cell_Locator.GetLocation(coords);
+			GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
+			GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
+			GUI_Controls.virtualGrid->Update();
+			GUI_Controls.virtualGrid->Refresh();
+
+			if (coords.GetCol() <= 16)
+				Cell_Locator.MoveToNextButton();
+			else
+				Cell_Locator.MoveToNextAction();
+
+			Cell_Locator.TestAndCorrectLocation();
+			//Cell_Locator.GetLocation(coords);
 		}
 	}
 	catch (exception &e)

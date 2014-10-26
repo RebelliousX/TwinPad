@@ -124,7 +124,7 @@ public:
 		m_actions.resize(ix - 1);
 	}
 
-	void InserActions(int position, int numActions, int delay)	//needs extensive testing
+	void InsertActions(int position, int numActions, int delay)	//needs extensive testing
 	{
 		if(position == m_actions.size())
 		{
@@ -196,7 +196,7 @@ void OnClickDeleteCombo(wxCommandEvent &ev);
 void OnClickRenameCombo(wxCommandEvent &ev);
 /////Combo Key
 void OnClickComboKey(wxMouseEvent &ev);
-/////psComboButtons
+/////psButtons
 void OnClick_psComboButtons(int winID);
 /////Grid Events
 void OnClickComboGrid(wxGridEvent &ev);
