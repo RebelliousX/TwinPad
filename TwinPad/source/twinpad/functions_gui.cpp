@@ -35,6 +35,10 @@ using namespace std;
 extern CTwinPad_Gui GUI_Controls;
 extern GUI_Configurations GUI_Config;
 
+//Cell Locator: for current/previous cell editing. We need a pointer to the main
+//grid after it is initialized, using method SetGrid()
+CCellLocator Cell_Locator;
+
 //TODO: (Implement: PADgetSettingDir callback function)
 const wxString HEADER_TWINPAD = "[TwinPad Configurations v1.6]";
 const wxString HEADER_TWINPAD_COMBO = "[TwinPad COMBO Configurations v1.1]";
@@ -684,6 +688,12 @@ void SetupComboTab(wxPanel *panel)
 	wxMessageBox(str);
 	*/
 	
+	//Handle mouse clicks over grid to relocate the cell
+	comboGrid->Bind(wxEVT_GRID_CELL_LEFT_CLICK, ::OnClickComboGrid);
+
+	//Associate Cell Locator with this grid
+	Cell_Locator.SetGrid(comboGrid);
+
 	comboGrid->Update();
 	comboGrid->Refresh();
 }
@@ -741,6 +751,8 @@ void OnClickNewAction(wxCommandEvent &ev)
 
 		for (int c = 0; c < GUI_Controls.virtualGrid->GetNumberRows(); ++c)
 			GUI_Controls.virtualGrid->SetRowHeight(c, IMG_WIDTH);
+
+		Cell_Locator.MoveToNextAction();
 	}
 	catch (exception &e)
 	{
@@ -839,7 +851,7 @@ void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 		The documentation says it is intended and I have to use GetSlectionTopLeft/BottomRight instead,
 		I say this is BS. I hate wxWidgets more now.
 		http://trac.wxwidgets.org/changeset/54665
-		//wxArrayInt selectedRows = GUI_Controls.virtualGrid->GetSelectedRows();
+		//wxArrayInt selectedRows = GUI_Controls.virtualGrid->GetSelectedRows(); <- Doesn't work.
 		*/
 
 		//My implementation works better :)
@@ -1013,4 +1025,18 @@ void OnClick_psComboButtons(int winID)
 	{
 		wxMessageBox(e.what());
 	}
+}
+
+/////Grid mouse click
+void OnClickComboGrid(wxGridEvent &ev)
+{
+	unsigned int row, col;
+	row = ev.GetRow();
+	col = ev.GetCol();
+	//Clear any current highlights too
+	GUI_Controls.virtualGrid->ClearSelection();
+	GUI_Controls.virtualGrid->Refresh();
+	GUI_Controls.virtualGrid->SetGridCursor(row, col);	//to allow dragging and selection too
+	//Move cursor to the selected cell coordinates
+	Cell_Locator.SetLocation(row, col);
 }

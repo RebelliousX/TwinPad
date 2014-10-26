@@ -198,6 +198,8 @@ void OnClickRenameCombo(wxCommandEvent &ev);
 void OnClickComboKey(wxMouseEvent &ev);
 /////psComboButtons
 void OnClick_psComboButtons(int winID);
+/////Grid Events
+void OnClickComboGrid(wxGridEvent &ev);
 /////Mouse Events
 void OnClickMouseHelpButton(wxMouseEvent &ev);
 void OnClickMouseNullifiesAll(wxMouseEvent &ev);

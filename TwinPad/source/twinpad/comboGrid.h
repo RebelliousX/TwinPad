@@ -172,4 +172,49 @@ public:
 	}
 };
 
+class CCellLocator
+{
+public:
+	CCellLocator() : curRow(0), curCol(1) {}
+
+	//Should be only done once, once the mainGrid is initialized
+	void SetGrid(CComboGrid *mainGrid) { grid = mainGrid; }
+	
+	void MoveToNextButton() 
+	{
+		//remove previous cell background here
+		if (curCol < 18)
+		{
+			setCurrentBGColor(wxColor(255,255,255));
+			++curCol;
+			setCurrentBGColor(wxColor(20, 190, 40));
+		}
+	}
+	void MoveToNextAction()
+	{
+		setCurrentBGColor(wxColor(255, 255, 255));
+		++curRow;
+		curCol = 1;
+		setCurrentBGColor(wxColor(20, 190, 40));
+	}
+
+	void SetLocation(int iRow, int iCol)
+	{
+		//remove current color before moving to another cell
+		setCurrentBGColor(wxColor(255,255,255)); //White
+		curRow = iRow;
+		curCol = iCol;
+		setCurrentBGColor(wxColor(20,190,40));	//Green
+	}
+	 
+private:
+	unsigned int curRow, curCol;
+	CComboGrid *grid;
+
+	void setCurrentBGColor(wxColor color)
+	{
+		grid->SetCellBackgroundColour(color, curRow, curCol);
+	}
+};
+
 #endif
