@@ -200,13 +200,33 @@ public:
 
 	void SetLocation(int iRow, int iCol)
 	{
+		if (iCol == 0) return;	//don't allow moving into Delay column
+
 		//remove current color before moving to another cell
 		setCurrentBGColor(wxColor(255,255,255)); //White
 		curRow = iRow;
 		curCol = iCol;
 		setCurrentBGColor(wxColor(20,190,40));	//Green
 	}
-	 
+
+	void GetLocation(wxGridCellCoords &coords)
+	{
+		coords.SetCol(curCol);
+		coords.SetRow(curRow);
+	}
+	
+	/* Check to see if current location (rows) outside of table, if so, put cursor
+	   at last row */
+	void TestAndCorrectLocation()
+	{
+		if (curRow >= (unsigned) grid->GetNumberRows())
+		{
+			curRow = grid->GetNumberRows() - 1;
+			curCol = 1;
+			SetLocation(curRow, curCol);
+		}
+	}
+
 private:
 	unsigned int curRow, curCol;
 	CComboGrid *grid;

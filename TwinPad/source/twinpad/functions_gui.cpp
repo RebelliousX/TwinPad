@@ -752,7 +752,8 @@ void OnClickNewAction(wxCommandEvent &ev)
 		for (int c = 0; c < GUI_Controls.virtualGrid->GetNumberRows(); ++c)
 			GUI_Controls.virtualGrid->SetRowHeight(c, IMG_WIDTH);
 
-		Cell_Locator.MoveToNextAction();
+		//Adding new action, set cursor to the last action and first button
+		Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
 	}
 	catch (exception &e)
 	{
@@ -771,14 +772,17 @@ void OnClickDeleteLastAction(wxCommandEvent &ev)
 				//Minimum requirement: to have at least 1 action to have a combo, even if it is empty
 				GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
 				AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
+				Cell_Locator.SetLocation(0, 1);
 			}
 			else
 				GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
-
 		}
 		else
 			wxMessageBox("There are no Actions, and you did not create a COMBO!!", "No Actions, nor a Combo:",
 			wxICON_INFORMATION);
+
+		//if current location was deleted with the deleted action, relocate to a valid location (last row, 2nd column)
+		Cell_Locator.TestAndCorrectLocation();
 	}
 	catch (exception &e)
 	{
@@ -826,6 +830,10 @@ void OnClickInsertAction(wxCommandEvent &ev)
 
 		for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
 		{
+			//Move grid cursor outside of the table, before we insert anything
+			//to avoid hard to fix problems related to grid-cursor's previous location
+			Cell_Locator.SetLocation(-1, -1);
+
 			AddRow(GUI_Controls.virtualGrid,
 				GUI_Controls.spnDefaultDelay->GetValue(),
 				selectedRows[i]);
@@ -835,6 +843,9 @@ void OnClickInsertAction(wxCommandEvent &ev)
 
 		for (int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
 			GUI_Controls.virtualGrid->DeselectRow(i);
+
+		//Move grid cursor to the first inserted action (whether it is one or more)
+		Cell_Locator.SetLocation(selectedRows[0] - 1, 1);
 	}
 	catch (exception &e)
 	{
@@ -935,6 +946,7 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		//Add first row for the new combo (minimum requirement for a combo is 1 action)
 		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 		
+		Cell_Locator.SetLocation(0, 1);
 		//still some stuff to do..
 	}
 	catch (exception &e)
