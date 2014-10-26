@@ -196,8 +196,8 @@ void OnClickDeleteCombo(wxCommandEvent &ev);
 void OnClickRenameCombo(wxCommandEvent &ev);
 /////Combo Key
 void OnClickComboKey(wxMouseEvent &ev);
-/////PS2Buttons
-void OnClickPS2Buttons(int winID);
+/////psComboButtons
+void OnClick_psComboButtons(int winID);
 /////Mouse Events
 void OnClickMouseHelpButton(wxMouseEvent &ev);
 void OnClickMouseNullifiesAll(wxMouseEvent &ev);

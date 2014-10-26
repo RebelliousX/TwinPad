@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <exception>
 
 #include "twinpad_gui.h"
 
@@ -429,14 +430,14 @@ void SetupComboTab(wxPanel *panel)
 	for(int i = 0; i < 24; ++i)
 	{
 		//wxAnimation anim = GUI_Controls.animCtrl[i]->GetAnimation();
-		GUI_Controls.ps2buttons[i] = new CPS_Anim(panel, ID_BTN2 + i);
-		GUI_Controls.ps2buttons[i]->SetAnimation(GUI_Controls.animCtrl[i]->GetAnimation());
-		GUI_Controls.ps2buttons[i]->SetIndex(i);
-		GUI_Controls.ps2buttons[i]->SetName(PS_LABEL[i].name);
-		GUI_Controls.ps2buttons[i]->Connect((ID_BTN2 + i), wxEVT_LEFT_UP, wxCommandEventHandler(CPS_Anim::OnClick));
+		GUI_Controls.psComboButtons[i] = new CPS_Anim(panel, ID_BTN2 + i);
+		GUI_Controls.psComboButtons[i]->SetAnimation(GUI_Controls.animCtrl[i]->GetAnimation());
+		GUI_Controls.psComboButtons[i]->SetIndex(i);
+		GUI_Controls.psComboButtons[i]->SetName(PS_LABEL[i].name);
+		GUI_Controls.psComboButtons[i]->Connect((ID_BTN2 + i), wxEVT_LEFT_UP, wxCommandEventHandler(CPS_Anim::OnClick));
 		if(i >= 16)		//Play Analog Stick animation by default
-			GUI_Controls.ps2buttons[i]->Play();
-		GUI_Controls.ps2buttons[i]->SetToolTip(PS_LABEL[i].name);
+			GUI_Controls.psComboButtons[i]->Play();
+		GUI_Controls.psComboButtons[i]->SetToolTip(PS_LABEL[i].name);
 	}
 	
 	////Creating Layout///////
@@ -457,7 +458,7 @@ void SetupComboTab(wxPanel *panel)
 				GUI_Controls.btnRenameCombo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickRenameCombo);
 			wxStaticBoxSizer *stcComboNameSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "COMBO Name");
 				GUI_Controls.cmbComboName = new wxComboBox(panel, wxID_ANY, wxEmptyString, 
-																wxDefaultPosition, wxSize(200, 20), 0, 0, wxCB_READONLY | wxCB_SORT);
+																wxDefaultPosition, wxSize(200,25), 0, 0, wxCB_READONLY | wxCB_SORT);
 				GUI_Controls.cmbComboName->SetBackgroundColour(wxColor(66,66,66));	//Dark Grey
 				GUI_Controls.cmbComboName->SetForegroundColour(wxColor("White"));
 				stcComboNameSizer->Add(GUI_Controls.cmbComboName, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
@@ -542,22 +543,22 @@ void SetupComboTab(wxPanel *panel)
 				wxBoxSizer *lowLevelContainerSizer = new wxBoxSizer(wxHORIZONTAL);
 					wxStaticBoxSizer *stcL1L2Sizer = new wxStaticBoxSizer(wxVERTICAL, panel, "L1 && L2");
 						wxGridSizer *L1L2Sizer = new wxGridSizer(3, 1, 0, 0);
-							L1L2Sizer->Add(GUI_Controls.ps2buttons[L1]);
+							L1L2Sizer->Add(GUI_Controls.psComboButtons[L1]);
 							L1L2Sizer->AddSpacer(IMG_WIDTH);
-							L1L2Sizer->Add(GUI_Controls.ps2buttons[L2]);
+							L1L2Sizer->Add(GUI_Controls.psComboButtons[L2]);
 							stcL1L2Sizer->Add(L1L2Sizer);
 							lowLevelContainerSizer->Add(stcL1L2Sizer);
 							lowLevelContainerSizer->AddSpacer(5);
 					wxStaticBoxSizer *stcDpadArrowSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "D-Pad Arrows");
 						wxGridSizer *dpadArrowSizer = new wxGridSizer(3, 3, 0, 0);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
-							dpadArrowSizer->Add(GUI_Controls.ps2buttons[UP]);
+							dpadArrowSizer->Add(GUI_Controls.psComboButtons[UP]);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
-							dpadArrowSizer->Add(GUI_Controls.ps2buttons[LEFT]);
+							dpadArrowSizer->Add(GUI_Controls.psComboButtons[LEFT]);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
-							dpadArrowSizer->Add(GUI_Controls.ps2buttons[RIGHT]);
+							dpadArrowSizer->Add(GUI_Controls.psComboButtons[RIGHT]);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
-							dpadArrowSizer->Add(GUI_Controls.ps2buttons[DOWN]);
+							dpadArrowSizer->Add(GUI_Controls.psComboButtons[DOWN]);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
 							stcDpadArrowSizer->Add(dpadArrowSizer);
 							lowLevelContainerSizer->Add(stcDpadArrowSizer);
@@ -565,13 +566,13 @@ void SetupComboTab(wxPanel *panel)
 					wxStaticBoxSizer *stcLeftAnalogSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Left Analog Stick");
 						wxGridSizer *leftAnalogSizer = new wxGridSizer(3, 3, 0, 0);
 							leftAnalogSizer->AddSpacer(IMG_WIDTH);
-							leftAnalogSizer->Add(GUI_Controls.ps2buttons[LANALOG_UP]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[LANALOG_UP]);
 							leftAnalogSizer->AddSpacer(IMG_WIDTH);
-							leftAnalogSizer->Add(GUI_Controls.ps2buttons[LANALOG_LEFT]);
-							leftAnalogSizer->Add(GUI_Controls.ps2buttons[L3]);
-							leftAnalogSizer->Add(GUI_Controls.ps2buttons[LANALOG_RIGHT]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[LANALOG_LEFT]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[L3]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[LANALOG_RIGHT]);
 							leftAnalogSizer->AddSpacer(IMG_WIDTH);
-							leftAnalogSizer->Add(GUI_Controls.ps2buttons[LANALOG_DOWN]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[LANALOG_DOWN]);
 							leftAnalogSizer->AddSpacer(IMG_WIDTH);
 							stcLeftAnalogSizer->Add(leftAnalogSizer);
 							lowLevelContainerSizer->Add(stcLeftAnalogSizer);
@@ -584,22 +585,22 @@ void SetupComboTab(wxPanel *panel)
 							startSelectSizer->AddSpacer(IMG_WIDTH);
 							startSelectSizer->AddSpacer(IMG_WIDTH);
 							startSelectSizer->AddSpacer(IMG_WIDTH);
-							startSelectSizer->Add(GUI_Controls.ps2buttons[SELECT]);
+							startSelectSizer->Add(GUI_Controls.psComboButtons[SELECT]);
 							startSelectSizer->AddSpacer(IMG_WIDTH);
-							startSelectSizer->Add(GUI_Controls.ps2buttons[START]);
+							startSelectSizer->Add(GUI_Controls.psComboButtons[START]);
 							stcStartSelectSizer->Add(startSelectSizer);
 							lowLevelContainerSizer->Add(stcStartSelectSizer);
 							lowLevelContainerSizer->AddSpacer(5);
 					wxStaticBoxSizer *stcRightAnalogSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Right Analog Stick");
 						wxGridSizer *rightAnalogSizer = new wxGridSizer(3, 3, 0, 0);
 							rightAnalogSizer->AddSpacer(IMG_WIDTH);
-							rightAnalogSizer->Add(GUI_Controls.ps2buttons[RANALOG_UP]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[RANALOG_UP]);
 							rightAnalogSizer->AddSpacer(IMG_WIDTH);
-							rightAnalogSizer->Add(GUI_Controls.ps2buttons[RANALOG_LEFT]);
-							rightAnalogSizer->Add(GUI_Controls.ps2buttons[R3]);
-							rightAnalogSizer->Add(GUI_Controls.ps2buttons[RANALOG_RIGHT]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[RANALOG_LEFT]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[R3]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[RANALOG_RIGHT]);
 							rightAnalogSizer->AddSpacer(IMG_WIDTH);
-							rightAnalogSizer->Add(GUI_Controls.ps2buttons[RANALOG_DOWN]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[RANALOG_DOWN]);
 							rightAnalogSizer->AddSpacer(IMG_WIDTH);
 							stcRightAnalogSizer->Add(rightAnalogSizer);
 							lowLevelContainerSizer->Add(stcRightAnalogSizer);
@@ -607,22 +608,22 @@ void SetupComboTab(wxPanel *panel)
 					wxStaticBoxSizer *stcTriCirCroSqrSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Digital Buttons");
 						wxGridSizer *triCirCroSqrSizer = new wxGridSizer(3, 3, 0, 0);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
-							triCirCroSqrSizer->Add(GUI_Controls.ps2buttons[TRIANGLE]);
+							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[TRIANGLE]);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
-							triCirCroSqrSizer->Add(GUI_Controls.ps2buttons[SQUARE]);
+							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[SQUARE]);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
-							triCirCroSqrSizer->Add(GUI_Controls.ps2buttons[CIRCLE]);
+							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[CIRCLE]);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
-							triCirCroSqrSizer->Add(GUI_Controls.ps2buttons[CROSS]);
+							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[CROSS]);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
 							stcTriCirCroSqrSizer->Add(triCirCroSqrSizer);
 							lowLevelContainerSizer->Add(stcTriCirCroSqrSizer);
 							lowLevelContainerSizer->AddSpacer(5);
 					wxStaticBoxSizer *stcR1R2Sizer = new wxStaticBoxSizer(wxVERTICAL, panel, "R1 && R2");
 						wxGridSizer *R1R2Sizer = new wxGridSizer(3, 1, 0, 0);
-							R1R2Sizer->Add(GUI_Controls.ps2buttons[R1]);
+							R1R2Sizer->Add(GUI_Controls.psComboButtons[R1]);
 							R1R2Sizer->AddSpacer(IMG_WIDTH);
-							R1R2Sizer->Add(GUI_Controls.ps2buttons[R2]);
+							R1R2Sizer->Add(GUI_Controls.psComboButtons[R2]);
 							stcR1R2Sizer->Add(R1R2Sizer);
 							lowLevelContainerSizer->Add(stcR1R2Sizer);
 							lowLevelContainerSizer->AddSpacer(5);
@@ -689,255 +690,327 @@ void SetupComboTab(wxPanel *panel)
 
 void AddRow(CComboGrid *grid, unsigned int defaultDelay, unsigned int rowPos)
 {
-	wxString str = wxString::Format("%d", defaultDelay);
-
-	grid->InsertRows(rowPos, 1, true);	
-	grid->SetCellValue(rowPos, 0, str);
-	
-	//Resize column width and change label
-	for(int i = 1; i < 19; ++i)
+	try
 	{
-		grid->SetColumnWidth(i, IMG_WIDTH);
-		grid->SetColLabelValue(i, wxString::Format("#%d",i));
+		wxString str = wxString::Format("%d", defaultDelay);
+
+		grid->InsertRows(rowPos, 1, true);
+		grid->SetCellValue(rowPos, 0, str);
+
+		//Resize column width and change label
+		for (int i = 1; i < 19; ++i)
+		{
+			grid->SetColumnWidth(i, IMG_WIDTH);
+			grid->SetColLabelValue(i, wxString::Format("#%d", i));
+		}
+		grid->SetRowSize(rowPos, IMG_WIDTH);
+		//Set Column 0 attr, the range of acceptable numbers from 1 to 99999 (delay values)
+		//Setup attributes, seems like I have to do this for each new row!! to ensure I have
+		//a spin control, otherwise, it will work but with no spin ctrl and no protection if the
+		//delay value is not in range.
+		wxGridCellAttr *attrDelayColumn = new wxGridCellAttr;
+		attrDelayColumn->SetEditor(new wxGridCellNumberEditor(1, 99999));
+		attrDelayColumn->SetBackgroundColour(wxColor(66, 66, 66));
+		attrDelayColumn->SetTextColour(wxColor(255, 255, 255));
+		attrDelayColumn->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false));
+		attrDelayColumn->SetAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
+		attrDelayColumn->SetReadOnly(false); //only first column is editable
+		grid->SetColAttr(0, attrDelayColumn);
 	}
-	grid->SetRowSize(rowPos, IMG_WIDTH);
-	//Set Column 0 attr, the range of acceptable numbers from 1 to 99999 (delay values)
-	//Setup attributes, seems like I have to do this for each new row!! to ensure I have
-	//a spin control, otherwise, it will work but with no spin ctrl and no protection if the
-	//delay value is not in range.
-	wxGridCellAttr *attrDelayColumn = new wxGridCellAttr;
-	attrDelayColumn->SetEditor(new wxGridCellNumberEditor(1, 99999));
-	attrDelayColumn->SetBackgroundColour(wxColor(66, 66, 66));
-	attrDelayColumn->SetTextColour(wxColor(255, 255, 255));
-	attrDelayColumn->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false));
-	attrDelayColumn->SetAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
-	attrDelayColumn->SetReadOnly(false); //only first column is editable
-	grid->SetColAttr(0, attrDelayColumn);
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
+	
 }
 
 /////Action Buttons Events
 void OnClickNewAction(wxCommandEvent &ev)
 {
-	if (GUI_Controls.Combo.size() == 0)
+	try
 	{
-		wxMessageBox("You need to create a Combo first before you can add Actions.",
-			"COMBO's list is empty!", wxICON_INFORMATION);
-		return;
-	}
-	AddRow(GUI_Controls.virtualGrid,
-		   GUI_Controls.spnDefaultDelay->GetValue(),
-		   GUI_Controls.virtualGrid->GetNumberRows());
+		if (GUI_Controls.Combo.size() == 0)
+		{
+			wxMessageBox("You need to create a Combo first before you can add Actions.",
+				"COMBO's list is empty!", wxICON_INFORMATION);
+			return;
+		}
+		AddRow(GUI_Controls.virtualGrid,
+			GUI_Controls.spnDefaultDelay->GetValue(),
+			GUI_Controls.virtualGrid->GetNumberRows());
 
-	for(int c = 0; c < GUI_Controls.virtualGrid->GetNumberRows(); ++c)
-		GUI_Controls.virtualGrid->SetRowHeight(c, IMG_WIDTH);
+		for (int c = 0; c < GUI_Controls.virtualGrid->GetNumberRows(); ++c)
+			GUI_Controls.virtualGrid->SetRowHeight(c, IMG_WIDTH);
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
 
 void OnClickDeleteLastAction(wxCommandEvent &ev)
 {
-	if (GUI_Controls.Combo.size() > 0)
+	try
 	{
-		if (GUI_Controls.virtualGrid->GetNumberRows() == 1)
+		if (GUI_Controls.Combo.size() > 0)
 		{
-			//Minimum requirement: to have at least 1 action to have a combo, even if it is empty
-			GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
-			AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
-		}
-		else 
-			GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
-			
-	}
-	else
-		wxMessageBox("There are no Actions, and you did not create a COMBO!!", "No Actions, nor a Combo:",
-		wxICON_INFORMATION);
+			if (GUI_Controls.virtualGrid->GetNumberRows() == 1)
+			{
+				//Minimum requirement: to have at least 1 action to have a combo, even if it is empty
+				GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
+				AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
+			}
+			else
+				GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
 
+		}
+		else
+			wxMessageBox("There are no Actions, and you did not create a COMBO!!", "No Actions, nor a Combo:",
+			wxICON_INFORMATION);
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
 
 void OnClickInsertAction(wxCommandEvent &ev)
 {
-	//See OnClickDeleteSelectedActions below for more details about this
-	wxArrayInt selectedRows;
-	for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+	try
 	{
-		bool blnIsRowSelected = false;
-		for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
-			if (GUI_Controls.virtualGrid->IsInSelection(row, col))
-				blnIsRowSelected = true;
-			else
-			{
-				blnIsRowSelected = false;
-				break;	//If even one cell not selected in a row, then the row is not selected, so skip to next row				
-			}
+		//See OnClickDeleteSelectedActions below for more details about this
+		wxArrayInt selectedRows;
+		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+		{
+			bool blnIsRowSelected = false;
+			for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+				if (GUI_Controls.virtualGrid->IsInSelection(row, col))
+					blnIsRowSelected = true;
+				else
+				{
+					blnIsRowSelected = false;
+					break;	//If even one cell not selected in a row, then the row is not selected, so skip to next row				
+				}
 
-		if (blnIsRowSelected)
-			selectedRows.push_back(row);
+			if (blnIsRowSelected)
+				selectedRows.push_back(row);
+		}
+
+		if (selectedRows.empty())
+		{
+			//Long error & help message :)
+			wxMessageBox("You have to specify where to insert the new Action first, so select an Action\n"
+				"by clicking on the Action number to make sure the whole action is selected.\n"
+				"You have to select at least ONE whole Action before you insert another.\n"
+				"You can select more than one by holding CTRL or SHIFT keys, and new Actions\nwill be inserted there.\n\n"
+				"Lastly, the new inserted Action will have the same 'RELATIVE' position as the\none "
+				"you selected. Thus, the remaining Actions will be pushed further down the"
+				"\nlist. Even if you selected more than one action, the new ones will retain the relative\n"
+				"position to other nearby Actions.",
+				"New Action location is unknown!",
+				wxICON_EXCLAMATION);
+			return;
+		}
+
+		for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
+		{
+			AddRow(GUI_Controls.virtualGrid,
+				GUI_Controls.spnDefaultDelay->GetValue(),
+				selectedRows[i]);
+			for (unsigned int j = i; j < (unsigned int)selectedRows.size(); ++j)
+				selectedRows[j] += 1;
+		}
+
+		for (int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
+			GUI_Controls.virtualGrid->DeselectRow(i);
 	}
-
-	if(selectedRows.empty())
+	catch (exception &e)
 	{
-		//Long error & help message :)
-		wxMessageBox("You have to specify where to insert the new Action first, so select an Action\n"
-					 "by clicking on the Action number to make sure the whole action is selected.\n"
-					 "You have to select at least ONE whole Action before you insert another.\n"
-					 "You can select more than one by holding CTRL or SHIFT keys, and new Actions\nwill be inserted there.\n\n"
-					 "Lastly, the new inserted Action will have the same 'RELATIVE' position as the\none "
-					 "you selected. Thus, the remaining Actions will be pushed further down the"
-					 "\nlist. Even if you selected more than one action, the new ones will retain the relative\n"
-					 "position to other nearby Actions.", 
-					 "New Action location is unknown!",
-					 wxICON_EXCLAMATION);
-		return;
+		wxMessageBox(e.what());
 	}
-
-	for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
-	{
-		AddRow(GUI_Controls.virtualGrid,
-			GUI_Controls.spnDefaultDelay->GetValue(),
-			selectedRows[i]);
-		for (unsigned int j = i; j < (unsigned int)selectedRows.size(); ++j)
-			selectedRows[j] += 1;
-	}
-	
-	for(int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
-		GUI_Controls.virtualGrid->DeselectRow(i);
 }
 
 void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 {
-	/*
-	Check this ticket for wxWidgets, GetSelectedRows() is not reliable and doesn't work correctly.
-	The documentation says it is intended and I have to use GetSlectionTopLeft/BottomRight instead,
-	I say this is BS. I hate wxWidgets more now.
-	http://trac.wxwidgets.org/changeset/54665
-	//wxArrayInt selectedRows = GUI_Controls.virtualGrid->GetSelectedRows();
-	*/
-
-	//My implementation works better :)
-	wxArrayInt selectedRows;
-	for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+	try
 	{
-		bool blnIsRowSelected = false;
-		for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
-			if (GUI_Controls.virtualGrid->IsInSelection(row, col))
-				blnIsRowSelected = true;
-			else
-			{
-				blnIsRowSelected = false;
-				break;	//If even one cell not selected in a row, then the row is not selected, so skip to next row				
-			}							 
+		/*
+		Check this ticket for wxWidgets, GetSelectedRows() is not reliable and doesn't work correctly.
+		The documentation says it is intended and I have to use GetSlectionTopLeft/BottomRight instead,
+		I say this is BS. I hate wxWidgets more now.
+		http://trac.wxwidgets.org/changeset/54665
+		//wxArrayInt selectedRows = GUI_Controls.virtualGrid->GetSelectedRows();
+		*/
 
-		if (blnIsRowSelected)
-			selectedRows.push_back(row);
+		//My implementation works better :)
+		wxArrayInt selectedRows;
+		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+		{
+			bool blnIsRowSelected = false;
+			for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+				if (GUI_Controls.virtualGrid->IsInSelection(row, col))
+					blnIsRowSelected = true;
+				else
+				{
+					blnIsRowSelected = false;
+					break;	//If even one cell not selected in a row, then the row is not selected, so skip to next row				
+				}
+
+			if (blnIsRowSelected)
+				selectedRows.push_back(row);
+		}
+
+		if (selectedRows.empty())
+		{
+			//Long error & help message :)
+			wxMessageBox("You have to specify which Actions you want to delete first, so select an Action by clicking on\n"
+				"the Action number to make sure the whole action is selected.\n\n"
+				"You can select more than one Action by holding CTRL key or SHIFT key while clicking on the\nAction number. "
+				"Or even simply by dragging the mouse to highlight the whole row then delete the Action.\n\n"
+				"Please note that if some cells are highlighted, that doesn't mean the row was selected!\n\n"
+				"You can highlight All Actions simply by clicking on the empty Square to the left of 'Delay'\n"
+				"and above Action numbers, then delete them by clicking on 'Delete Selected Actions' button.\n\n"
+				"Note: If you deleted all Actions, another Action will be created by default, A COMBO needs\n"
+				"at least one empty Action. The created Action will have the delay value specified in the Delay\n"
+				"field next to the COMBO's name.\n",
+				"Action location is unknown!", wxICON_INFORMATION);
+			return;
+		}
+
+		for (int i = selectedRows.GetCount() - 1; i >= 0; --i)
+		{
+			GUI_Controls.virtualGrid->DeleteRows(selectedRows[i], 1, true);
+
+			//GUI_Controls.virtualGrid->DeleteRows(selectedRows[i], 1, true);
+		}
+
+		//Minimum requirement: to have at least 1 action to have a combo, even if it is empty
+		if (GUI_Controls.virtualGrid->GetNumberRows() == 0)
+			AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 	}
-
-	if (selectedRows.empty())
+	catch (exception &e)
 	{
-		//Long error & help message :)
-		wxMessageBox("You have to specify which Actions you want to delete first, so select an Action by clicking on\n"
-			"the Action number to make sure the whole action is selected.\n\n"
-			"You can select more than one Action by holding CTRL key or SHIFT key while clicking on the\nAction number. "
-			"Or even simply by dragging the mouse to highlight the whole row then delete the Action.\n\n"
-			"Please note that if some cells are highlighted, that doesn't mean the row was selected!\n\n"
-			"You can highlight All Actions simply by clicking on the empty Square to the left of 'Delay'\n"
-			"and above Action numbers, then delete them by clicking on 'Delete Selected Actions' button.\n\n"
-			"Note: If you deleted all Actions, another Action will be created by default, A COMBO needs\n"
-			"at least one empty Action. The created Action will have the delay value specified in the Delay\n"
-			"field next to the COMBO's name.\n",
-			"Action location is unknown!", wxICON_INFORMATION);
-		return;
+		wxMessageBox(e.what());
 	}
-
-	for (int i = selectedRows.GetCount() - 1; i >= 0; --i)
-	{
-		GUI_Controls.virtualGrid->DeleteRows(selectedRows[i], 1, true);
-
-		//GUI_Controls.virtualGrid->DeleteRows(selectedRows[i], 1, true);
-	}
-
-	//Minimum requirement: to have at least 1 action to have a combo, even if it is empty
-	if (GUI_Controls.virtualGrid->GetNumberRows() == 0)
-		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 }
 
 /////Combo Buttons Events
 void OnClickNewCombo(wxCommandEvent &ev)
 {
-	wxString strResponse = wxGetTextFromUser("Enter a name for the new Combo:", 
-											"New COMBO name", "I am a Combo!");
-	
-	if (strResponse == wxEmptyString)
-		return;
+	try
+	{
 
-	//Save Current Combo (if not already saved)
-	//Clear grid
+		wxString strResponse = wxGetTextFromUser("Enter a name for the new Combo:",
+			"New COMBO name", "I am a Combo!");
+
+		if (strResponse == wxEmptyString)
+			return;
+
+		//Save Current Combo (if not already saved)
+		//Clear grid
 
 
-	//Add name for combo box
-	GUI_Controls.cmbComboName->Append(strResponse);
+		//Add name for combo box
+		GUI_Controls.cmbComboName->Append(strResponse);
 
-	//Since this is a sorted ComboBox, position or index doesn't mean anything at all.
-	GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->FindString(strResponse, true));
+		//Since this is a sorted ComboBox, position or index doesn't mean anything at all.
+		GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->FindString(strResponse, true));
 
-	//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-	CCombo newCombo(1, GUI_Controls.spnDefaultDelay->GetValue());
-	newCombo.SetName(strResponse);
-	GUI_Controls.Combo.push_back(newCombo);
-	//Add first row for the new combo (minimum requirement for a combo is 1 action)
-	AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
-	//still some stuff to do..
+		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
+		CCombo newCombo(1, GUI_Controls.spnDefaultDelay->GetValue());
+		newCombo.SetName(strResponse);
+		GUI_Controls.Combo.push_back(newCombo);
+		//Add first row for the new combo (minimum requirement for a combo is 1 action)
+		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
+		
+		//still some stuff to do..
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
 
 void OnClickDeleteCombo(wxCommandEvent &ev)
 {
-	//Clear current grid then delete combo and combo name from combo box
+	try
+	{
+		//Clear current grid then delete combo and combo name from combo box
 
-	//Clear grid - delete combo
+		//Clear grid - delete combo
 
-	//Delete name from combo box
-	if (GUI_Controls.cmbComboName->GetSelection() < 0)		//prevent deletion of none selected item
-		return;
+		//Delete name from combo box
+		if (GUI_Controls.cmbComboName->GetSelection() < 0)		//prevent deletion of none selected item
+			return;
 
-	wxString strTemp = GUI_Controls.cmbComboName->GetValue();
-	GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
+		wxString strTemp = GUI_Controls.cmbComboName->GetValue();
+		GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
 
-	//After deletion, select the last combo by default
-	if(GUI_Controls.cmbComboName->GetCount() >= 0)
-		GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->GetCount() - 1);
+		//After deletion, select the last combo by default
+		if (GUI_Controls.cmbComboName->GetCount() >= 0)
+			GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->GetCount() - 1);
 
-	//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-	for(unsigned int i = 0; i < GUI_Controls.Combo.size(); ++i)
-		if(GUI_Controls.Combo[i].GetName() == strTemp)
-			GUI_Controls.Combo.erase(GUI_Controls.Combo.begin() + i);
-	//still some stuff to do...
+		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
+		for (unsigned int i = 0; i < GUI_Controls.Combo.size(); ++i)
+			if (GUI_Controls.Combo[i].GetName() == strTemp)
+				GUI_Controls.Combo.erase(GUI_Controls.Combo.begin() + i);
+		//still some stuff to do...
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
 
 void OnClickRenameCombo(wxCommandEvent &ev)
 {
-	if(GUI_Controls.cmbComboName->GetCount() == 0)
+	try
 	{
-		wxMessageBox("You didn't select a COMBO to rename!", "Rename Failed", wxICON_EXCLAMATION);
-		return;
-	}
+		if (GUI_Controls.cmbComboName->GetCount() == 0)
+		{
+			wxMessageBox("You didn't select a COMBO to rename!", "Rename Failed", wxICON_EXCLAMATION);
+			return;
+		}
 
-	wxString strResponse = wxGetTextFromUser("Enter a new name for the Combo:", 
-											"New COMBO name", "I am a Combo!");
-	
-	if (strResponse != wxEmptyString)
-		GUI_Controls.cmbComboName->SetString(GUI_Controls.cmbComboName->GetSelection(), strResponse);
+		wxString strResponse = wxGetTextFromUser("Enter a new name for the Combo:",
+			"New COMBO name", "I am a Combo!");
+
+		if (strResponse != wxEmptyString)
+			GUI_Controls.cmbComboName->SetString(GUI_Controls.cmbComboName->GetSelection(), strResponse);
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
 
 //////Combo Key
 void OnClickComboKey(wxMouseEvent &ev)
 {
-	wxMessageBox("Clicked 'Combo Key'");
+	try
+	{
+		wxMessageBox("Clicked 'Combo Key'");
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
 
-/////PS2Buttons
+/////psComboButtons
 //Called from the click event function (that handles both keyboard and combo button clicks) to handle combo buttons 
-void OnClickPS2Buttons(int winID)
+void OnClick_psComboButtons(int winID)
 {
-	if (winID >= 1024 && winID < 1047)	//Combo tab
+	try
 	{
-		//Implement adding ps2buttons into the grid
-		wxMessageBox(PS_LABEL[winID - 1024].name + " was clicked!");
+		if (winID >= 1024 && winID < 1047)	//Combo tab
+		{
+			//Implement adding psComboButtons into the grid
+			wxMessageBox(PS_LABEL[winID - 1024].name + " was clicked!");
+		}
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
 	}
 }

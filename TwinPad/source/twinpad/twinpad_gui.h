@@ -121,7 +121,7 @@ public:
 	CComboGrid *virtualGrid;
 	CTableBase *tableBaseGrid;
 	std::vector<CCombo> Combo;
-	CPS_Anim *ps2buttons[24];
+	CPS_Anim *psComboButtons[24];
 	wxButton *btnNewCombo;
 	wxButton *btnDeleteCombo;
 	wxButton *btnRenameCombo;

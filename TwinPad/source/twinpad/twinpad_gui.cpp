@@ -1,6 +1,10 @@
+#include <exception>
+
 #include "twinpad_gui.h"
 #include "functions_gui.h"
 #include "labels.h"
+
+using namespace std;	//for exceptions
 
 //I know I should not use globals and externs, but either that or passing pointers and references
 //to GUI controls all over the files and functions that want to use them or use a couple globals. I chose the latter.
@@ -17,55 +21,69 @@ const wxString TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
 
 void OnNotebookChange(wxCommandEvent &evt)
 {
-	if (evt.GetEventType() == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED)
+	try
 	{
-		wxSize curTabSize;
-		wxString label = GUI_Controls.noteBook->GetPageText(GUI_Controls.noteBook->GetSelection());
+		if (evt.GetEventType() == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED)
+		{
+			wxSize curTabSize;
+			wxString label = GUI_Controls.noteBook->GetPageText(GUI_Controls.noteBook->GetSelection());
 
-		if("Keyboard" == label)
-			curTabSize = GUI_Controls.minWinSize[KEYBOARD_TAB];
-		else if("Mouse" == label)
-			curTabSize = GUI_Controls.minWinSize[MOUSE_TAB];
-		else if("COMBOs" == label)
-			curTabSize = GUI_Controls.minWinSize[COMBOS_TAB];
-		else if("Misc" == label)
-			curTabSize = GUI_Controls.minWinSize[MISC_TAB];
-		else if("GamePad" == label)
-			curTabSize = GUI_Controls.minWinSize[GAMEPAD_TAB];
-		
-		GUI_Controls.noteBook->GetParent()->SetMinClientSize(curTabSize);
-		GUI_Controls.noteBook->GetParent()->SetClientSize(curTabSize);
-		GUI_Controls.noteBook->GetParent()->ClientToWindowSize(curTabSize);
-		GUI_Controls.noteBook->GetParent()->UpdateWindowUI();
+			if ("Keyboard" == label)
+				curTabSize = GUI_Controls.minWinSize[KEYBOARD_TAB];
+			else if ("Mouse" == label)
+				curTabSize = GUI_Controls.minWinSize[MOUSE_TAB];
+			else if ("COMBOs" == label)
+				curTabSize = GUI_Controls.minWinSize[COMBOS_TAB];
+			else if ("Misc" == label)
+				curTabSize = GUI_Controls.minWinSize[MISC_TAB];
+			else if ("GamePad" == label)
+				curTabSize = GUI_Controls.minWinSize[GAMEPAD_TAB];
+
+			GUI_Controls.noteBook->GetParent()->SetMinClientSize(curTabSize);
+			GUI_Controls.noteBook->GetParent()->SetClientSize(curTabSize);
+			GUI_Controls.noteBook->GetParent()->ClientToWindowSize(curTabSize);
+			GUI_Controls.noteBook->GetParent()->UpdateWindowUI();
+		}
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
 	}
 }
 
 void CreateControls(wxWindow *window)
 {
-	//Check to see if configuration files are present, otherwise create null ones
-	wxString file1, file2;
-	file1 = LOCATION + TWIN_PAD;
-	CheckAndCreateIfNecessary(file1.ToStdString(), HEADER_TWINPAD.ToStdString());
-	file2 = LOCATION + TWIN_PAD_COMBOS;
-	CheckAndCreateIfNecessary(file2.ToStdString(), HEADER_TWINPAD_COMBO.ToStdString());
+	try
+	{
+		//Check to see if configuration files are present, otherwise create null ones
+		wxString file1, file2;
+		file1 = LOCATION + TWIN_PAD;
+		CheckAndCreateIfNecessary(file1.ToStdString(), HEADER_TWINPAD.ToStdString());
+		file2 = LOCATION + TWIN_PAD_COMBOS;
+		CheckAndCreateIfNecessary(file2.ToStdString(), HEADER_TWINPAD_COMBO.ToStdString());
 
-	Loading_Gui();
-	//////////////////////////
+		Loading_Gui();
+		//////////////////////////
 
-	GUI_Controls.noteBook = new wxNotebook(window, ID_NOTEBOOK, wxPoint(-1,-1), wxSize(-1,-1));
-	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
+		GUI_Controls.noteBook = new wxNotebook(window, ID_NOTEBOOK, wxPoint(-1, -1), wxSize(-1, -1));
+		GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
 
-	AddKeyboardTab(GUI_Controls);
-	AddMouseTab(GUI_Controls);
-	AddCombosTab(GUI_Controls);
-	AddMiscTab(GUI_Controls);
+		AddKeyboardTab(GUI_Controls);
+		AddMouseTab(GUI_Controls);
+		AddCombosTab(GUI_Controls);
+		AddMiscTab(GUI_Controls);
 
-	//AddGamePadTab(GUI_Controls);	//TODO: Maybe..
+		//AddGamePadTab(GUI_Controls);	//TODO: Maybe..
 
-	//////////final///////////////////////////////
-	//Clean up and show the window
-	window->Center();
-	window->Show();
+		//////////final///////////////////////////////
+		//Clean up and show the window
+		window->Center();
+		window->Show();
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
 
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
@@ -397,34 +415,56 @@ void AddGamePadTab(CTwinPad_Gui &GUI_Controls)
 ///This function handles the click event for both keyboard tab and combo tab
 void CPS_Anim::OnClick(wxCommandEvent &event)
 {
-	//int winID = (int) event.GetEventUserData();
-	int winID = event.GetId();
-
-	if (winID >= 1000 && winID < 1024)	//Keyboard tab
+	try
 	{
-		//Implement reading DirectInput keypress
-		GUI_Controls.txtCtrl[this->GetIndex()]->SetValue(this->GetName());
-		this->Play();
+		//int winID = (int) event.GetEventUserData();
+		int winID = event.GetId();
+
+		if (winID >= 1000 && winID < 1024)	//Keyboard tab
+		{
+			//Implement reading DirectInput keypress
+			GUI_Controls.txtCtrl[this->GetIndex()]->SetValue(this->GetName());
+			this->Play();
+		}
+		else if (winID >= 1024 && winID < 1047)	//Combo tab
+			OnClick_psComboButtons(winID);
 	}
-	else if (winID >= 1024 && winID < 1047)	//Combo tab
-		OnClickPS2Buttons(winID);
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
 
 ///This function handles the click event for Mouse help button
 void OnClickMouseHelpButton(wxMouseEvent &ev)
 {
-	wxMessageBox(strMOUSE_HELP_MSG, "Help", wxICON_INFORMATION);
-	ev.Skip();
+	try
+	{
+		wxMessageBox(strMOUSE_HELP_MSG, "Help", wxICON_INFORMATION);
+		ev.Skip();
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
+
 ///This function handles the click event for Mouse Nullifies All
 void OnClickMouseNullifiesAll(wxMouseEvent &ev)
 {
-	for (int i = 0; i < intMOUSE_BUTTONS; ++i)
-		GUI_Controls.cmbMouseComboBox[i]->Select(0);
+	try
+	{
+		for (int i = 0; i < intMOUSE_BUTTONS; ++i)
+			GUI_Controls.cmbMouseComboBox[i]->Select(0);
 
-	GUI_Controls.cmbMouseSensitivity->Select(0);
-	GUI_Controls.mousePad1radioButton->SetValue(true);
-	//Another bug in wxWidgets! without the skip event, the window freezes, 
-	//until it loses focus by another app (hides behind it) then set focused again.
-	ev.Skip();
+		GUI_Controls.cmbMouseSensitivity->Select(0);
+		GUI_Controls.mousePad1radioButton->SetValue(true);
+		//Another bug in wxWidgets! without the skip event, the window freezes, 
+		//until it loses focus by another app (hides behind it) then set focused again.
+		ev.Skip();
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
 }
