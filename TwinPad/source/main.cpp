@@ -8,8 +8,6 @@
 	#include "wx/wxprec.h"
 #endif
 
-#include "wx/filesys.h"
-
 class MyApp : public wxApp
 {
 public:
