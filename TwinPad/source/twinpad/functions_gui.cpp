@@ -308,121 +308,125 @@ void Loading_Gui()
 
 //See the above function (commented out) which do the same thing, except resources are in a zip file called
 //"twinpad_gui_resources.bin -> resources/up.gif...etc!"
-void LoadResources(CPS_Anim *animCtrl, const wxString &fileName)
+void LoadResources(CPS_Anim *animCtrl, int index)
 {
-	void *iData = 0;
-	size_t length = 0;
+	try
+	{
+		void *iData = 0;	//hold image data
+		size_t length = 0;  //hold image size in bytes
+
+		GetImageData(iData, &length, index);
+
+		unsigned char *buffer = new unsigned char[length];
+		memcpy(buffer, iData, length);
+
+		wxMemoryInputStream iStream(buffer, length);
+
+		animCtrl->Load(iStream, wxANIMATION_TYPE_ANY);
+
+		delete[] buffer;
+	}
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+}
+
+//This function is called from LoadResources() and SetCustomCellRenderer()
+void GetImageData(void* &data, unsigned int *length, const unsigned int index)
+{
 	//I know this is awkward, but I am not gonna dig into the resources.h 
-	//to fix the arrays into 1 and use an index to make this more concise.
-	if (fileName == "Analog Up.gif")
+	//to fix the arrays into 1 and use an index to make this more concise and pithy.
+	switch (index)
 	{
-		iData = (void *)ANALOG_UP_GIF;
-		length = sizeof(ANALOG_UP_GIF);
+	case 0:
+		data = (void*)L2_GIF;
+		*length = sizeof(L2_GIF);
+		break;
+	case 1:
+		data = (void*)R2_GIF;
+		*length = sizeof(R2_GIF);
+		break;
+	case 2:
+		data = (void*)L1_GIF;
+		*length = sizeof(L1_GIF);
+		break;
+	case 3:
+		data = (void*)R1_GIF;
+		*length = sizeof(R1_GIF);
+		break;
+	case 4:
+		data = (void*)TRIANGLE_GIF;
+		*length = sizeof(TRIANGLE_GIF);
+		break;
+	case 5:
+		data = (void*)CIRCLE_GIF;
+		*length = sizeof(CIRCLE_GIF);
+		break;
+	case 6:
+		data = (void*)CROSS_GIF;
+		*length = sizeof(CROSS_GIF);
+		break;
+	case 7:
+		data = (void*)SQUARE_GIF;
+		*length = sizeof(SQUARE_GIF);
+		break;
+	case 8:
+		data = (void*)SELECT_GIF;
+		*length = sizeof(SELECT_GIF);
+		break;
+	case 9:
+		data = (void*)L3_GIF;
+		*length = sizeof(L3_GIF);
+		break;
+	case 10:
+		data = (void*)R3_GIF;
+		*length = sizeof(R3_GIF);
+		break;
+	case 11:
+		data = (void*)START_GIF;
+		*length = sizeof(START_GIF);
+		break;
+	case 12:
+		data = (void*)UP_GIF;
+		*length = sizeof(UP_GIF);
+		break;
+	case 13:
+		data = (void*)RIGHT_GIF;
+		*length = sizeof(RIGHT_GIF);
+		break;
+	case 14:
+		data = (void*)DOWN_GIF;
+		*length = sizeof(DOWN_GIF);
+		break;
+	case 15:
+		data = (void*)LEFT_GIF;
+		*length = sizeof(LEFT_GIF);
+		break;
+	case 16:
+	case 20:
+		data = (void*)ANALOG_UP_GIF;
+		*length = sizeof(ANALOG_UP_GIF);
+		break;
+	case 17:
+	case 21:
+		data = (void*)ANALOG_RIGHT_GIF;
+		*length = sizeof(ANALOG_RIGHT_GIF);
+		break;
+	case 18:
+	case 22:
+		data = (void*)ANALOG_DOWN_GIF;
+		*length = sizeof(ANALOG_DOWN_GIF);
+		break;
+	case 19:
+	case 23:
+		data = (void*)ANALOG_LEFT_GIF;
+		*length = sizeof(ANALOG_LEFT_GIF);
+		break;
+	default:
+		wxMessageBox("Unknown button number in GetImageData()");
+		break;
 	}
-	else if (fileName == "Analog Down.gif")
-	{
-		iData = (void *)ANALOG_DOWN_GIF;
-		length = sizeof(ANALOG_DOWN_GIF);
-	}
-	else if (fileName == "Analog Right.gif")
-	{
-		iData = (void *)ANALOG_RIGHT_GIF;
-		length = sizeof(ANALOG_RIGHT_GIF);
-	}
-	else if (fileName == "Analog Left.gif")
-	{
-		iData = (void *)ANALOG_LEFT_GIF;
-		length = sizeof(ANALOG_LEFT_GIF);
-	}
-	else if (fileName == "R1.gif")
-	{
-		iData = (void *)R1_GIF;
-		length = sizeof(R1_GIF);
-	}
-	else if (fileName == "R2.gif")
-	{
-		iData = (void *)R2_GIF;
-		length = sizeof(R2_GIF);
-	}
-	else if (fileName == "R3.gif")
-	{
-		iData = (void *)R3_GIF;
-		length = sizeof(R3_GIF);
-	}
-	else if (fileName == "L1.gif")
-	{
-		iData = (void *)L1_GIF;
-		length = sizeof(L1_GIF);
-	}
-	else if (fileName == "L2.gif")
-	{
-		iData = (void *)L2_GIF;
-		length = sizeof(L2_GIF);
-	}
-	else if (fileName == "L3.gif")
-	{
-		iData = (void *)L3_GIF;
-		length = sizeof(L3_GIF);
-	}
-	else if (fileName == "Up.gif")
-	{
-		iData = (void *)UP_GIF;
-		length = sizeof(UP_GIF);
-	}
-	else if (fileName == "Right.gif")
-	{
-		iData = (void *)RIGHT_GIF;
-		length = sizeof(RIGHT_GIF);
-	}
-	else if (fileName == "Down.gif")
-	{
-		iData = (void *)DOWN_GIF;
-		length = sizeof(DOWN_GIF);
-	}
-	else if (fileName == "Left.gif")
-	{
-		iData = (void *)LEFT_GIF;
-		length = sizeof(LEFT_GIF);
-	}
-	else if (fileName == "Circle.gif")
-	{
-		iData = (void *)CIRCLE_GIF;
-		length = sizeof(CIRCLE_GIF);
-	}
-	else if (fileName == "Triangle.gif")
-	{
-		iData = (void *)TRIANGLE_GIF;
-		length = sizeof(TRIANGLE_GIF);
-	}
-	else if (fileName == "Square.gif")
-	{
-		iData = (void *)SQUARE_GIF;
-		length = sizeof(SQUARE_GIF);
-	}
-	else if (fileName == "Cross.gif")
-	{
-		iData = (void *)CROSS_GIF;
-		length = sizeof(CROSS_GIF);
-	}
-	else if (fileName == "Select.gif")
-	{
-		iData = (void *)SELECT_GIF;
-		length = sizeof(SELECT_GIF);
-	}
-	else if (fileName == "Start.gif")
-	{
-		iData = (void *)START_GIF;
-		length = sizeof(START_GIF);
-	}
-	
-	unsigned char *buffer = new unsigned char[length];
-	memcpy(buffer, iData, length);
-
-	wxMemoryInputStream iStream(buffer, length);
-
-	animCtrl->Load(iStream, wxANIMATION_TYPE_ANY);
-
-	delete[] buffer;
 }
 
 /////////////////////////////// Combo Tab ///////////////////////////////////////

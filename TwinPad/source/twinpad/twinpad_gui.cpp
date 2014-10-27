@@ -1,7 +1,7 @@
 #include <exception>
 
 #include "twinpad_gui.h"
-#include "functions_gui.h"
+//#include "functions_gui.h"
 #include "labels.h"
 
 using namespace std;	//for exceptions
@@ -131,7 +131,7 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 					else
 						fileName +=  PS_LABEL[animIndex].name + ".gif";
 				GUI_Controls.animCtrl[animIndex] = new CPS_Anim(panel, ID_BTN + animIndex);
-				LoadResources(GUI_Controls.animCtrl[animIndex], fileName);
+				LoadResources(GUI_Controls.animCtrl[animIndex], animIndex);
 				GUI_Controls.animCtrl[animIndex]->SetInactiveBitmap(GUI_Controls.animCtrl[animIndex]->GetInactiveBitmap());
 				flexSizer->Add(GUI_Controls.animCtrl[animIndex], 1, wxEXPAND);
 				GUI_Controls.animCtrl[animIndex]->SetIndex(animIndex);
