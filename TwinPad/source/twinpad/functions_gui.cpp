@@ -4,8 +4,6 @@
 #include <vector>
 #include <exception>
 
-#include "twinpad_gui.h"
-
 #ifndef WX_PRECOM
 	#include "wx/wx.h"
 #else
@@ -16,13 +14,9 @@
 #include "wx/tokenzr.h"
 #include "wx/grid.h"
 
-//// If you want to use the other version of LoadResources, you have to include these
-//#include "wx/fs_zip.h"
-//#include "wx/filesys.h"
-//#include "wx/wfstream.h"
-
 #include "wx/mstream.h"		//for wxMemoryInputStream
 
+#include "twinpad_gui.h"
 #include "functions_gui.h"
 #include "comboGrid.h"
 #include "labels.h"
@@ -243,71 +237,7 @@ void Loading_Gui()
 	file.Close();
 }
 
-//void LoadResources(CPS_Anim *animCtrl, const wxString &fileName)
-//{
-//	// Create a new file system object, doesn't take ownership of pointer, delete it manually
-//	wxFileSystem *fileSystem = new wxFileSystem;
-//	wxString archiveURL = "twinpad_gui_resources.bin"; ///for absolute URL, we use: "file:///C:/twinpad_ui.bin";
-//	// Create a URL
-//	wxString combinedURL = archiveURL + "#zip:";
-//	combinedURL +=  fileName;
-//	
-//	// Open the file in the archive
-//	wxFSFile *file = fileSystem->OpenFile(combinedURL);
-//	if (file)
-//	{
-//		wxInputStream *iStream = file->GetStream();
-//		const int bufferSize = 8192;	//8KB
-//        
-//		//Although the documentation and the official wxWidgets book says wxImage or wxAnimationCtrl
-//		//is "stream-aware". IT IS NOT! even the examples in the book about this don't work!! and documentation
-//		//either sparse or none existent. Basically wxImage and wxAnimationCtrl require a seekable stream. 
-//		//The input stream from a zip archive can be read but it is not seekable, so it will fail to load the file.
-//		//A work around for this issue is: read the whole input stream into a temporary buffer, then convert the temp buffer to 
-//		//memory input stream, which is seekable, and can be casted to the base input stream class since it is a derived one.
-//		if ( !iStream )
-//		{
-//			wxMessageBox("'TwinPad_GUI_Resources.bin' was loaded, but the stream is empty!\n");
-//		}
-//		else
-//		{
-//		  unsigned char *buffer = new unsigned char[bufferSize];
-//		  unsigned int count = -1;	//max value
-//		  wxMemoryBuffer mem_buf;
-//		  
-//		  //Read 8KB from the stream (whatever was read from stream will be deleted automatically), 
-//		  //check when we are done (EOF = end of file). count: is measuring the last reading size, when it is 0,
-//		  //it means EOF or no more data (or no connection when dealing with ftp or http to load images from there).
-//		  while ( !iStream->Eof() && count!=0 )
-//		  {       
-//			iStream->Read((void *)buffer, bufferSize);
-//			count = iStream->LastRead();
-//			if(count > 0)
-//				mem_buf.AppendData(buffer, count);
-//		  }
-//		  wxMemoryInputStream stream(mem_buf.GetData(), mem_buf.GetDataLen());
-//		  animCtrl->Load(stream, wxANIMATION_TYPE_ANY);
-//
-//		  delete [] buffer;
-//		  delete iStream;
-//		} 
-//	}
-//	else
-//	{
-//		wxMessageBox("Can't find 'twinpad_ui_resources.dat' file! Make sure it exists in the same folder with the plugin.",
-//						"Fatal Error: File not found");
-//		//Crash.. so, exiting gracefully (forcefully actually) code should be here...
-//		if(fileSystem)
-//			delete fileSystem;
-//
-//		::exit(0);
-//		return;
-//	}
-//	delete fileSystem;
-//}
-
-//See the above function (commented out) which do the same thing, except resources are in a zip file called
-//"twinpad_gui_resources.bin -> resources/up.gif...etc!"
+//Loading images into controls
 void LoadResources(CPS_Anim *animCtrl, int index)
 {
 	try
@@ -646,15 +576,6 @@ void SetupComboTab(wxPanel *panel)
 	panel->GetParent()->ClientToWindowSize(panel->GetClientSize());
 	//Done!
 
-	//comboGrid->RegisterDataType("Custom", new CComboCellRenderer, new wxGridCellEditor);
-
-	//Actions (will be replaced from TwinPad_COMBOs.ini if it has any) //testing grid
-	//for(int i = 0; i < 10; ++i)
-	//	AddRow(comboGrid, GUI_Controls.spnDefaultDelay->GetValue());
-	
-	/*for(int c = 0; c < comboGrid->GetNumberRows(); ++c)
-		comboGrid->SetRowHeight(c, IMG_WIDTH);*/
-	
 	comboGrid->DisableDragColSize();			//Prevent mouse from resizing rows and columns
 	comboGrid->DisableDragRowSize();
 	
@@ -668,32 +589,13 @@ void SetupComboTab(wxPanel *panel)
 		comboGrid->SetColLabelValue(i, str);
 		comboGrid->SetColumnWidth(i, IMG_WIDTH);
 		comboGrid->SetColLabelValue(i, wxString::Format("#%d", i));
-
 	}
 
 	comboGrid->SetRowLabelSize(IMG_WIDTH + 20);
 
-	/*
-	CCellValue val, val2;
-	val.resourceFile = "resources//Analog Up.gif";
-	val.buttonValue = 16;
-	comboGrid->GetTable()->SetValueAsCustom(3, 3, wxGRID_VALUE_STRING, &val);
-	comboGrid->SetCellRenderer(3, 3, new CComboCellRenderer);
-	
-	val2.resourceFile = "resources//Circle.gif";
-	val2.buttonValue = 5;
-	tableBase->SetValueAsCustom(7,7, wxGRID_VALUE_STRING, &val2);
-	comboGrid->SetCellRenderer(7, 7, new CComboCellRenderer);
-	*/
-
-	/*wxString rsc = ((CCellValue*)tableBase->GetValueAsCustom(9, 0, wxGRID_VALUE_STRING))->resourceFile + "\n";
-	wxString btn = wxString::Format("%d",((CCellValue*)tableBase->GetValueAsCustom(9, 0, wxGRID_VALUE_STRING))->buttonValue);
-	wxString str = wxString::Format("Value of (%d, %d) is:\n %s", 9, 0, rsc + btn);
-	wxMessageBox(str);
-	*/
-	
-	//Handle mouse clicks over grid to relocate the cell
+	//Handle mouse clicks over grid to relocate the cell)
 	comboGrid->Bind(wxEVT_GRID_CELL_LEFT_CLICK, ::OnClickComboGrid);
+	GUI_Controls.virtualGrid->GetGridWindow()->Bind(wxEVT_MOTION,OnMouseMoveOverGrid);
 
 	//Associate Cell Locator with this grid
 	Cell_Locator.SetGrid(comboGrid);
@@ -734,8 +636,7 @@ void AddRow(CComboGrid *grid, unsigned int defaultDelay, unsigned int rowPos)
 	catch (exception &e)
 	{
 		wxMessageBox(e.what());
-	}
-	
+	}	
 }
 
 /////Action Buttons Events
@@ -1027,13 +928,12 @@ void OnClickComboKey(wxMouseEvent &ev)
 	}
 }
 
-/////psComboButtons
 //Called from the click event function (that handles both keyboard and combo button clicks) to handle combo buttons 
 void OnClick_psComboButtons(int winID)
 {
 	try
 	{
-		if (winID >= 1024 && winID < 1047)	//Combo tab
+		if (winID >= 1024 && winID <= 1047)	//Combo tab
 		{
 			//Implement adding psComboButtons into the grid
 			//wxMessageBox(PS_LABEL[winID - 1024].name + " was clicked!");
@@ -1075,6 +975,30 @@ void OnClickComboGrid(wxGridEvent &ev)
 	GUI_Controls.virtualGrid->ClearSelection();
 	GUI_Controls.virtualGrid->Refresh();
 	GUI_Controls.virtualGrid->SetGridCursor(row, col);	//to allow dragging and selection too
+	
 	//Move cursor to the selected cell coordinates
 	Cell_Locator.SetLocation(row, col);
+	ev.Skip();
+}
+
+//Show tooltip "Which button" underneath, when mouse hovering over grid cells
+void OnMouseMoveOverGrid(wxMouseEvent &ev)
+{
+	wxPoint mousePos, cellPos;
+
+	mousePos = GUI_Controls.virtualGrid->CalcUnscrolledPosition(ev.GetPosition());
+	cellPos.y = GUI_Controls.virtualGrid->YToRow(mousePos.y);	//row
+	cellPos.x = GUI_Controls.virtualGrid->XToCol(mousePos.x);	//column
+
+	if (cellPos.x == wxNOT_FOUND || cellPos.y == wxNOT_FOUND)
+	{
+		ev.Skip();
+		return;
+	}
+
+	wxString cellValue = GUI_Controls.virtualGrid->GetCellValue(cellPos.y, cellPos.x);
+	if (cellPos.x == 0)
+		cellValue = "Delay: Repeat this Action for " + cellValue + " frames.";
+	GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(cellValue);
+	ev.Skip();
 }

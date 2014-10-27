@@ -9,8 +9,6 @@
 #endif
 
 #include "wx/filesys.h"
-#include "wx/fs_zip.h"
-
 
 class MyApp : public wxApp
 {
@@ -32,14 +30,13 @@ public:
 bool MyApp::OnInit()
 {
 	MyFrame *myFrame = new MyFrame("TwinPad Configuration Utility", wxDefaultSize);
-	//These 2 handlers should be created once in OnInit() as documentation says
+	//This handler should be created once in OnInit() as documentation says
 	wxInitAllImageHandlers();
-	wxFileSystem::AddHandler(new wxZipFSHandler);
 
 	CreateControls(myFrame);
-
-	myFrame->AcceptsFocusRecursively();
-	myFrame->Center();
+	
+	myFrame->SetSize(myFrame->GetMinSize());
+	
 	myFrame->Show();
 
 	return true;

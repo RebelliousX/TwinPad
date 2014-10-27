@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "resources.h"
-#include "functions_gui.h"
 
 class CCellValue
 {

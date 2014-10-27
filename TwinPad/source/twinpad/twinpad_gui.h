@@ -14,7 +14,7 @@
 #include "wx/animate.h"
 #include <wx/spinctrl.h>
 
-#include "comboGrid.h"
+#include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //Don't define any IDs within these ranges...
@@ -85,7 +85,10 @@ private:
 	wxString name;
 };
 
+//Important forward declarations, to avoid cyclic dependency
 class CCombo;
+class CComboGrid;
+class CTableBase;
 
 //define controls
 const int intMOUSE_BUTTONS = 10, intPS_BUTTONS = 24, intANALOG_DIRECTIONS = 8;
@@ -93,6 +96,7 @@ const int intMOUSE_BUTTONS = 10, intPS_BUTTONS = 24, intANALOG_DIRECTIONS = 8;
 class CTwinPad_Gui
 {
 public:
+	wxFrame *mainFrame;
 	wxNotebook *noteBook;
 	/////////TAB 1: Keyboard//////////////////////////////////////////////
 	CPS_Txt *txtCtrl[intPS_BUTTONS];		//Defined alias key
@@ -133,7 +137,7 @@ public:
 	wxSpinCtrl *spnDefaultDelay;
 	wxComboBox *cmbComboName;
 	wxTextCtrl *txtComboKey;
-
+	
 	/////////TAB 4: EXTRA///////////////////////////////////////////////
 	wxCheckBox *chkDisablePad1;
 	wxCheckBox *chkDisablePad2;
@@ -154,7 +158,7 @@ enum PS2BUTTON { L2, R2, L1, R1, TRIANGLE, CIRCLE, CROSS, SQUARE, SELECT, L3, R3
 				START, UP, RIGHT, DOWN, LEFT, LANALOG_UP, LANALOG_RIGHT, LANALOG_DOWN,
 				LANALOG_LEFT, RANALOG_UP, RANALOG_RIGHT, RANALOG_DOWN, RANALOG_LEFT };
 
-void CreateControls(wxWindow * window);
+void CreateControls(wxFrame * window);
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls);
 void AddMouseTab(CTwinPad_Gui &GUI_Controls);
 void AddGamePadTab(CTwinPad_Gui &GUI_Controls);

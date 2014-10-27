@@ -1,7 +1,7 @@
 #include <exception>
 
 #include "twinpad_gui.h"
-//#include "functions_gui.h"
+#include "functions_gui.h"
 #include "labels.h"
 
 using namespace std;	//for exceptions
@@ -51,10 +51,13 @@ void OnNotebookChange(wxCommandEvent &evt)
 	}
 }
 
-void CreateControls(wxWindow *window)
+void CreateControls(wxFrame *window)
 {
 	try
 	{
+		//Save the pointer of the main frame to make access easier
+		GUI_Controls.mainFrame = window;
+
 		//Check to see if configuration files are present, otherwise create null ones
 		wxString file1, file2;
 		file1 = LOCATION + TWIN_PAD;
@@ -67,7 +70,7 @@ void CreateControls(wxWindow *window)
 
 		GUI_Controls.noteBook = new wxNotebook(window, ID_NOTEBOOK, wxPoint(-1, -1), wxSize(-1, -1));
 		GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
-
+		
 		AddKeyboardTab(GUI_Controls);
 		AddMouseTab(GUI_Controls);
 		AddCombosTab(GUI_Controls);
@@ -77,7 +80,6 @@ void CreateControls(wxWindow *window)
 
 		//////////final///////////////////////////////
 		//Clean up and show the window
-		window->Center();
 		window->Show();
 	}
 	catch (exception &e)
