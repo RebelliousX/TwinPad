@@ -132,8 +132,10 @@ public:
 	wxButton *btnRenameCombo;
 	wxButton *btnNewAction;
 	wxButton *btnDeleteLastAction;
-	wxButton *btnInsertAction;
+	wxButton *btnInsertActions;
+	wxButton *btnInsertInbetweenAction;
 	wxButton *btnDeleteSelectedActions;
+	wxButton *btnDeleteButton;
 	wxSpinCtrl *spnDefaultDelay;
 	wxComboBox *cmbComboName;
 	wxTextCtrl *txtComboKey;

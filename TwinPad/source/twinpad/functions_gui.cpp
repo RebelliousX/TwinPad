@@ -46,195 +46,247 @@ const int IMG_WIDTH = 40;
 
 void CreateNullFile()
 {
-	int counter;
+	try
+	{
+		int counter;
 	
-	string file = LOCATION + TWIN_PAD;
-	string strPad;
+		string file = LOCATION + TWIN_PAD;
+		string strPad;
 
-	ofstream m_nullfile(file.c_str(), ios::out);
+		ofstream m_nullfile(file.c_str(), ios::out);
 
-	if (!m_nullfile.is_open())
-	{
-		wxMessageBox("Couldn't create configuration files into the specified location!"
-			"\nMake sure 'inis' folder exists in the same directory with the emu."
-			"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-		::exit(0);
-	}
-
-	m_nullfile << HEADER_TWINPAD << endl;
-	for(int pad = 0; pad <= 1; pad++)
-	{
-		if (pad == 0) 
-			strPad = "[0][";
-		else
-			strPad = "[1][";
-		
-		counter = 0;
-		while(counter < 24)
+		if (!m_nullfile.is_open())
 		{
-			m_nullfile << strPad << counter << "] = 0x" << "0" << endl;
-			GUI_Config.m_pad[pad][counter] = counter;
+			wxMessageBox("Couldn't create configuration files into the specified location!"
+				"\nMake sure 'inis' folder exists in the same directory with the emu."
+				"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+			::exit(0);
+		}
+
+		m_nullfile << HEADER_TWINPAD << endl;
+		for(int pad = 0; pad <= 1; pad++)
+		{
+			if (pad == 0) 
+				strPad = "[0][";
+			else
+				strPad = "[1][";
+		
+			counter = 0;
+			while(counter < 24)
+			{
+				m_nullfile << strPad << counter << "] = 0x" << "0" << endl;
+				GUI_Config.m_pad[pad][counter] = counter;
+				counter++;
+			}
+			m_nullfile << strPad << counter << "] = 0x" << "0" << endl;  //for walk/run value
+		}
+
+		counter = 0;
+		while(counter < 10)
+		{
+			m_nullfile << wxString("[") << counter << "] = 36" << endl;
+			GUI_Config.m_mouse[counter] = 36;
 			counter++;
 		}
-		m_nullfile << strPad << counter << "] = 0x" << "0" << endl;  //for walk/run value
-	}
+		m_nullfile << "0" << endl;		/* Mouse as PAD 1 */ 
+		GUI_Config.m_mouseAsPad = 0;
+		m_nullfile << "1" << endl;		/* Mouse sensitivity default value. */
+		GUI_Config.m_mouseSensitivity = 1;
 
-	counter = 0;
-	while(counter < 10)
-	{
-		m_nullfile << wxString("[") << counter << "] = 36" << endl;
-		GUI_Config.m_mouse[counter] = 36;
-		counter++;
+		counter = 0;
+		while(counter <= 6)
+		{
+			m_nullfile << "0" << endl;
+			GUI_Config.m_extra[counter] = 0;
+			counter++;
+		}
+	
+		m_nullfile.close();
 	}
-	m_nullfile << "0" << endl;		/* Mouse as PAD 1 */ 
-	GUI_Config.m_mouseAsPad = 0;
-	m_nullfile << "1" << endl;		/* Mouse sensitivity default value. */
-	GUI_Config.m_mouseSensitivity = 1;
-
-	counter = 0;
-	while(counter <= 6)
+	catch (exception &ex)
 	{
-		m_nullfile << "0" << endl;
-		GUI_Config.m_extra[counter] = 0;
-		counter++;
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
 	
-	m_nullfile.close();
 }
 
 void CreateNullComboFile()
 {
-	string file = LOCATION + TWIN_PAD_COMBOS;
-	ofstream m_txtFile(file.c_str(), ios::out);
-
-	if (!m_txtFile.is_open())
+	try
 	{
-		wxMessageBox("Couldn't create configuration files into the specified location!"
-			"\nMake sure 'inis' folder exists in the same directory with the emu."
-			"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-		::exit(0);
+		string file = LOCATION + TWIN_PAD_COMBOS;
+		ofstream m_txtFile(file.c_str(), ios::out);
+
+		if (!m_txtFile.is_open())
+		{
+			wxMessageBox("Couldn't create configuration files into the specified location!"
+				"\nMake sure 'inis' folder exists in the same directory with the emu."
+				"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+			::exit(0);
+		}
+
+		m_txtFile << HEADER_TWINPAD_COMBO << endl;
+		m_txtFile << "ComboCount\t= 0\n" << "ComboPad\t= 0\n";
+
+		m_txtFile.close();
 	}
-
-	m_txtFile << HEADER_TWINPAD_COMBO << endl;
-	m_txtFile << "ComboCount\t= 0\n" << "ComboPad\t= 0\n";
-
-	m_txtFile.close();
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
+	
 }
 
 bool CheckAndCreateIfNecessary(const string &file, const string &header)
 {
-	ifstream f(file);
-	if (!f.is_open())
+	try
 	{
-		wxMessageBox("Couldn't create configuration files into the specified location!"
-			"\nMake sure 'inis' folder exists in the same directory with the emu."
-			"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-		::exit(0);
-	}
-	string str, strMsg;
+		ifstream f(file);
+		if (!f.is_open())
+		{
+			wxMessageBox("Couldn't create configuration files into the specified location!"
+				"\nMake sure 'inis' folder exists in the same directory with the emu."
+				"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+			::exit(0);
+		}
+		string str, strMsg;
 
-	int select = 0;
-	if (header == HEADER_TWINPAD)
-	{
-		strMsg = "Resetting Configurations in 'TwinPad.ini' File, please reconfigure the plugin.";
-		select = 1;
-	}
-	else if (header == HEADER_TWINPAD_COMBO)
-	{
-		strMsg = "Resetting Configurations in 'TwinPad_COMBOs.ini' File, please reconfigure the plugin.";
-		select = 2;
-	}
-	else
-	{
-		wxMessageBox("Wrong header passed to 'IsFileOk()' function. Inform the Author please.\nHeader: " + header);
+		int select = 0;
+		if (header == HEADER_TWINPAD)
+		{
+			strMsg = "Resetting Configurations in 'TwinPad.ini' File, please reconfigure the plugin.";
+			select = 1;
+		}
+		else if (header == HEADER_TWINPAD_COMBO)
+		{
+			strMsg = "Resetting Configurations in 'TwinPad_COMBOs.ini' File, please reconfigure the plugin.";
+			select = 2;
+		}
+		else
+		{
+			wxMessageBox("Wrong header passed to 'IsFileOk()' function. Inform the Author please.\nHeader: " + header);
+			return false;
+		}
+
+		//First: Check if file can be opened
+		if (f.is_open())
+		{
+			//Second: Check the Header if version is compatible
+			getline(f, str);
+			if (select == 1)
+			{
+				if (str != HEADER_TWINPAD)
+				{
+					f.close();
+					CreateNullFile();
+					return true;	//Create null file, then is OK
+				}
+				else
+					return true;	//File is OK
+			}
+			else if (select == 2)
+			{
+				if (str != HEADER_TWINPAD_COMBO)
+				{
+					f.close();
+					CreateNullComboFile();
+					return true;	//Create null file, then is OK
+				}
+				else
+					return true;	//File is OK
+			}
+		}
+		else
+		{
+			if (select == 1) CreateNullFile();
+			if (select == 2) CreateNullComboFile();
+		}
+	
+		f.close();
 		return false;
 	}
-
-	//First: Check if file can be opened
-	if (f.is_open())
+	catch (exception &ex)
 	{
-		//Second: Check the Header if version is compatible
-		getline(f, str);
-		if (select == 1)
-		{
-			if (str != HEADER_TWINPAD)
-			{
-				f.close();
-				CreateNullFile();
-				return true;	//Create null file, then is OK
-			}
-			else
-				return true;	//File is OK
-		}
-		else if (select == 2)
-		{
-			if (str != HEADER_TWINPAD_COMBO)
-			{
-				f.close();
-				CreateNullComboFile();
-				return true;	//Create null file, then is OK
-			}
-			else
-				return true;	//File is OK
-		}
+		wxMessageBox(ex.what());
 	}
-	else
+	catch (...)
 	{
-		if (select == 1) CreateNullFile();
-		if (select == 2) CreateNullComboFile();
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
-	
-	f.close();
-	return false;
+	return false; //shouldn't reach here
 }
 
 void Loading_Gui()
 {
-	wxString fileName = LOCATION + TWIN_PAD;
-	wxTextFile file(fileName);
-	if (!file.Open(fileName))
+	try
 	{
-		wxMessageBox("Couldn't open configuration files from the specified location!"
-			"\nMake sure 'inis' folder exists in the same directory with the emu."
-			"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-		::exit(0);
-	}
+		wxString fileName = LOCATION + TWIN_PAD;
+		wxTextFile file(fileName);
+		if (!file.Open(fileName))
+		{
+			wxMessageBox("Couldn't open configuration files from the specified location!"
+				"\nMake sure 'inis' folder exists in the same directory with the emu."
+				"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+			::exit(0);
+		}
 
-	wxStringTokenizer token;
-	wxString line, subStr;
-	long val = 0;
+		wxStringTokenizer token;
+		wxString line, subStr;
+		long val = 0;
 
-	line = file.GetFirstLine();		//Get header and skip it
-	for(int pad = 0; pad < 2; pad++)
-		for (int key = 0; key < 25; key++)
+		line = file.GetFirstLine();		//Get header and skip it
+		for(int pad = 0; pad < 2; pad++)
+			for (int key = 0; key < 25; key++)
+			{
+				line = file.GetNextLine();
+				token.SetString(line, " ", wxTOKEN_STRTOK);
+				subStr = token.GetNextToken();				//Skips first token [n][n]
+				subStr = token.GetNextToken();				//Skips second token =
+				subStr = token.GetNextToken();				//we are interested in this token 0xNN
+				subStr.ToLong(&val, 16);					//Convert string to hex
+				GUI_Config.m_pad[pad][key] = int(val);		
+			}
+
+		for(int i = 0; i < 10; i++)		//For mouse buttons and scrollup/down
 		{
 			line = file.GetNextLine();
 			token.SetString(line, " ", wxTOKEN_STRTOK);
-			subStr = token.GetNextToken();				//Skips first token [n][n]
-			subStr = token.GetNextToken();				//Skips second token =
-			subStr = token.GetNextToken();				//we are interested in this token 0xNN
-			subStr.ToLong(&val, 16);					//Convert string to hex
-			GUI_Config.m_pad[pad][key] = int(val);		
+			subStr = token.GetNextToken();	//skips first token [n]
+			subStr = token.GetNextToken();	//skips second token =
+			subStr = token.GetNextToken();	//we are interested in this token N (DECIMAL)
+			subStr.ToLong(&val, 10);		//Convert string to dec
+			GUI_Config.m_mouse[i] = val;
 		}
 
-	for(int i = 0; i < 10; i++)		//For mouse buttons and scrollup/down
-	{
-		line = file.GetNextLine();
-		token.SetString(line, " ", wxTOKEN_STRTOK);
-		subStr = token.GetNextToken();	//skips first token [n]
-		subStr = token.GetNextToken();	//skips second token =
-		subStr = token.GetNextToken();	//we are interested in this token N (DECIMAL)
-		subStr.ToLong(&val, 10);		//Convert string to dec
-		GUI_Config.m_mouse[i] = val;
+		for(int i = 0; i < 7; i++)
+		{
+			line = file.GetNextLine();
+			line.ToLong(&val, 10);
+			GUI_Config.m_extra[i] = val;
+		}
+		file.Close();
 	}
-
-	for(int i = 0; i < 7; i++)
+	catch (exception &ex)
 	{
-		line = file.GetNextLine();
-		line.ToLong(&val, 10);
-		GUI_Config.m_extra[i] = val;
+		wxMessageBox(ex.what());
 	}
-	file.Close();
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
+	
 }
 
 //Loading images into controls
@@ -259,6 +311,11 @@ void LoadResources(CPS_Anim *animCtrl, int index)
 	catch (exception &ex)
 	{
 		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -379,6 +436,7 @@ void SetupComboTab(wxPanel *panel)
 	}
 	
 	////Creating Layout///////
+	const int MAX_COLUMNS = 19;
 	wxBoxSizer *parentSizer = new wxBoxSizer(wxVERTICAL);
 		wxStaticBoxSizer *topLevelSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Key Combinations (COMBOs)");
 			wxStaticBoxSizer *stcComboEditorSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "COMBO Editor");
@@ -432,7 +490,7 @@ void SetupComboTab(wxPanel *panel)
 				comboGrid->SetTable(tableBase, true);
 				//Setup attributes
 				wxGridCellAttr *attrReadOnly = new wxGridCellAttr, *attrDelayColumn = new wxGridCellAttr;
-				comboGrid->InsertCols(0, 19);		//0: Delay, 1-18 Buttons (columns# fixed, rows# not)
+				comboGrid->InsertCols(0, MAX_COLUMNS);		//0: Delay, 1-18 Buttons (columns# fixed, rows# not)
 				//Set Column 0 attr, the range of acceptable numbers from 1 to 99999 (delay values)
 				attrDelayColumn->SetEditor(new wxGridCellNumberEditor(1, 99999));
 				attrDelayColumn->SetBackgroundColour(wxColor(66,66,66));
@@ -445,7 +503,7 @@ void SetupComboTab(wxPanel *panel)
 				//prevents overflow of text to next cell (just in case we use it to store hidden data)
 				attrReadOnly->SetOverflow(false); 
 				comboGrid->SetColAttr(0, attrDelayColumn);	//column 0: Delay
-				for(int i = 1; i < 19; ++i)					//column 1-18, PS2 buttons images (no text)
+				for(int i = 1; i < comboGrid->GetNumberCols(); ++i)					//column 1-18, PS2 buttons images (no text)
 				{
 					comboGrid->SetColAttr(i, attrReadOnly);
 					//Bug in wxWidgets 2.9.4 and up!!?? Ticket #4401, it says fixed, but not here :/
@@ -458,23 +516,31 @@ void SetupComboTab(wxPanel *panel)
 			wxStaticBoxSizer *editComboSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Action Editor");
 				GUI_Controls.btnNewAction = new wxButton(panel, wxID_ANY, "New &Action");
 				GUI_Controls.btnDeleteLastAction = new wxButton(panel, wxID_ANY, "Delete &Last Action");
-				GUI_Controls.btnInsertAction = new wxButton(panel, wxID_ANY, "&Insert Actions");
+				GUI_Controls.btnInsertActions = new wxButton(panel, wxID_ANY, "Insert Actions");
+				GUI_Controls.btnInsertInbetweenAction = new wxButton(panel, wxID_ANY, "&Insert Inbetween Actions");
 				GUI_Controls.btnDeleteSelectedActions = new wxButton(panel, wxID_ANY, "Delete &Selected Actions");
+				GUI_Controls.btnDeleteButton = new wxButton(panel, wxID_ANY, "Delete Selected Button");
 				wxSize largestButtonSize = GUI_Controls.btnDeleteSelectedActions->GetSize();
 				GUI_Controls.btnNewAction->SetMinSize(largestButtonSize);
 				GUI_Controls.btnDeleteLastAction->SetMinSize(largestButtonSize);
-				GUI_Controls.btnInsertAction->SetMinSize(largestButtonSize);
+				GUI_Controls.btnInsertInbetweenAction->SetMinSize(largestButtonSize);
 				GUI_Controls.btnNewAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickNewAction);
 				GUI_Controls.btnDeleteLastAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteLastAction);
-				GUI_Controls.btnInsertAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickInsertAction);
+				GUI_Controls.btnInsertInbetweenAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickInsertInbetweenAction);
+				GUI_Controls.btnInsertActions->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickInsertAction);
 				GUI_Controls.btnDeleteSelectedActions->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteSelectedActions);
+				GUI_Controls.btnDeleteButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteButton);
 				editComboSizer->Add(GUI_Controls.btnNewAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
 				editComboSizer->AddSpacer(5);
 				editComboSizer->Add(GUI_Controls.btnDeleteLastAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
 				editComboSizer->AddSpacer(5);
-				editComboSizer->Add(GUI_Controls.btnInsertAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+				editComboSizer->Add(GUI_Controls.btnInsertActions, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+				editComboSizer->AddSpacer(5);
+				editComboSizer->Add(GUI_Controls.btnInsertInbetweenAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
 				editComboSizer->AddSpacer(5);
 				editComboSizer->Add(GUI_Controls.btnDeleteSelectedActions, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+				editComboSizer->AddSpacer(5);
+				editComboSizer->Add(GUI_Controls.btnDeleteButton, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
 		midLevelSizer->Add(comboGridSizer);
 		midLevelSizer->Add(editComboSizer, 1, wxEXPAND | wxALIGN_CENTER, 5);
 			wxStaticBoxSizer *lowLevelSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "PS2 Buttons");
@@ -582,8 +648,11 @@ void SetupComboTab(wxPanel *panel)
 	comboGrid->SetColFormatNumber(0);			//first column accepts integer numbers only
 	comboGrid->SetColLabelValue(0, "Delay");
 
+	comboGrid->SetCellHighlightPenWidth(3);		//for Delay
+	comboGrid->SetCellHighlightROPenWidth(3);	//Thicker black border around selected "read only" cell
+
 	//Set label and width
-	for(int i = 1; i < 19; ++i)
+	for(int i = 1; i < comboGrid->GetNumberCols(); ++i)
 	{
 		wxString str = wxString::Format("#%d",i);
 		comboGrid->SetColLabelValue(i, str);
@@ -614,7 +683,7 @@ void AddRow(CComboGrid *grid, unsigned int defaultDelay, unsigned int rowPos)
 		grid->SetCellValue(rowPos, 0, str);
 
 		//Resize column width and change label
-		for (int i = 1; i < 19; ++i)
+		for (int i = 1; i < grid->GetNumberCols(); ++i)
 		{
 			grid->SetColumnWidth(i, IMG_WIDTH);
 			grid->SetColLabelValue(i, wxString::Format("#%d", i));
@@ -636,7 +705,12 @@ void AddRow(CComboGrid *grid, unsigned int defaultDelay, unsigned int rowPos)
 	catch (exception &e)
 	{
 		wxMessageBox(e.what());
-	}	
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
 /////Action Buttons Events
@@ -663,6 +737,11 @@ void OnClickNewAction(wxCommandEvent &ev)
 	catch (exception &e)
 	{
 		wxMessageBox(e.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -693,13 +772,17 @@ void OnClickDeleteLastAction(wxCommandEvent &ev)
 	{
 		wxMessageBox(e.what());
 	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
 void OnClickInsertAction(wxCommandEvent &ev)
 {
 	try
 	{
-		//See OnClickDeleteSelectedActions below for more details about this
 		wxArrayInt selectedRows;
 		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
 		{
@@ -720,14 +803,98 @@ void OnClickInsertAction(wxCommandEvent &ev)
 		if (selectedRows.empty())
 		{
 			//Long error & help message :)
-			wxMessageBox("You have to specify where to insert the new Action first, so select an Action\n"
-				"by clicking on the Action number to make sure the whole action is selected.\n"
-				"You have to select at least ONE whole Action before you insert another.\n"
+			wxMessageBox("Both 'Insert Actions' & 'Insert Inbetween Actions' work the same for a single Action. "
+				"But they differ when trying to insert more than one Action at once. Please read to know the difference:\n\n"
+				"You have to specify where to insert the new Action first, so select an Action "
+				"by clicking on the Action number to make sure the whole action is selected. "
+				"You have to select at least ONE whole Action before you insert another. "
 				"You can select more than one by holding CTRL or SHIFT keys, and new Actions\nwill be inserted there.\n\n"
-				"Lastly, the new inserted Action will have the same 'RELATIVE' position as the\none "
-				"you selected. Thus, the remaining Actions will be pushed further down the"
-				"\nlist. Even if you selected more than one action, the new ones will retain the relative\n"
-				"position to other nearby Actions.",
+				"Lastly, selected Actions have to be next to each other unlike 'INSERT INBETWEEN ACTIONS'. "
+				"The new inserted Action will have the same 'ABSOLUTE' position (same Action number) as the one "
+				"you selected. Thus, the remaining Actions will be pushed further down the list. "
+				"Even if you selected more than one Action, the new ones will retain the absolute "
+				"position to other nearby Actions.\n\nFor example, it is very similar to Microsoft Excel when inserting new rows. :)",
+				"New Action location is unknown!",
+				wxICON_EXCLAMATION);
+			return;
+		}
+
+		if (selectedRows.size() > 1)
+			for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
+			{
+				if (selectedRows[i + 1] - selectedRows[i] > 1)
+				{
+					wxMessageBox("Actions selected have to be adjacent to one another. Otherwise, choose\n"
+						"'Insert Inbetween Actions' button.", "Not contiguous Actions!", wxICON_EXCLAMATION);
+					return;
+				}
+			}
+
+		for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
+		{
+			//Move grid cursor outside of the table, before we insert anything
+			//to avoid hard to fix problems related to grid-cursor's previous location
+			Cell_Locator.SetLocation(-1, -1);
+
+			AddRow(GUI_Controls.virtualGrid,
+				GUI_Controls.spnDefaultDelay->GetValue(),
+				selectedRows[i]);
+		}
+
+		for (int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
+			GUI_Controls.virtualGrid->DeselectRow(i);
+
+		//Move grid cursor to the first inserted action (whether it is one or more)
+		Cell_Locator.SetLocation(selectedRows[0], 1);
+	}
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
+}
+
+void OnClickInsertInbetweenAction(wxCommandEvent &ev)
+{
+	try
+	{
+		//See OnClickDeleteSelectedActions below for more details about this
+		wxArrayInt selectedRows;
+		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+		{
+			bool IsRowSelected = false;
+			for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+				if (GUI_Controls.virtualGrid->IsInSelection(row, col))
+					IsRowSelected = true;
+				else
+				{
+					IsRowSelected = false;
+					break;	//If even one cell not selected in a row, then the row is not selected, so skip to next row				
+				}
+
+			if (IsRowSelected)
+				selectedRows.push_back(row);
+		}
+
+		if (selectedRows.empty())
+		{
+			//Long error & help message :)
+			wxMessageBox("Both 'Insert Actions' & 'Insert Inbetween Actions' work the same for a single Action. "
+				"But they differ when trying to insert more than one Action at once. Please read to know the difference:\n\n"
+				"You have to specify where to insert the new Action first, so select an Action "
+				"by clicking on the Action number to make sure the whole action is selected. "
+				"You have to select at least ONE whole Action before you insert another. "
+				"You can select more than one by holding CTRL or SHIFT keys, and new Actions will be inserted there.\n\n"
+				"Lastly, the new inserted Action will have the same 'RELATIVE' position as the one "
+				"you selected (relative to the Action above and below. Thus, the remaining Actions will be pushed "
+				"further down the list. Even if you selected more than one Action, the new ones will retain the relative "
+				"position to other nearby Actions.\n\n"
+				"This is a unique way of inserting rows (a.k.a Actions), I am not aware of another application can do this "
+				"to compare the behavior with this one. :)",
 				"New Action location is unknown!",
 				wxICON_EXCLAMATION);
 			return;
@@ -750,11 +917,17 @@ void OnClickInsertAction(wxCommandEvent &ev)
 			GUI_Controls.virtualGrid->DeselectRow(i);
 
 		//Move grid cursor to the first inserted action (whether it is one or more)
+		//Note that if for example the first selected was row 0, now it is row 1 since it was shifted down 1 row
 		Cell_Locator.SetLocation(selectedRows[0] - 1, 1);
 	}
 	catch (exception &e)
 	{
 		wxMessageBox(e.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -774,17 +947,17 @@ void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 		wxArrayInt selectedRows;
 		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
 		{
-			bool blnIsRowSelected = false;
+			bool IsRowSelected = false;
 			for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
 				if (GUI_Controls.virtualGrid->IsInSelection(row, col))
-					blnIsRowSelected = true;
+					IsRowSelected = true;
 				else
 				{
-					blnIsRowSelected = false;
+					IsRowSelected = false;
 					break;	//If even one cell not selected in a row, then the row is not selected, so skip to next row				
 				}
 
-			if (blnIsRowSelected)
+			if (IsRowSelected)
 				selectedRows.push_back(row);
 		}
 
@@ -806,11 +979,7 @@ void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 		}
 
 		for (int i = selectedRows.GetCount() - 1; i >= 0; --i)
-		{
 			GUI_Controls.virtualGrid->DeleteRows(selectedRows[i], 1, true);
-
-			//GUI_Controls.virtualGrid->DeleteRows(selectedRows[i], 1, true);
-		}
 
 		//Minimum requirement: to have at least 1 action to have a combo, even if it is empty
 		if (GUI_Controls.virtualGrid->GetNumberRows() == 0)
@@ -823,6 +992,39 @@ void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 	{
 		wxMessageBox(e.what());
 	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
+}
+
+void OnClickDeleteButton(wxCommandEvent &ev)
+{
+	try
+	{
+		wxGridCellCoords coords;
+		CCellValue val;
+		Cell_Locator.GetLocation(coords);
+		val.buttonValue = -1;	//-1 is empty button, since 0 means L2
+		val.resourceFile = "";
+
+		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
+		GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
+		GUI_Controls.virtualGrid->Update();
+		GUI_Controls.virtualGrid->Refresh();
+		GUI_Controls.virtualGrid->SetFocus();
+	}
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
+	return;
 }
 
 /////Combo Buttons Events
@@ -860,6 +1062,11 @@ void OnClickNewCombo(wxCommandEvent &ev)
 	{
 		wxMessageBox(e.what());
 	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
 void OnClickDeleteCombo(wxCommandEvent &ev)
@@ -891,6 +1098,11 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 	{
 		wxMessageBox(e.what());
 	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
 void OnClickRenameCombo(wxCommandEvent &ev)
@@ -913,6 +1125,11 @@ void OnClickRenameCombo(wxCommandEvent &ev)
 	{
 		wxMessageBox(e.what());
 	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
 //////Combo Key
@@ -926,17 +1143,26 @@ void OnClickComboKey(wxMouseEvent &ev)
 	{
 		wxMessageBox(e.what());
 	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
+//Only called from OnClick_psComboButton()
 bool Has(const unsigned int button, int row)
 {
+	//Check if 'button' exists in current action 'row' and return true. Otherwise return false.
 	int buttonValue;
-	for (int i = 1; i < 19; ++i)
+	wxGridCellCoords coords;
+	Cell_Locator.GetLocation(coords);
+	for (int i = 1; i < GUI_Controls.virtualGrid->GetNumberCols(); ++i)
 	{
-		// buttonValue = GUI_Controls.virtualGrid->GetCellValue(row, i);
 		buttonValue = ((CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, i, "Cell Value"))->buttonValue;
-			if (buttonValue == button)
-				return true;
+		//If button exists in same row, and not the same one 'cell' selected by user to overwrite, return true
+		if (buttonValue == button && i != coords.GetCol())
+			return true;
 	}
 	return false;
 }
@@ -947,8 +1173,7 @@ void OnClick_psComboButtons(int winID)
 	//winID is between 1024 and 1047 inclusive
 	try
 	{
-		//Implement adding psComboButtons into the grid
-		//wxMessageBox(PS_LABEL[winID - 1024].name + " was clicked!");
+		if (GUI_Controls.virtualGrid->GetNumberRows() == 0) return;
 
 		int button = winID - 1024;
 		wxGridCellCoords coords;
@@ -958,110 +1183,114 @@ void OnClick_psComboButtons(int winID)
 		//verify button does not conflict with other buttons in current action
 		//e.g UP and DOWN at the same time. So, 6 if-clauses get rid of 6 unneeded
 		//columns in grid from 24 to 18, unlike before.
+		wxString errorMSG = "";
 		if ((button == UP && Has(DOWN, curRow)) || (button == DOWN && Has(UP, curRow)))
-		{
-			wxMessageBox("Can't have both UP and DOWN in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
+			errorMSG = "Can't have both UP and DOWN in the same Action.";
 		if ((button == RIGHT && Has(LEFT, curRow)) || (button == LEFT && Has(RIGHT, curRow)))
-		{
-			wxMessageBox("Can't have both LEFT and RIGHT in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
+			errorMSG = "Can't have both LEFT and RIGHT in the same Action.";
 		if ((button == LANALOG_UP && Has(LANALOG_DOWN, curRow)) || (button == LANALOG_DOWN && Has(LANALOG_UP, curRow)))
-		{
-			wxMessageBox("Can't have both Left Analog's UP and DOWN in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
+			errorMSG = "Can't have both Left Analog's UP and DOWN in the same Action.";
 		if ((button == LANALOG_LEFT && Has(LANALOG_RIGHT, curRow)) || (button == LANALOG_RIGHT && Has(LANALOG_LEFT, curRow)))
-		{
-			wxMessageBox("Can't have both Left Analog's LEFT and RIGHT in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
+			errorMSG = "Can't have both Left Analog's LEFT and RIGHT in the same Action.";
 		if ((button == RANALOG_UP && Has(RANALOG_DOWN, curRow)) || (button == RANALOG_DOWN && Has(RANALOG_UP, curRow)))
-		{
-			wxMessageBox("Can't have both Right Analog's UP and DOWN in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
+			errorMSG = "Can't have both Right Analog's UP and DOWN in the same Action.";
 		if ((button == RANALOG_LEFT && Has(RANALOG_RIGHT, curRow)) || (button == RANALOG_RIGHT && Has(RANALOG_LEFT, curRow)))
-		{
-			wxMessageBox("Can't have both Right Analog's LEFT and RIGHT in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
+			errorMSG = "Can't have both Right Analog's LEFT and RIGHT in the same Action.";
 		if (Has(button, curRow))
+			errorMSG = "The same button already exists in this Action.";
+		
+		if (errorMSG != "")
 		{
-			wxMessageBox("The same button already exists in this Action.", "Not Allowed!", wxICON_INFORMATION);
+			wxMessageBox(errorMSG, "Not Allowed!", wxICON_INFORMATION);
+			GUI_Controls.virtualGrid->SetFocus();
 			return;
 		}
-
+		
 		CCellValue val;
-		val.resourceFile = PS_LABEL[winID - 1024].name;
-		val.buttonValue = winID - 1024;
+		val.resourceFile = PS_LABEL[button].name;
+		val.buttonValue = button;
 
 		Cell_Locator.GetLocation(coords);
 		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
 		GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
 		
-		if (coords.GetCol() <= 18)
+		if (coords.GetCol() < GUI_Controls.virtualGrid->GetNumberCols() - 1)
 			Cell_Locator.MoveToNextButton();
 		else if (coords.GetRow() < GUI_Controls.virtualGrid->GetNumberRows())
 		{
-
 			Cell_Locator.MoveToNextAction();
 			Cell_Locator.TestAndCorrectLocation();
 		}
-
-		//Cell_Locator.GetLocation(coords);
-		//GUI_Controls.virtualGrid->MakeCellVisible(coords);
-		GUI_Controls.virtualGrid->Update();
-		GUI_Controls.virtualGrid->Refresh();
 	}
 	catch (exception &e)
 	{
 		wxMessageBox(e.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
 /////Grid mouse click
 void OnClickComboGrid(wxGridEvent &ev)
 {
-	unsigned int row, col;
-	row = ev.GetRow();
-	col = ev.GetCol();
-	//Clear any current highlights too
-	GUI_Controls.virtualGrid->ClearSelection();
-	GUI_Controls.virtualGrid->Refresh();
-	GUI_Controls.virtualGrid->SetGridCursor(row, col);	//to allow dragging and selection too
+	try
+	{
+		unsigned int row, col;
+		row = ev.GetRow();
+		col = ev.GetCol();
+		//Clear any current highlights too
+		GUI_Controls.virtualGrid->ClearSelection();
+		GUI_Controls.virtualGrid->Refresh();
+		GUI_Controls.virtualGrid->SetGridCursor(row, col);	//to allow dragging and selection too
 	
-	//Move cursor to the selected cell coordinates
-	Cell_Locator.SetLocation(row, col);
-	ev.Skip();
+		//Move cursor to the selected cell coordinates
+		Cell_Locator.SetLocation(row, col);
+		ev.Skip();
+	}
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
 //Show tooltip "Which button" underneath, when mouse hovering over grid cells
 void OnMouseMoveOverGrid(wxMouseEvent &ev)
 {
-	wxPoint mousePos, cellPos;
-
-	mousePos = GUI_Controls.virtualGrid->CalcUnscrolledPosition(ev.GetPosition());
-	cellPos.y = GUI_Controls.virtualGrid->YToRow(mousePos.y);	//row
-	cellPos.x = GUI_Controls.virtualGrid->XToCol(mousePos.x);	//column
-
-	if (cellPos.x == wxNOT_FOUND || cellPos.y == wxNOT_FOUND)
+	try
 	{
-		ev.Skip();
-		return;
-	}
+		wxPoint mousePos, cellPos;
 
-	wxString cellValue = GUI_Controls.virtualGrid->GetCellValue(cellPos.y, cellPos.x);
-	if (cellPos.x == 0)
-		cellValue = "Delay: Repeat this Action for " + cellValue + " frames.";
-	GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(cellValue);
-	ev.Skip();
+		mousePos = GUI_Controls.virtualGrid->CalcUnscrolledPosition(ev.GetPosition());
+		cellPos.y = GUI_Controls.virtualGrid->YToRow(mousePos.y);	//row
+		cellPos.x = GUI_Controls.virtualGrid->XToCol(mousePos.x);	//column
+
+		if (cellPos.x == wxNOT_FOUND || cellPos.y == wxNOT_FOUND)
+		{
+			ev.Skip();
+			return;
+		}
+
+		wxString cellValue = GUI_Controls.virtualGrid->GetCellValue(cellPos.y, cellPos.x);
+		if (cellPos.x == 0)
+			cellValue = "Delay: Repeat this Action for " + cellValue + " frames.";
+		GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(cellValue);
+		ev.Skip();
+	}
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
 }

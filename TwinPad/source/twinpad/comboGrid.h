@@ -170,6 +170,16 @@ public:
 
 		CCellValue *val = (CCellValue *) grid.GetTable()->GetValueAsCustom(row, col, wxGRID_VALUE_STRING);
 
+		//erase current button
+		if (val->buttonValue == -1)
+		{
+			//dc.Clear() will clear all subsequent buttons! Is it Reference Incremented? I don't know.
+			//Dc.FloodFill() works ok. Grid needs to be updated and refreshed from caller not here to avoid
+			//continous flicker to other buttons. wxWidgets has bizarre behavior!
+			dc.FloodFill(wxPoint(rect.x, rect.y), grid.GetDefaultCellBackgroundColour());
+			return;
+		}
+
 		//holds image data
 		void *data = 0;
 		size_t length;
@@ -206,6 +216,10 @@ public:
 			++curCol;
 			setCurrentBGColor(wxColor(20, 190, 40));	//Green
 			grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
+			grid->Update();
+			grid->Refresh();
+			grid->SetFocus();
+			grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
 		}
 		else
 			MoveToNextAction();
@@ -217,6 +231,10 @@ public:
 		curCol = 1;
 		setCurrentBGColor(wxColor(20, 190, 40));		//Green
 		grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
+		grid->Update();
+		grid->Refresh();
+		grid->SetFocus();
+		grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
 	}
 
 	void SetLocation(int iRow, int iCol) 
@@ -229,6 +247,10 @@ public:
 		setCurrentBGColor(wxColor(20,190,40));	//Green
 		//make cuurent cell visible, if it was the first button column, show Delay column too
 		grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
+		grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
+		grid->Update();
+		grid->Refresh();
+		grid->SetFocus();
 	}
 
 	void GetLocation(wxGridCellCoords &coords)

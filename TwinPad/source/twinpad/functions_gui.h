@@ -151,8 +151,10 @@ void GetImageData(void* &iData, unsigned int *length, const unsigned int index);
 ////Action Events
 void OnClickNewAction(wxCommandEvent &ev);
 void OnClickDeleteLastAction(wxCommandEvent &ev);
+void OnClickInsertInbetweenAction(wxCommandEvent &ev);
 void OnClickInsertAction(wxCommandEvent &ev);
 void OnClickDeleteSelectedActions(wxCommandEvent &ev);
+void OnClickDeleteButton(wxCommandEvent &ev);
 /////Combo Events
 void OnClickNewCombo(wxCommandEvent &ev);
 void OnClickDeleteCombo(wxCommandEvent &ev);
