@@ -33,47 +33,7 @@ public:
 
 	void AddButton(const unsigned int button)
 	{
-		//verify button does not conflict with other buttons in current action
-		//e.g UP and DOWN at the same time. So, 6 if-clauses get rid of 6 unneeded
-		//columns in grid from 24 to 18, unlike before.
-		if ((button == UP && Has(DOWN)) || (button == DOWN && Has(UP)))
-		{
-			wxMessageBox("Can't have both UP and DOWN in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
-		if ((button == RIGHT && Has(LEFT)) || (button == LEFT && Has(RIGHT)))
-		{
-			wxMessageBox("Can't have both LEFT and RIGHT in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
-		if ((button == LANALOG_UP && Has(LANALOG_DOWN)) || (button == LANALOG_DOWN && Has(LANALOG_UP)))
-		{
-			wxMessageBox("Can't have both Left Analog's UP and DOWN in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
-		if ((button == LANALOG_LEFT && Has(LANALOG_RIGHT)) || (button == LANALOG_RIGHT && Has(LANALOG_LEFT)))
-		{
-			wxMessageBox("Can't have both Left Analog's LEFT and RIGHT in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
-		if ((button == RANALOG_UP && Has(RANALOG_DOWN)) || (button == RANALOG_DOWN && Has(RANALOG_UP)))
-		{
-			wxMessageBox("Can't have both Right Analog's UP and DOWN in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
-		if ((button == RANALOG_LEFT && Has(RANALOG_RIGHT)) || (button == RANALOG_RIGHT && Has(RANALOG_LEFT)))
-		{
-			wxMessageBox("Can't have both Right Analog's LEFT and RIGHT in the same Action.",
-				"Not Allowed!", wxICON_INFORMATION);
-			return;
-		}
 	
-		//All is good, then we add the button
 		//m_buttons.push_back(button);
 
 	//	/*
@@ -93,12 +53,7 @@ private:
 	bool m_marked4Deletion;
 
 private:
-	bool Has(const unsigned int button)
-	{
-		for(int i = 1; i < 19; ++i)
-			if(m_buttons[i] == button)
-				return true;
-	}
+	
 };
 
 class CCombo
@@ -203,6 +158,7 @@ void OnClickNewCombo(wxCommandEvent &ev);
 void OnClickDeleteCombo(wxCommandEvent &ev);
 void OnClickRenameCombo(wxCommandEvent &ev);
 /////Combo Key
+bool Has(const unsigned int button, int row);
 void OnClickComboKey(wxMouseEvent &ev);
 /////psButtons
 void OnClick_psComboButtons(int winID);

@@ -928,36 +928,99 @@ void OnClickComboKey(wxMouseEvent &ev)
 	}
 }
 
+bool Has(const unsigned int button, int row)
+{
+	int buttonValue;
+	for (int i = 1; i < 19; ++i)
+	{
+		// buttonValue = GUI_Controls.virtualGrid->GetCellValue(row, i);
+		buttonValue = ((CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, i, "Cell Value"))->buttonValue;
+			if (buttonValue == button)
+				return true;
+	}
+	return false;
+}
+
 //Called from the click event function (that handles both keyboard and combo button clicks) to handle combo buttons 
 void OnClick_psComboButtons(int winID)
 {
+	//winID is between 1024 and 1047 inclusive
 	try
 	{
-		if (winID >= 1024 && winID <= 1047)	//Combo tab
+		//Implement adding psComboButtons into the grid
+		//wxMessageBox(PS_LABEL[winID - 1024].name + " was clicked!");
+
+		int button = winID - 1024;
+		wxGridCellCoords coords;
+		Cell_Locator.GetLocation(coords);
+		int curRow = coords.GetRow();
+
+		//verify button does not conflict with other buttons in current action
+		//e.g UP and DOWN at the same time. So, 6 if-clauses get rid of 6 unneeded
+		//columns in grid from 24 to 18, unlike before.
+		if ((button == UP && Has(DOWN, curRow)) || (button == DOWN && Has(UP, curRow)))
 		{
-			//Implement adding psComboButtons into the grid
-			//wxMessageBox(PS_LABEL[winID - 1024].name + " was clicked!");
-
-			
-			CCellValue val;
-			val.resourceFile = PS_LABEL[winID - 1024].name;
-			val.buttonValue = winID - 1024;
-
-			wxGridCellCoords coords;
-			Cell_Locator.GetLocation(coords);
-			GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
-			GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
-			GUI_Controls.virtualGrid->Update();
-			GUI_Controls.virtualGrid->Refresh();
-
-			if (coords.GetCol() <= 16)
-				Cell_Locator.MoveToNextButton();
-			else
-				Cell_Locator.MoveToNextAction();
-
-			Cell_Locator.TestAndCorrectLocation();
-			//Cell_Locator.GetLocation(coords);
+			wxMessageBox("Can't have both UP and DOWN in the same Action.",
+				"Not Allowed!", wxICON_INFORMATION);
+			return;
 		}
+		if ((button == RIGHT && Has(LEFT, curRow)) || (button == LEFT && Has(RIGHT, curRow)))
+		{
+			wxMessageBox("Can't have both LEFT and RIGHT in the same Action.",
+				"Not Allowed!", wxICON_INFORMATION);
+			return;
+		}
+		if ((button == LANALOG_UP && Has(LANALOG_DOWN, curRow)) || (button == LANALOG_DOWN && Has(LANALOG_UP, curRow)))
+		{
+			wxMessageBox("Can't have both Left Analog's UP and DOWN in the same Action.",
+				"Not Allowed!", wxICON_INFORMATION);
+			return;
+		}
+		if ((button == LANALOG_LEFT && Has(LANALOG_RIGHT, curRow)) || (button == LANALOG_RIGHT && Has(LANALOG_LEFT, curRow)))
+		{
+			wxMessageBox("Can't have both Left Analog's LEFT and RIGHT in the same Action.",
+				"Not Allowed!", wxICON_INFORMATION);
+			return;
+		}
+		if ((button == RANALOG_UP && Has(RANALOG_DOWN, curRow)) || (button == RANALOG_DOWN && Has(RANALOG_UP, curRow)))
+		{
+			wxMessageBox("Can't have both Right Analog's UP and DOWN in the same Action.",
+				"Not Allowed!", wxICON_INFORMATION);
+			return;
+		}
+		if ((button == RANALOG_LEFT && Has(RANALOG_RIGHT, curRow)) || (button == RANALOG_RIGHT && Has(RANALOG_LEFT, curRow)))
+		{
+			wxMessageBox("Can't have both Right Analog's LEFT and RIGHT in the same Action.",
+				"Not Allowed!", wxICON_INFORMATION);
+			return;
+		}
+		if (Has(button, curRow))
+		{
+			wxMessageBox("The same button already exists in this Action.", "Not Allowed!", wxICON_INFORMATION);
+			return;
+		}
+
+		CCellValue val;
+		val.resourceFile = PS_LABEL[winID - 1024].name;
+		val.buttonValue = winID - 1024;
+
+		Cell_Locator.GetLocation(coords);
+		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
+		GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
+		
+		if (coords.GetCol() <= 18)
+			Cell_Locator.MoveToNextButton();
+		else if (coords.GetRow() < GUI_Controls.virtualGrid->GetNumberRows())
+		{
+
+			Cell_Locator.MoveToNextAction();
+			Cell_Locator.TestAndCorrectLocation();
+		}
+
+		//Cell_Locator.GetLocation(coords);
+		//GUI_Controls.virtualGrid->MakeCellVisible(coords);
+		GUI_Controls.virtualGrid->Update();
+		GUI_Controls.virtualGrid->Refresh();
 	}
 	catch (exception &e)
 	{

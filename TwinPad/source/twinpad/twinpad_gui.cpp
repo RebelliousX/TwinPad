@@ -77,10 +77,6 @@ void CreateControls(wxFrame *window)
 		AddMiscTab(GUI_Controls);
 
 		//AddGamePadTab(GUI_Controls);	//TODO: Maybe..
-
-		//////////final///////////////////////////////
-		//Clean up and show the window
-		window->Show();
 	}
 	catch (exception &e)
 	{
@@ -421,15 +417,17 @@ void CPS_Anim::OnClick(wxCommandEvent &event)
 	{
 		//int winID = (int) event.GetEventUserData();
 		int winID = event.GetId();
-
+		
 		if (winID >= 1000 && winID < 1024)	//Keyboard tab
 		{
 			//Implement reading DirectInput keypress
 			GUI_Controls.txtCtrl[this->GetIndex()]->SetValue(this->GetName());
 			this->Play();
 		}
-		else if (winID >= 1024 && winID < 1047)	//Combo tab
+		else if (winID >= 1024 && winID <= 1047)	//Combo tab
 			OnClick_psComboButtons(winID);
+		else
+			throw "Unknown AnimationCtrl ID, #" + winID;
 	}
 	catch (exception &e)
 	{

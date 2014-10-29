@@ -192,7 +192,7 @@ public:
 class CCellLocator
 {
 public:
-	CCellLocator() : curRow(0), curCol(1) {}
+	CCellLocator() : curRow(0), curCol(1) { }
 
 	//Should be only done once, once the mainGrid is initialized
 	void SetGrid(CComboGrid *mainGrid) { grid = mainGrid; }
@@ -200,30 +200,35 @@ public:
 	void MoveToNextButton() 
 	{
 		//remove previous cell background here
-		if (curCol < 18)
+		if (curCol < (unsigned)grid->GetNumberCols() - 1)
 		{
-			setCurrentBGColor(wxColor(255,255,255));
+			setCurrentBGColor(grid->GetDefaultCellBackgroundColour());
 			++curCol;
-			setCurrentBGColor(wxColor(20, 190, 40));
+			setCurrentBGColor(wxColor(20, 190, 40));	//Green
+			grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
 		}
+		else
+			MoveToNextAction();
 	}
 	void MoveToNextAction()
 	{
-		setCurrentBGColor(wxColor(255, 255, 255));
+		setCurrentBGColor(grid->GetDefaultCellBackgroundColour());
 		++curRow;
 		curCol = 1;
-		setCurrentBGColor(wxColor(20, 190, 40));
+		setCurrentBGColor(wxColor(20, 190, 40));		//Green
+		grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
 	}
 
-	void SetLocation(int iRow, int iCol)
+	void SetLocation(int iRow, int iCol) 
 	{
 		if (iCol == 0) return;	//don't allow moving into Delay column
-
 		//remove current color before moving to another cell
-		setCurrentBGColor(wxColor(255,255,255)); //White
+		setCurrentBGColor(grid->GetDefaultCellBackgroundColour()); //Default is White, can be changed
 		curRow = iRow;
 		curCol = iCol;
 		setCurrentBGColor(wxColor(20,190,40));	//Green
+		//make cuurent cell visible, if it was the first button column, show Delay column too
+		grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
 	}
 
 	void GetLocation(wxGridCellCoords &coords)
