@@ -112,7 +112,6 @@ void CreateNullFile()
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
 			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
-	
 }
 
 void CreateNullComboFile()
@@ -144,7 +143,6 @@ void CreateNullComboFile()
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
 			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
-	
 }
 
 bool CheckAndCreateIfNecessary(const string &file, const string &header)
@@ -227,7 +225,7 @@ bool CheckAndCreateIfNecessary(const string &file, const string &header)
 	return false; //shouldn't reach here
 }
 
-void Loading_Gui()
+void Loading_TwinPad_Main_Config()
 {
 	try
 	{
@@ -286,7 +284,6 @@ void Loading_Gui()
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
 			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
-	
 }
 
 //Loading images into controls
@@ -437,6 +434,7 @@ void SetupComboTab(wxPanel *panel)
 	
 	////Creating Layout///////
 	const int MAX_COLUMNS = 19;
+	wxString strArrPadChoices[2] = { "Pad 1", "Pad 2" };
 	wxBoxSizer *parentSizer = new wxBoxSizer(wxVERTICAL);
 		wxStaticBoxSizer *topLevelSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Key Combinations (COMBOs)");
 			wxStaticBoxSizer *stcComboEditorSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "COMBO Editor");
@@ -480,7 +478,7 @@ void SetupComboTab(wxPanel *panel)
 		wxBoxSizer *midLevelSizer = new wxBoxSizer(wxHORIZONTAL);
 			wxStaticBoxSizer *comboGridSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "COMBOs Viewer");
 				//Virtual grid
-				CComboGrid *comboGrid = new CComboGrid(panel, wxID_ANY, wxPoint(1,1), wxSize(640,320));
+				CComboGrid *comboGrid = new CComboGrid(panel, wxID_ANY, wxPoint(1,1), wxSize(665,390));
 				//Complex table holds various data in a cell accessed via grid
 				CTableBase *tableBase = new CTableBase();
 				tableBase->SetAttrProvider(new CGridCellAttrProvider);
@@ -513,36 +511,56 @@ void SetupComboTab(wxPanel *panel)
 				}
 				comboGrid->SetSelectionBackground(wxColor("#990000"));	//Crimson -bloody red- :)
 				comboGridSizer->Add(comboGrid, 0, 0, 5);
-			wxStaticBoxSizer *editComboSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Action Editor");
-				GUI_Controls.btnNewAction = new wxButton(panel, wxID_ANY, "New &Action");
-				GUI_Controls.btnDeleteLastAction = new wxButton(panel, wxID_ANY, "Delete &Last Action");
-				GUI_Controls.btnInsertActions = new wxButton(panel, wxID_ANY, "Insert Actions");
-				GUI_Controls.btnInsertInbetweenAction = new wxButton(panel, wxID_ANY, "&Insert Inbetween Actions");
-				GUI_Controls.btnDeleteSelectedActions = new wxButton(panel, wxID_ANY, "Delete &Selected Actions");
-				GUI_Controls.btnDeleteButton = new wxButton(panel, wxID_ANY, "Delete Selected Button");
-				wxSize largestButtonSize = GUI_Controls.btnDeleteSelectedActions->GetSize();
-				GUI_Controls.btnNewAction->SetMinSize(largestButtonSize);
-				GUI_Controls.btnDeleteLastAction->SetMinSize(largestButtonSize);
-				GUI_Controls.btnInsertInbetweenAction->SetMinSize(largestButtonSize);
-				GUI_Controls.btnNewAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickNewAction);
-				GUI_Controls.btnDeleteLastAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteLastAction);
-				GUI_Controls.btnInsertInbetweenAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickInsertInbetweenAction);
-				GUI_Controls.btnInsertActions->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickInsertAction);
-				GUI_Controls.btnDeleteSelectedActions->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteSelectedActions);
-				GUI_Controls.btnDeleteButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteButton);
-				editComboSizer->Add(GUI_Controls.btnNewAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
-				editComboSizer->AddSpacer(5);
-				editComboSizer->Add(GUI_Controls.btnDeleteLastAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
-				editComboSizer->AddSpacer(5);
-				editComboSizer->Add(GUI_Controls.btnInsertActions, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
-				editComboSizer->AddSpacer(5);
-				editComboSizer->Add(GUI_Controls.btnInsertInbetweenAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
-				editComboSizer->AddSpacer(5);
-				editComboSizer->Add(GUI_Controls.btnDeleteSelectedActions, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
-				editComboSizer->AddSpacer(5);
-				editComboSizer->Add(GUI_Controls.btnDeleteButton, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
-		midLevelSizer->Add(comboGridSizer);
-		midLevelSizer->Add(editComboSizer, 1, wxEXPAND | wxALIGN_CENTER, 5);
+			wxBoxSizer *actionAndButtonSizer = new wxBoxSizer(wxVERTICAL);
+				wxStaticBoxSizer *editComboSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Action Editor");
+					GUI_Controls.btnNewAction = new wxButton(panel, wxID_ANY, "New &Action");
+					GUI_Controls.btnDeleteLastAction = new wxButton(panel, wxID_ANY, "Delete &Last Action");
+					GUI_Controls.btnInsertActions = new wxButton(panel, wxID_ANY, "Ins&ert Actions");
+					GUI_Controls.btnInsertInbetweenAction = new wxButton(panel, wxID_ANY, "&Insert Inbetween Actions");
+					GUI_Controls.btnDeleteSelectedActions = new wxButton(panel, wxID_ANY, "Delete &Selected Actions");
+					GUI_Controls.btnDeleteButton = new wxButton(panel, wxID_ANY, "Delete Selected &Button");
+					wxSize largestButtonSize = GUI_Controls.btnInsertInbetweenAction->GetSize();
+					GUI_Controls.btnNewAction->SetMinSize(largestButtonSize);
+					GUI_Controls.btnDeleteLastAction->SetMinSize(largestButtonSize);
+					GUI_Controls.btnInsertInbetweenAction->SetMinSize(largestButtonSize);
+					GUI_Controls.btnNewAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickNewAction);
+					GUI_Controls.btnDeleteLastAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteLastAction);
+					GUI_Controls.btnInsertInbetweenAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickInsertInbetweenAction);
+					GUI_Controls.btnInsertActions->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickInsertAction);
+					GUI_Controls.btnDeleteSelectedActions->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteSelectedActions);
+					GUI_Controls.btnDeleteButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteButton);
+					editComboSizer->Add(GUI_Controls.btnNewAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->AddSpacer(5);
+					editComboSizer->Add(GUI_Controls.btnDeleteLastAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->AddSpacer(5);
+					editComboSizer->Add(GUI_Controls.btnInsertActions, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->AddSpacer(5);
+					editComboSizer->Add(GUI_Controls.btnInsertInbetweenAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->AddSpacer(5);
+					editComboSizer->Add(GUI_Controls.btnDeleteSelectedActions, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->AddSpacer(5);
+					editComboSizer->Add(GUI_Controls.btnDeleteButton, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+				wxStaticBoxSizer *whichPadSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Which Pad?");
+					GUI_Controls.cmbWhichPad = new wxComboBox(panel, wxID_ANY, strArrPadChoices[0], wxDefaultPosition, 
+						wxDefaultSize, 2, strArrPadChoices, wxCB_READONLY | wxCB_SORT);
+					GUI_Controls.cmbWhichPad->SetBackgroundColour(wxColor(66, 66, 66));	//Dark Grey
+					GUI_Controls.cmbWhichPad->SetForegroundColour(wxColor("White"));
+					GUI_Controls.cmbWhichPad->SetMinSize(largestButtonSize);
+					whichPadSizer->Add(GUI_Controls.cmbWhichPad, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+				wxStaticBoxSizer *sensitivitySizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Button Sensitivity");
+					/*Min 0, Max 255. Default 255 for buttons. Max is 0 (Up/Left) or 255 (Right/Down) for analogs*/
+					GUI_Controls.spnSensitivity = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition,
+						wxDefaultSize, 16896L, 0, 255, 0);	//Initial is 0, will be changed depending on button selected
+					GUI_Controls.spnSensitivity->SetBackgroundColour(wxColor(66, 66, 66));
+					GUI_Controls.spnSensitivity->SetForegroundColour(wxColor("White"));
+					GUI_Controls.spnSensitivity->SetMinSize(largestButtonSize);
+					GUI_Controls.spnSensitivity->Bind(wxEVT_SPINCTRL, ::OnChangeSensitivity);
+					sensitivitySizer->Add(GUI_Controls.spnSensitivity, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					actionAndButtonSizer->Add(editComboSizer);
+					actionAndButtonSizer->Add(whichPadSizer);
+					actionAndButtonSizer->Add(sensitivitySizer);
+				midLevelSizer->Add(comboGridSizer);
+				midLevelSizer->Add(actionAndButtonSizer, 1, wxEXPAND | wxALIGN_CENTER, 5);
 			wxStaticBoxSizer *lowLevelSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "PS2 Buttons");
 				wxBoxSizer *lowLevelContainerSizer = new wxBoxSizer(wxHORIZONTAL);
 					wxStaticBoxSizer *stcL1L2Sizer = new wxStaticBoxSizer(wxVERTICAL, panel, "L1 && L2");
@@ -642,6 +660,12 @@ void SetupComboTab(wxPanel *panel)
 	panel->GetParent()->ClientToWindowSize(panel->GetClientSize());
 	//Done!
 
+	//finishing touches
+	GUI_Controls.spnSensitivity->SetToolTip("For buttons, Maximum value for buttons is 255, and Minimum is 0.\nDefault is Maximum.\n\n"
+		"For Both Analog sticks, Maximum is 0 for LEFT/UP, while Maximum is 255 for DOWN/RIGHT. Minimum is 128 (Not moving). "
+		"Default is Maximum whether it is 0 or 255 for Analog Sticks.");
+	GUI_Controls.spnDefaultDelay->SetToolTip("Number of frames the current Action will be repeated (executed).");
+
 	comboGrid->DisableDragColSize();			//Prevent mouse from resizing rows and columns
 	comboGrid->DisableDragRowSize();
 	
@@ -733,6 +757,8 @@ void OnClickNewAction(wxCommandEvent &ev)
 
 		//Adding new action, set cursor to the last action and first button
 		Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
+		//Modify sensitivity inside the SpinControl
+		ModifySensitivity();
 	}
 	catch (exception &e)
 	{
@@ -1007,8 +1033,10 @@ void OnClickDeleteButton(wxCommandEvent &ev)
 		CCellValue val;
 		Cell_Locator.GetLocation(coords);
 		val.buttonValue = -1;	//-1 is empty button, since 0 means L2
+		val.buttonSensitivity = -1;	//Illegal value
 		val.resourceFile = "";
 
+		GUI_Controls.spnSensitivity->SetValue(0);
 		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
 		GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
 		GUI_Controls.virtualGrid->Update();
@@ -1206,21 +1234,29 @@ void OnClick_psComboButtons(int winID)
 			return;
 		}
 		
+		//Set default sensitivity for new buttons.Regular buttons max is 255.
+		//Analogs' Max is 255 for Down/Right. And Max is 0 for UP/LEFT
+		int sensitivity;
+		if (button >= LANALOG_UP)
+		{
+			if (button == LANALOG_DOWN || button == RANALOG_DOWN || button == LANALOG_RIGHT || button == RANALOG_RIGHT)
+				sensitivity = 255; //max DOWN/RIGHT
+			else
+				sensitivity = 0; //max UP/LEFT
+		}
+		else
+			sensitivity = 255; //max for regular buttons
+		
 		CCellValue val;
 		val.resourceFile = PS_LABEL[button].name;
 		val.buttonValue = button;
+		val.buttonSensitivity = sensitivity;
 
 		Cell_Locator.GetLocation(coords);
 		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
 		GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
 		
-		if (coords.GetCol() < GUI_Controls.virtualGrid->GetNumberCols() - 1)
-			Cell_Locator.MoveToNextButton();
-		else if (coords.GetRow() < GUI_Controls.virtualGrid->GetNumberRows())
-		{
-			Cell_Locator.MoveToNextAction();
-			Cell_Locator.TestAndCorrectLocation();
-		}
+		Cell_Locator.MoveToNextButton();
 	}
 	catch (exception &e)
 	{
@@ -1246,6 +1282,9 @@ void OnClickComboGrid(wxGridEvent &ev)
 		GUI_Controls.virtualGrid->Refresh();
 		GUI_Controls.virtualGrid->SetGridCursor(row, col);	//to allow dragging and selection too
 	
+		//Modify sensitivity inside the SpinControl
+		CCellValue *val = (CCellValue *) GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+		GUI_Controls.spnSensitivity->SetValue(val->buttonSensitivity);
 		//Move cursor to the selected cell coordinates
 		Cell_Locator.SetLocation(row, col);
 		ev.Skip();
@@ -1278,10 +1317,15 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev)
 			return;
 		}
 
-		wxString cellValue = GUI_Controls.virtualGrid->GetCellValue(cellPos.y, cellPos.x);
+		CCellValue *val;
+		val = (CCellValue *) GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(cellPos.y, cellPos.x, "");
+
+		wxString buttonInfo = val->resourceFile;
 		if (cellPos.x == 0)
-			cellValue = "Delay: Repeat this Action for " + cellValue + " frames.";
-		GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(cellValue);
+			buttonInfo = "Delay: Repeat this Action for " + buttonInfo + " frames.";
+		else if (val->buttonSensitivity >= 0 && val->buttonSensitivity <= 255)
+			buttonInfo += wxString::Format("\nSensitivity: %d", val->buttonSensitivity);
+		GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(buttonInfo);
 		ev.Skip();
 	}
 	catch (exception &ex)
@@ -1293,4 +1337,44 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev)
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
 			" in file: ", __FUNCTION__, __LINE__, __FILE__));
 	}
+}
+
+//Modify sensitivity for buttons when we change the value
+void OnChangeSensitivity(wxSpinEvent &ev)
+{
+	try
+	{
+		CCellValue *val;
+		wxGridCellCoords coords;
+		int row, col;
+		Cell_Locator.GetLocation(coords);
+		row = coords.GetRow();
+		col = coords.GetCol();
+
+		//get current selected button structure
+		val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+		val->buttonSensitivity = ev.GetValue();		//modify sensitivity
+		//save it back to the table (button structure)
+		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(row, col, "", val);
+	}
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+	}
+}
+
+//As it says, I thought of making a function of this since it was repeated 3-4 times in the code.
+void ModifySensitivity()
+{
+	//Modify sensitivity inside the SpinControl
+	wxGridCellCoords coords;
+	Cell_Locator.GetLocation(coords);
+	CCellValue *val;
+	val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(coords.GetRow(), coords.GetCol(), "");
+	GUI_Controls.spnSensitivity->SetValue(val->buttonSensitivity);
 }

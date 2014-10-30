@@ -137,7 +137,9 @@ public:
 	wxButton *btnDeleteSelectedActions;
 	wxButton *btnDeleteButton;
 	wxSpinCtrl *spnDefaultDelay;
+	wxSpinCtrl *spnSensitivity;
 	wxComboBox *cmbComboName;
+	wxComboBox *cmbWhichPad;
 	wxTextCtrl *txtComboKey;
 	
 	/////////TAB 4: EXTRA///////////////////////////////////////////////

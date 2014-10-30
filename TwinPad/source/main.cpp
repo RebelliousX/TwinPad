@@ -34,7 +34,7 @@ bool MyApp::OnInit()
 	CreateControls(myFrame);
 	
 	myFrame->SetSize(myFrame->GetMinSize());
-	myFrame->SetPosition(wxPoint(200, 50));
+	myFrame->SetPosition(wxPoint(200, 20));
 	myFrame->Show();
 
 	return true;

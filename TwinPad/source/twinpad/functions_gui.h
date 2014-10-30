@@ -139,7 +139,7 @@ public:
 bool CheckAndCreateIfNecessary(const std::string &file, const std::string &header);
 void CreateNullFile();
 void CreateNullComboFile();
-void Loading_Gui();
+void Loading_TwinPad_Main_Config();
 
 //Forward declaration is necessary, to avoid problems
 class CPS_Anim;
@@ -167,6 +167,10 @@ void OnClick_psComboButtons(int winID);
 /////Grid Events
 void OnClickComboGrid(wxGridEvent &ev);
 void OnMouseMoveOverGrid(wxMouseEvent &ev);
+////SpinCtrl Events
+void OnChangeSensitivity(wxSpinEvent &ev);
 /////Mouse Events
 void OnClickMouseHelpButton(wxMouseEvent &ev);
 void OnClickMouseNullifiesAll(wxMouseEvent &ev);
+////Modify sensitivity inside spin control
+void ModifySensitivity();

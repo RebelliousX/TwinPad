@@ -65,7 +65,7 @@ void CreateControls(wxFrame *window)
 		file2 = LOCATION + TWIN_PAD_COMBOS;
 		CheckAndCreateIfNecessary(file2.ToStdString(), HEADER_TWINPAD_COMBO.ToStdString());
 
-		Loading_Gui();
+		Loading_TwinPad_Main_Config();
 		//////////////////////////
 
 		GUI_Controls.noteBook = new wxNotebook(window, ID_NOTEBOOK, wxPoint(-1, -1), wxSize(-1, -1));

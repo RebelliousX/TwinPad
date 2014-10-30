@@ -19,6 +19,7 @@ class CCellValue
 public:
 	wxString resourceFile;
 	int buttonValue;
+	int buttonSensitivity;
 };
 
 class CGridCellAttrProvider : public wxGridCellAttrProvider
@@ -47,6 +48,7 @@ public:
 	virtual void  SetValueAsCustom( int row, int col, const wxString& typeName, void* value )
 	{
 		customCellValue[row][col].buttonValue  = ((CCellValue *) value)->buttonValue;
+		customCellValue[row][col].buttonSensitivity = ((CCellValue *)value)->buttonSensitivity;
 		customCellValue[row][col].resourceFile = ((CCellValue *) value)->resourceFile;
 	}
 	virtual void* GetValueAsCustom( int row, int col, const wxString &typeName) { return &customCellValue[row][col]; }
@@ -126,6 +128,7 @@ public:
 	{
 		CCellValue dummyValue;
 		dummyValue.buttonValue = -1;	//-1 is not valid PS2 button unlike 0. (0 is L2)
+		dummyValue.buttonSensitivity = -1;
 		dummyValue.resourceFile = wxEmptyString;
 
 		//Can't resize from 0 to 0, also row & col can't be negative :p
@@ -135,6 +138,7 @@ public:
 			col = 1;
 			//Special case, handle Delay value in first column (#0)
 			dummyValue.buttonValue = -1;
+			dummyValue.buttonSensitivity = -1;
 			dummyValue.resourceFile = "1";	//Default Delay value for elements in column # 0.
 		}
 
@@ -207,7 +211,7 @@ public:
 	//Should be only done once, once the mainGrid is initialized
 	void SetGrid(CComboGrid *mainGrid) { grid = mainGrid; }
 	
-	void MoveToNextButton() 
+	void MoveToNextButton()
 	{
 		//remove previous cell background here
 		if (curCol < (unsigned)grid->GetNumberCols() - 1)
@@ -220,9 +224,21 @@ public:
 			grid->Refresh();
 			grid->SetFocus();
 			grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
+			ModifySensitivity();
+		}
+		else if (curRow < (unsigned)grid->GetNumberRows() - 1)
+		{
+			MoveToNextAction();
 		}
 		else
-			MoveToNextAction();
+		{
+			grid->Update();
+			grid->Refresh();
+			grid->SetFocus();
+			grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
+			ModifySensitivity();
+		}
+			
 	}
 	void MoveToNextAction()
 	{
@@ -235,6 +251,7 @@ public:
 		grid->Refresh();
 		grid->SetFocus();
 		grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
+		ModifySensitivity();
 	}
 
 	void SetLocation(int iRow, int iCol) 
@@ -251,6 +268,7 @@ public:
 		grid->Update();
 		grid->Refresh();
 		grid->SetFocus();
+		ModifySensitivity();
 	}
 
 	void GetLocation(wxGridCellCoords &coords)
