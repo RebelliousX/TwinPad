@@ -17,7 +17,7 @@
 class CCellValue
 {
 public:
-	wxString resourceFile;
+	wxString buttonName;
 	int buttonValue;
 	int buttonSensitivity;
 };
@@ -41,15 +41,15 @@ public:
 	virtual bool IsEmptyCell(int row, int col) { return GetValue(row, col).empty(); }
 	//These two functions I have to override since they are pure virtuals. I don't need them for TwinPad.
 	virtual void SetValue(int row, int col, const wxString &val) 
-		{ customCellValue[row][col].resourceFile = val; /*Should Not be called from outside*/ }
+		{ customCellValue[row][col].buttonName = val; /*Should Not be called from outside*/ }
 	virtual wxString GetValue(int row, int col) 
-		{ return customCellValue[row][col].resourceFile; /*Should Not be called from outside*/ }
+		{ return customCellValue[row][col].buttonName; /*Should Not be called from outside*/ }
 	
 	virtual void  SetValueAsCustom( int row, int col, const wxString& typeName, void* value )
 	{
 		customCellValue[row][col].buttonValue  = ((CCellValue *) value)->buttonValue;
 		customCellValue[row][col].buttonSensitivity = ((CCellValue *)value)->buttonSensitivity;
-		customCellValue[row][col].resourceFile = ((CCellValue *) value)->resourceFile;
+		customCellValue[row][col].buttonName = ((CCellValue *) value)->buttonName;
 	}
 	virtual void* GetValueAsCustom( int row, int col, const wxString &typeName) { return &customCellValue[row][col]; }
 	
@@ -129,7 +129,7 @@ public:
 		CCellValue dummyValue;
 		dummyValue.buttonValue = -1;	//-1 is not valid PS2 button unlike 0. (0 is L2)
 		dummyValue.buttonSensitivity = -1;
-		dummyValue.resourceFile = wxEmptyString;
+		dummyValue.buttonName = wxEmptyString;
 
 		//Can't resize from 0 to 0, also row & col can't be negative :p
 		if (row <= 0) row = 1;
@@ -139,7 +139,7 @@ public:
 			//Special case, handle Delay value in first column (#0)
 			dummyValue.buttonValue = -1;
 			dummyValue.buttonSensitivity = -1;
-			dummyValue.resourceFile = "1";	//Default Delay value for elements in column # 0.
+			dummyValue.buttonName = "1";	//Default Delay value for elements in column # 0.
 		}
 
 		//resize custemCellValue matrix and initialize with dummy value

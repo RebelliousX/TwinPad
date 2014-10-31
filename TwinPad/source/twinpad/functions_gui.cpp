@@ -1042,7 +1042,7 @@ void OnClickDeleteButton(wxCommandEvent &ev)
 		Cell_Locator.GetLocation(coords);
 		val.buttonValue = -1;	//-1 is empty button, since 0 means L2
 		val.buttonSensitivity = -1;	//Illegal value
-		val.resourceFile = "";
+		val.buttonName = "";
 
 		GUI_Controls.spnSensitivity->SetValue(0);
 		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
@@ -1075,7 +1075,9 @@ void OnClickNewCombo(wxCommandEvent &ev)
 			return;
 
 		//Save Current Combo (if not already saved)
-		
+		//when saving, Check to see if the combo exist, if it does, use the same combo otherwise add a new one
+		//Or we could check if the combo changed and save only if it did (useful when cycling through the ComboBox's names)
+
 		//Clear grid - delete combo
 		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
 
@@ -1258,7 +1260,7 @@ void OnClick_psComboButtons(int winID)
 			sensitivity = 255; //max for regular buttons
 		
 		CCellValue val;
-		val.resourceFile = PS_LABEL[button].name;
+		val.buttonName = PS_LABEL[button].name;
 		val.buttonValue = button;
 		val.buttonSensitivity = sensitivity;
 
@@ -1330,7 +1332,7 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev)
 		CCellValue *val;
 		val = (CCellValue *) GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(cellPos.y, cellPos.x, "");
 
-		wxString buttonInfo = val->resourceFile;
+		wxString buttonInfo = val->buttonName;
 		if (cellPos.x == 0)
 			buttonInfo = "Delay: Repeat this Action for " + buttonInfo + " frames.";
 		else if (val->buttonSensitivity >= 0 && val->buttonSensitivity <= 255)
@@ -1365,7 +1367,7 @@ void OnChangeSensitivity(wxSpinEvent &ev)
 		val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
 
 		//avoid changing sensitivity to empty cells
-		if (val->resourceFile == "")
+		if (val->buttonName == "")
 			return;
 
 		val->buttonSensitivity = ev.GetValue();		//modify sensitivity

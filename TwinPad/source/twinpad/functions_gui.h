@@ -11,56 +11,45 @@
 
 #include "wx/grid.h"
 
+//Forward declaraton is important, I can't include 'comboGrid.h' cyclic dependency
+class CCellValue;
+
 class CAction
 {
 public:
-	CAction() : m_marked4Deletion(false)
-	{ }
+	CAction() { }
 
-	int GetSize(const CAction &act) { return (int) m_buttons.size(); }
-	
-	void SetToDelete() { m_marked4Deletion = true; }
-	bool GetToDelete() const { return m_marked4Deletion; }
-
-	void InitAction(CAction &act, int defaultDelay)
-	{
-		for(int i = 0; i < GetSize(act); ++i)
-			if (i == 0) 
-				m_buttons[0] = defaultDelay;
-			else 
-				m_buttons[i] = -1;	//-1 is sentinel value, 0 == L2 for PS2 pad.
-	}
-
-	void AddButton(const unsigned int button)
-	{
-	
-		//m_buttons.push_back(button);
-
-	//	/*
-	//	//All is good, then we add the button. Note that we can't use push_back since an action 
-	//	//can contain empty buttons "-1" as their value (to match grid), so verify where to add it
-	//	for(int i = 1; i < 19; ++i)
-	//		if(m_buttons[i] == -1)
-	//		{
-	//			m_buttons[i] = button;	//add at the first empty location and return
-	//			return;
-	//		}
-	//		*/
-	}
+	//Get the number of Buttons in the current Action
+	int GetSize(const CAction &act) { return (int)m_buttons.size(); }
+	//Set Delay for current Action
+	void SetDelay(int delay) { m_delay = delay; }
+	//Returns the Delay value of current Action
+	int  GetDelay() { return m_delay; }
+	//Add a Button to the current Action
+	void AddButton(CCellValue *button) { m_buttons.push_back(button); }
+	//Returns a Button at the specified index
+	CCellValue * GetButton(int index) { return m_buttons[index]; }
+	//Returns the number of Buttons in the current Action
+	int GetNumberOfButtons() { return m_buttons.size(); }
+	//Delete all buttons in the Current Action
+	void DeleteAllButtons() { m_buttons.clear(); m_delay = 0; }
 
 private:
-	std::vector<int> m_buttons; //vector for integers or buttons (upto 19 elements)
-	bool m_marked4Deletion;
-
-private:
-	
+	unsigned int m_delay;						//Delay value of the Action
+	std::vector<CCellValue *> m_buttons;		//vector for buttons (up to 18 elements)
 };
 
 class CCombo
 {
 public:
 	//new combo consists of 1 action which has 1 delay value and 0 buttons
-	CCombo(int numActions, int defaultDelay) { AddAction(defaultDelay); }
+	CCombo(int numActions, int defaultDelay) 
+	{
+		CAction action;
+		action.SetDelay(defaultDelay);
+		for (int i = 0; i < numActions; ++i)
+			AddAction(&action);
+	}
 
 	int GetNumberActions() const { return (int) m_actions.size(); }
 	int GetKey() const { return m_key; }
@@ -68,56 +57,21 @@ public:
 	void SetName(const wxString &name) { m_comboName = name; }
 	const wxString& GetName() const { return m_comboName; }
 
-	void AddAction(int defaultDelay)	//At last action
+	//Add Action at the end
+	void AddAction(CAction *action)
 	{
 		int ix = m_actions.size();
 		m_actions.resize(ix + 1);
-		m_actions[ix].InitAction(m_actions[ix], defaultDelay);
+		m_actions[ix].SetDelay(action->GetDelay());
+		for (int i = 0; i < action->GetNumberOfButtons(); ++i)
+			m_actions[ix].AddButton(action->GetButton(i));
 	}
 	
-	void DeleteAction()					//Last action
+	//Delete last action
+	void DeleteAction()
 	{
 		int ix = m_actions.size();
 		m_actions.resize(ix - 1);
-	}
-
-	void InsertActions(int position, int numActions, int delay)	//needs extensive testing
-	{
-		if(position == m_actions.size())
-		{
-			AddAction(delay);
-			return;
-		}
-
-		CAction temp;
-		temp.InitAction(temp, delay);
-		std::vector<CAction>::iterator it;
-		it = m_actions.begin();
-
-		m_actions.insert(it + position, numActions, temp);
-	}
-
-	//receive list of actions to be deleted (selected from grid), not necessarily consecutive actions
-	void DeleteActions(std::vector<int> &listActions)	//needs extensive testing
-	{
-		//If we delete an element, the container size will change, thus remaining elements to be deleted
-		//can't be found (their positions in "m_actions" changed), thus listActions will be useless.
-		//First we have to mark actions in m_actions for deletion from listActions then delete them.
-		for(std::vector<int>::iterator it = listActions.begin(); it < listActions.end(); ++it)
-			m_actions[*it].SetToDelete();
-		
-		int remaining = listActions.size();
-
-		while(remaining)
-		{
-			for(unsigned int i = 0; i < m_actions.size(); ++i)	//unsigned to remove compiler warning
-				if((m_actions[i].GetToDelete()))
-				{
-					m_actions.erase(m_actions.begin() + i);
-					--remaining;
-					break;	//condition & size changed, exit the for loop early and start all over till nothing remains
-				}
-		}
 	}
 
 private:
