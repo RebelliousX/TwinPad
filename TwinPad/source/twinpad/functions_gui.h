@@ -11,13 +11,31 @@
 
 #include "wx/grid.h"
 
-//Forward declaraton is important, I can't include 'comboGrid.h' cyclic dependency
-class CCellValue;
+class CCellValue
+{
+public:
+	wxString buttonName;
+	int buttonValue;
+	int buttonSensitivity;
+};
 
 class CAction
 {
 public:
 	CAction() { }
+	~CAction()
+	{
+		for (std::vector<CCellValue *>::iterator it = m_buttons.begin(); it != m_buttons.end(); ++it)
+			if (*it)
+				delete *it;
+		m_buttons.clear();
+
+		//C++11 comes handy in this situation, I might use this later instead.
+		/*for (auto button : m_buttons)
+			if (button)
+				delete button;
+		m_buttons.clear();*/
+	}
 
 	//Get the number of Buttons in the current Action
 	int GetSize(const CAction &act) { return (int)m_buttons.size(); }
@@ -26,7 +44,14 @@ public:
 	//Returns the Delay value of current Action
 	int  GetDelay() { return m_delay; }
 	//Add a Button to the current Action
-	void AddButton(CCellValue *button) { m_buttons.push_back(button); }
+	void AddButton(CCellValue *button) 
+	{
+		CCellValue *tempButton = new CCellValue;
+		tempButton->buttonName = button->buttonName;
+		tempButton->buttonSensitivity = button->buttonSensitivity;
+		tempButton->buttonValue = button->buttonValue;
+		m_buttons.push_back(tempButton);
+	}
 	//Returns a Button at the specified index
 	CCellValue * GetButton(int index) { return m_buttons[index]; }
 	//Returns the number of Buttons in the current Action
@@ -45,10 +70,21 @@ public:
 	//new combo consists of 1 action which has 1 delay value and 0 buttons
 	CCombo(int numActions, int defaultDelay) 
 	{
-		CAction action;
-		action.SetDelay(defaultDelay);
+		CAction *action = new CAction;
+		action->SetDelay(defaultDelay);
 		for (int i = 0; i < numActions; ++i)
-			AddAction(&action);
+			AddAction(action);
+	}
+	~CCombo()
+	{
+		for (std::vector<CAction *>::iterator it = m_actions.begin(); it != m_actions.end(); ++it)
+			delete *it;
+		m_actions.clear();
+
+		//C++11 comes handy in this situation, I might use this later instead.
+		/*for (auto action : m_actions)
+			delete action;
+		m_actions.clear();*/
 	}
 
 	int GetNumberActions() const { return (int) m_actions.size(); }
@@ -60,11 +96,11 @@ public:
 	//Add Action at the end
 	void AddAction(CAction *action)
 	{
-		int ix = m_actions.size();
-		m_actions.resize(ix + 1);
-		m_actions[ix].SetDelay(action->GetDelay());
+		CAction *tempAction = new CAction();
+		tempAction->SetDelay(action->GetDelay());
 		for (int i = 0; i < action->GetNumberOfButtons(); ++i)
-			m_actions[ix].AddButton(action->GetButton(i));
+			tempAction->AddButton(action->GetButton(i));
+		m_actions.push_back(tempAction);
 	}
 	
 	//Delete last action
@@ -75,7 +111,7 @@ public:
 	}
 
 private:
-	std::vector<CAction> m_actions;		//vector for Actions
+	std::vector<CAction *> m_actions;	//vector of pointers to Actions
 	int m_key;							//will hold assigned key for current combo
 	wxString m_comboName;				//current combo name
 };

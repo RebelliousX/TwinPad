@@ -18,8 +18,6 @@
 
 #include "wx/mstream.h"		//for wxMemoryInputStream
 
-#include "functions_gui.h"
-#include "comboGrid.h"
 #include "labels.h"
 
 #include "resources.h"		//All GIFs and resources for TwinPad stored in arrays
@@ -750,7 +748,7 @@ void OnClickNewAction(wxCommandEvent &ev)
 {
 	try
 	{
-		if (GUI_Controls.Combo.size() == 0)
+		if (GUI_Controls.Combos.size() == 0)
 		{
 			wxMessageBox("You need to create a Combo first before you can add Actions.",
 				"COMBO's list is empty!", wxICON_INFORMATION);
@@ -783,7 +781,7 @@ void OnClickDeleteLastAction(wxCommandEvent &ev)
 {
 	try
 	{
-		if (GUI_Controls.Combo.size() > 0)
+		if (GUI_Controls.Combos.size() > 0)
 		{
 			if (GUI_Controls.virtualGrid->GetNumberRows() == 1)
 			{
@@ -1079,7 +1077,9 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		//Or we could check if the combo changed and save only if it did (useful when cycling through the ComboBox's names)
 
 		//Clear grid - delete combo
-		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
+		//If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
+		if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
+			GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
 
 		//Add name for combo box
 		GUI_Controls.cmbComboName->Append(strResponse);
@@ -1088,9 +1088,9 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->FindString(strResponse, true));
 
 		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-		CCombo newCombo(1, GUI_Controls.spnDefaultDelay->GetValue());
-		newCombo.SetName(strResponse);
-		GUI_Controls.Combo.push_back(newCombo);
+		CCombo *newCombo = new CCombo(1, GUI_Controls.spnDefaultDelay->GetValue());
+		newCombo->SetName(strResponse);
+		GUI_Controls.Combos.push_back(newCombo);
 		//Add first row for the new combo (minimum requirement for a combo is 1 action)
 		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 		
@@ -1129,9 +1129,9 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 			GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->GetCount() - 1);
 
 		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-		for (unsigned int i = 0; i < GUI_Controls.Combo.size(); ++i)
-			if (GUI_Controls.Combo[i].GetName() == strTemp)
-				GUI_Controls.Combo.erase(GUI_Controls.Combo.begin() + i);
+		for (unsigned int i = 0; i < GUI_Controls.Combos.size(); ++i)
+			if (GUI_Controls.Combos[i]->GetName() == strTemp)
+				GUI_Controls.Combos.erase(GUI_Controls.Combos.begin() + i);
 		//still some stuff to do...
 	}
 	catch (exception &e)

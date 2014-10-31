@@ -14,14 +14,6 @@
 
 #include "resources.h"
 
-class CCellValue
-{
-public:
-	wxString buttonName;
-	int buttonValue;
-	int buttonSensitivity;
-};
-
 class CGridCellAttrProvider : public wxGridCellAttrProvider
 {
 public:
@@ -39,7 +31,7 @@ public:
 	virtual int GetNumberRows() { return rows; }
 	virtual int GetNumberCols() { return cols; }
 	virtual bool IsEmptyCell(int row, int col) { return GetValue(row, col).empty(); }
-	//These two functions I have to override since they are pure virtuals. I don't need them for TwinPad.
+	//These two functions I have to override since they are pure virtuals.
 	virtual void SetValue(int row, int col, const wxString &val) 
 		{ customCellValue[row][col].buttonName = val; /*Should Not be called from outside*/ }
 	virtual wxString GetValue(int row, int col) 

@@ -16,6 +16,11 @@
 
 #include <vector>
 
+///-----Don't change the Include's order for these two 
+#include "functions_gui.h"
+#include "comboGrid.h"
+///-------------------------
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //Don't define any IDs within these ranges...
 //ID_BTN { 1000 to 1023 }, ID_BTN2 { 1024 to 1047 }, ID_TXT { 2000 to 2023 }, ID_LBL { 3000 to 3007 }
@@ -85,17 +90,28 @@ private:
 	wxString name;
 };
 
-//Important forward declarations, to avoid cyclic dependency
-class CCombo;
-class CComboGrid;
-class CTableBase;
-
 //define controls
 const int intMOUSE_BUTTONS = 10, intPS_BUTTONS = 24, intANALOG_DIRECTIONS = 8;
 
 class CTwinPad_Gui
 {
 public:
+	~CTwinPad_Gui()
+	{
+		//When TwinPad exits, clean all dynamic memory to avoid memory leaks.
+		//Note that CCombo destructor will call CAction's destructor, which in turn will delete all buttons.
+		for (std::vector<CCombo *>::iterator it = Combos.begin(); it != Combos.end(); ++it)
+			if (*it)
+				delete *it;
+		Combos.clear();
+
+		//C++11 comes handy in this situation, I might use this later instead.
+		/*for (auto oneCombo : Combo)
+			if (oneCombo)
+				delete oneCombo;
+		Combo.clear();*/
+	}
+
 	wxFrame *mainFrame;
 	wxNotebook *noteBook;
 	/////////TAB 1: Keyboard//////////////////////////////////////////////
@@ -125,7 +141,7 @@ public:
 	/////////TAB 3: COMBOs//////////////////////////////////////////////
 	CComboGrid *virtualGrid;
 	CTableBase *tableBaseGrid;
-	std::vector<CCombo> Combo;
+	std::vector<CCombo *> Combos;
 	CPS_Anim *psComboButtons[24];
 	wxButton *btnNewCombo;
 	wxButton *btnDeleteCombo;

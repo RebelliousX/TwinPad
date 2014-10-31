@@ -1,7 +1,7 @@
 #include <exception>
 
 #include "twinpad_gui.h"
-#include "functions_gui.h"
+//#include "functions_gui.h"
 #include "labels.h"
 
 using namespace std;	//for exceptions
