@@ -4,6 +4,8 @@
 #include <vector>
 #include <exception>
 
+#include "twinpad_gui.h"
+
 #ifndef WX_PRECOM
 	#include "wx/wx.h"
 #else
@@ -16,7 +18,6 @@
 
 #include "wx/mstream.h"		//for wxMemoryInputStream
 
-#include "twinpad_gui.h"
 #include "functions_gui.h"
 #include "comboGrid.h"
 #include "labels.h"
@@ -110,7 +111,7 @@ void CreateNullFile()
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -141,7 +142,7 @@ void CreateNullComboFile()
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -220,7 +221,7 @@ bool CheckAndCreateIfNecessary(const string &file, const string &header)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 	return false; //shouldn't reach here
 }
@@ -282,7 +283,7 @@ void Loading_TwinPad_Main_Config()
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -312,7 +313,7 @@ void LoadResources(CPS_Anim *animCtrl, int index)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -661,10 +662,17 @@ void SetupComboTab(wxPanel *panel)
 	//Done!
 
 	//finishing touches
-	GUI_Controls.spnSensitivity->SetToolTip("For buttons, Maximum value for buttons is 255, and Minimum is 0.\nDefault is Maximum.\n\n"
-		"For Both Analog sticks, Maximum is 0 for LEFT/UP, while Maximum is 255 for DOWN/RIGHT. Minimum is 128 (Not moving). "
-		"Default is Maximum whether it is 0 or 255 for Analog Sticks.");
-	GUI_Controls.spnDefaultDelay->SetToolTip("Number of frames the current Action will be repeated (executed).");
+	wxToolTip *ttpSpnSensitivity = new wxToolTip("For Buttons: Maximum value for buttons is 255, and Minimum is 0.\nDefault is Maximum.\n\n"
+		"For both Analog Sticks: Maximum is 0 for LEFT/UP, while Maximum is 255 for DOWN/RIGHT. Minimum is 128 (stick is released or not moving). "
+		"Default is Maximum whether it is 0 or 255 for Analog Sticks.\n\n"
+		"You have to select a button before you can modify its own default sensitivity.");
+	ttpSpnSensitivity->SetDelay(500);		//0.5 second
+	ttpSpnSensitivity->SetAutoPop(30000);	//30 seconds
+	wxToolTip *ttpSpnDefaultDelay = new wxToolTip("Number of frames the current Action will be repeated (executed).");
+	ttpSpnDefaultDelay->SetDelay(500);		//0.5 second
+	ttpSpnDefaultDelay->SetAutoPop(30000);	//30 seconds
+	GUI_Controls.spnSensitivity->SetToolTip(ttpSpnSensitivity);
+	GUI_Controls.spnDefaultDelay->SetToolTip(ttpSpnDefaultDelay);
 
 	comboGrid->DisableDragColSize();			//Prevent mouse from resizing rows and columns
 	comboGrid->DisableDragRowSize();
@@ -733,7 +741,7 @@ void AddRow(CComboGrid *grid, unsigned int defaultDelay, unsigned int rowPos)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -767,7 +775,7 @@ void OnClickNewAction(wxCommandEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -801,7 +809,7 @@ void OnClickDeleteLastAction(wxCommandEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -880,7 +888,7 @@ void OnClickInsertAction(wxCommandEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -953,7 +961,7 @@ void OnClickInsertInbetweenAction(wxCommandEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -1021,7 +1029,7 @@ void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -1050,7 +1058,7 @@ void OnClickDeleteButton(wxCommandEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 	return;
 }
@@ -1067,8 +1075,9 @@ void OnClickNewCombo(wxCommandEvent &ev)
 			return;
 
 		//Save Current Combo (if not already saved)
-		//Clear grid
-
+		
+		//Clear grid - delete combo
+		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
 
 		//Add name for combo box
 		GUI_Controls.cmbComboName->Append(strResponse);
@@ -1093,27 +1102,28 @@ void OnClickNewCombo(wxCommandEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
+//Clear current grid then delete combo and combo name from combo box
 void OnClickDeleteCombo(wxCommandEvent &ev)
 {
 	try
 	{
-		//Clear current grid then delete combo and combo name from combo box
-
 		//Clear grid - delete combo
+		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
 
-		//Delete name from combo box
-		if (GUI_Controls.cmbComboName->GetSelection() < 0)		//prevent deletion of none selected item
+		//prevent deletion of none selected item
+		if (GUI_Controls.cmbComboName->GetSelection() < 0)
 			return;
 
+		//Delete name from combo box
 		wxString strTemp = GUI_Controls.cmbComboName->GetValue();
 		GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
 
 		//After deletion, select the last combo by default
-		if (GUI_Controls.cmbComboName->GetCount() >= 1)
+		if (GUI_Controls.cmbComboName->GetCount() > 0)
 			GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->GetCount() - 1);
 
 		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
@@ -1129,7 +1139,7 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -1156,7 +1166,7 @@ void OnClickRenameCombo(wxCommandEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -1174,7 +1184,7 @@ void OnClickComboKey(wxMouseEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -1265,7 +1275,7 @@ void OnClick_psComboButtons(int winID)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -1296,11 +1306,11 @@ void OnClickComboGrid(wxGridEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
-//Show tooltip "Which button" underneath, when mouse hovering over grid cells
+//Show tooltip "Which button" underneath and its sensitivity value, when mouse hovering over grid cells
 void OnMouseMoveOverGrid(wxMouseEvent &ev)
 {
 	try
@@ -1335,7 +1345,7 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
@@ -1353,9 +1363,15 @@ void OnChangeSensitivity(wxSpinEvent &ev)
 
 		//get current selected button structure
 		val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+
+		//avoid changing sensitivity to empty cells
+		if (val->resourceFile == "")
+			return;
+
 		val->buttonSensitivity = ev.GetValue();		//modify sensitivity
 		//save it back to the table (button structure)
 		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(row, col, "", val);
+		Cell_Locator.SetLocation(row, col);
 	}
 	catch (exception &ex)
 	{
@@ -1364,7 +1380,7 @@ void OnChangeSensitivity(wxSpinEvent &ev)
 	catch (...)
 	{
 		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: ", __FUNCTION__, __LINE__, __FILE__));
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
 	}
 }
 
