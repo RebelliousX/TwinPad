@@ -459,8 +459,9 @@ void SetupComboTab(wxPanel *panel)
 				GUI_Controls.txtComboKey = new wxTextCtrl(panel, wxID_ANY, "NONE", wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 				GUI_Controls.txtComboKey->SetBackgroundColour(wxColor(66,66,66));
 				GUI_Controls.txtComboKey->SetForegroundColour(wxColor("White"));
-				GUI_Controls.txtComboKey->SetToolTip("Click here and Press any key to assign it to the current Combo.");
-				GUI_Controls.txtComboKey->Bind(wxEVT_LEFT_UP, ::OnClickComboKey);
+				GUI_Controls.txtComboKey->Bind(wxEVT_LEFT_UP, ::OnClickComboKey);	//Get a key
+				GUI_Controls.txtComboKey->Bind(wxEVT_RIGHT_UP, ::OnClickComboKey);	//Delete the key
+				//GUI_Controls.txtComboKey-
 				stcComboKeySizer->Add(GUI_Controls.txtComboKey);
 			wxStaticBoxSizer *stcDefaultDelaySizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Delay");	
 				GUI_Controls.spnDefaultDelay = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, 
@@ -669,8 +670,14 @@ void SetupComboTab(wxPanel *panel)
 	wxToolTip *ttpSpnDefaultDelay = new wxToolTip("Number of frames the current Action will be repeated (executed).");
 	ttpSpnDefaultDelay->SetDelay(500);		//0.5 second
 	ttpSpnDefaultDelay->SetAutoPop(30000);	//30 seconds
+	wxToolTip *ttpTxtComboKey = new wxToolTip("Left-Click: And then 'press any key' to assign it to the current Combo.\n"
+											  "Right-Click: To erase the configured Key.");
+	ttpTxtComboKey->SetDelay(500);			//0.5 second
+	ttpTxtComboKey->SetAutoPop(30000);		//30 seconds
 	GUI_Controls.spnSensitivity->SetToolTip(ttpSpnSensitivity);
 	GUI_Controls.spnDefaultDelay->SetToolTip(ttpSpnDefaultDelay);
+	GUI_Controls.txtComboKey->SetToolTip(ttpTxtComboKey);
+
 
 	comboGrid->DisableDragColSize();			//Prevent mouse from resizing rows and columns
 	comboGrid->DisableDragRowSize();
@@ -1066,16 +1073,19 @@ void OnClickNewCombo(wxCommandEvent &ev)
 {
 	try
 	{
+		static int counter = 1;
 		wxString strResponse = wxGetTextFromUser("Enter a name for the new Combo:",
-			"New COMBO name", "I am a Combo!");
+			"New COMBO name", wxString::Format("I am a Combo! #%d", counter++));
 
 		if (strResponse == wxEmptyString)
 			return;
 
-		//Save Current Combo (if not already saved)
-		//when saving, Check to see if the combo exist, if it does, use the same combo otherwise add a new one
-		//Or we could check if the combo changed and save only if it did (useful when cycling through the ComboBox's names)
-
+		//Save current Combo (before making a new one) from grid to Combos container if we have at least 1 Combo
+		//It is very important that we use the cmbComboName to get the name of current Combo. If the same Combo
+		//name found in the container, it will be overwritten with this one.
+		if(GUI_Controls.Combos.size() > 0)
+			SaveGridToCombo(GUI_Controls.cmbComboName->GetStringSelection());
+		
 		//Clear grid - delete combo
 		//If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
 		if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
@@ -1087,13 +1097,11 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		//Since this is a sorted ComboBox, position or index doesn't mean anything at all.
 		GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->FindString(strResponse, true));
 
-		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-		CCombo *newCombo = new CCombo(1, GUI_Controls.spnDefaultDelay->GetValue());
-		newCombo->SetName(strResponse);
-		GUI_Controls.Combos.push_back(newCombo);
 		//Add first row for the new combo (minimum requirement for a combo is 1 action)
 		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
-		
+		//We modified the new Combo, save it and overwrite the duplicate if there is one
+		SaveGridToCombo(strResponse);
+
 		Cell_Locator.SetLocation(0, 1);
 		//still some stuff to do..
 	}
@@ -1159,7 +1167,19 @@ void OnClickRenameCombo(wxCommandEvent &ev)
 			"New COMBO name", "I am a Combo!");
 
 		if (strResponse != wxEmptyString)
-			GUI_Controls.cmbComboName->SetString(GUI_Controls.cmbComboName->GetSelection(), strResponse);
+		{
+			wxString name = GUI_Controls.cmbComboName->GetStringSelection();
+			for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+			{
+				if ((*it)->GetName() == name)
+				{
+					(*it)->SetName(strResponse);
+					GUI_Controls.cmbComboName->SetString(GUI_Controls.cmbComboName->GetSelection(), strResponse);
+					break;
+				}
+			}
+			
+		}
 	}
 	catch (exception &e)
 	{
@@ -1177,7 +1197,13 @@ void OnClickComboKey(wxMouseEvent &ev)
 {
 	try
 	{
-		wxMessageBox("Clicked 'Combo Key'");
+		if (ev.RightUp())
+		{
+			wxMessageBox("Button is cleared!");
+			return; //to suppress context menu
+		}
+		else if (ev.LeftUp())
+			wxMessageBox("Clicked 'Combo Key'");
 	}
 	catch (exception &e)
 	{
@@ -1395,4 +1421,56 @@ void ModifySensitivity()
 	CCellValue *val;
 	val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(coords.GetRow(), coords.GetCol(), "");
 	GUI_Controls.spnSensitivity->SetValue(val->buttonSensitivity);
+}
+
+//Save the Grid to the Combos container
+void SaveGridToCombo(wxString &strUserInput)
+{
+	//Save Current Combo (if not already saved)
+	//when saving, Check to see if the combo exist, if it does, use the same combo otherwise add a new one
+	wxString strKeyValue = GUI_Controls.txtComboKey->GetValue();
+	long keyValue;
+	if (strKeyValue == "NONE")
+		keyValue = 0;
+	else
+		strKeyValue.ToLong(&keyValue);
+
+	//Check to see if we are modifying the same COMBO, if yes, erase it so we can overwrite it or start a new one
+	for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+	{
+		//If the COMBO already exists, erase it. I know the container should be list instead of vector
+		//erase operation is expensive, I might change it later
+		if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
+		{
+			GUI_Controls.Combos.erase(it);
+			//We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
+			//because ++it will be called and it will point to an empty container, so silently get out of the loop
+			break;
+		}
+	}
+
+	//Save the COMBO from the grid (before clearing the grid) into Combos container
+	//if it was erased above, it will be recreated here
+	CCombo *curCombo = new CCombo;
+	curCombo->SetKey((int)keyValue);
+	curCombo->SetName(strUserInput);
+	for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+	{
+		CCellValue *val;
+		val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
+		CAction *action = new CAction;
+		long int delay;
+		GUI_Controls.virtualGrid->GetCellValue(row, 0).ToLong(&delay);
+		action->SetDelay(delay);
+
+		for (int col = 1; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+		{
+			val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+			//if button is not empty, add it
+			if (val->buttonName != "")
+				action->AddButton(val);
+		}
+		curCombo->AddAction(action);
+	}
+	GUI_Controls.Combos.push_back(curCombo);
 }

@@ -67,6 +67,7 @@ private:
 class CCombo
 {
 public:
+	CCombo() { }
 	//new combo consists of 1 action which has 1 delay value and 0 buttons
 	CCombo(int numActions, int defaultDelay) 
 	{
@@ -75,10 +76,12 @@ public:
 		for (int i = 0; i < numActions; ++i)
 			AddAction(action);
 	}
+
 	~CCombo()
 	{
 		for (std::vector<CAction *>::iterator it = m_actions.begin(); it != m_actions.end(); ++it)
-			delete *it;
+			if (*it)
+				delete *it;
 		m_actions.clear();
 
 		//C++11 comes handy in this situation, I might use this later instead.
@@ -164,3 +167,5 @@ void OnClickMouseHelpButton(wxMouseEvent &ev);
 void OnClickMouseNullifiesAll(wxMouseEvent &ev);
 ////Modify sensitivity inside spin control
 void ModifySensitivity();
+////Save the Grid to the Combos container
+void SaveGridToCombo(wxString &strUserInput);
