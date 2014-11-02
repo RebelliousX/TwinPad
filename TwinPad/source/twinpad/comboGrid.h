@@ -34,7 +34,15 @@ class CTableBase : public wxGridTableBase
 	//--->Note: erase will destroy elements and force reallocation.
 
 public:
-	CTableBase() { rows = cols = 0; }
+	CTableBase() 
+	{ 
+		rows = cols = 0; 
+		//We use this if requesting data outside of grid, negative row, column numbers
+		EmptyCell.buttonName = "";
+		EmptyCell.buttonSensitivity = -1;
+		EmptyCell.buttonValue = -1;
+	}
+
 	virtual ~CTableBase() { }
 
 	virtual int GetNumberRows() { return rows; }
@@ -52,7 +60,15 @@ public:
 		customCellValue[row][col].buttonName = ((CCellValue *) value)->buttonName;
 	}
 	//Return a void pointer to CCellValue structure, should be casted to " (CCellValue *) "
-	virtual void* GetValueAsCustom(int row, int col, const wxString &typeName) { return &customCellValue[row][col]; }
+	virtual void* GetValueAsCustom(int row, int col, const wxString &typeName) 
+	{ 
+		//Special case, handle requests outside of grid, return an empty cell. e.g: Cell_Locator.SetLocation(-1,-1)
+		if (row < 0 && col < 0)
+			return &EmptyCell;
+
+		//Valid request, i.e: row, col >= 0
+		return &customCellValue[row][col]; 
+	}
 	
 	//Insert rows at specified position, default is 1 row at position 0
 	virtual bool InsertRows( size_t pos = 0, size_t numRows = 1 ) 
@@ -60,10 +76,8 @@ public:
 		rows += numRows;
 		wxGridTableMessage msg( this, wxGRIDTABLE_NOTIFY_ROWS_INSERTED, pos, numRows);
 		GetView()->ProcessTableMessage( msg );
-		std::vector<CCellValue> temp;
-		customCellValue.insert(customCellValue.begin() + pos, temp);
-		customCellValue[pos].resize(19);
-		ResizeCustomCellValueMatrix(rows, cols);
+		std::vector<CCellValue> dummyAction(19, EmptyCell);
+		customCellValue.insert(customCellValue.begin() + pos, dummyAction);
 		return true;
 	}
 	//Delete rows at specified position, default is 1 row at position 0
@@ -75,7 +89,6 @@ public:
 		wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_DELETED, pos, numRows);
 		GetView()->ProcessTableMessage(msg);
 		customCellValue.erase(customCellValue.begin() + pos);
-		ResizeCustomCellValueMatrix(rows, cols);
 		return true;
 	}
 	//Insert columns at the specified position, default is 1 column at position 0
@@ -132,31 +145,19 @@ protected:
 	//Allocate/Deallocate memory for the grid
 	void ResizeCustomCellValueMatrix(int row, int col)
 	{
-		CCellValue dummyValue;
-		dummyValue.buttonValue = -1;	//-1 is not valid PS2 button unlike 0. (0 is L2)
-		dummyValue.buttonSensitivity = -1;
-		dummyValue.buttonName = wxEmptyString;
-
-		//Can't resize from 0 to 0, also row & col can't be negative :p
+		//Can't resize from 0 to 0, also row & col can't be negative
 		if (row <= 0) row = 1;
-		if (col <= 0) 
-		{
-			col = 1;
-			//Special case, handle Delay value in first column (#0)
-			dummyValue.buttonValue = -1;
-			dummyValue.buttonSensitivity = -1;
-			dummyValue.buttonName = "";	//Default Delay value for elements in column # 0.
-		}
+		if (col <= 0) col = 1;
 
 		//resize custemCellValue matrix and initialize with dummy value
 		customCellValue.resize(row);
 		for(int i = 0; i < row; ++i)
-			customCellValue[i].resize(col, dummyValue);
+			customCellValue[i].resize(col, EmptyCell);
 	}
 
 protected:
 	std::vector<std::vector<CCellValue>> customCellValue;
-
+	CCellValue EmptyCell;
 private:
 	int rows, cols;
 	std::vector<wxString> colsLabels;
@@ -212,15 +213,23 @@ public:
 class CCellLocator
 {
 public:
-	CCellLocator() : curRow(0), curCol(1) { }
+	/*
+	Initialize Cell Locator: Row 0, Col 1, Enabled and Background color is Green by default
+	Note: You need to pass it a pointer to a grid first before using Cell Locator by calling
+	SetGrid(CComboGrid *grid) 
+	*/
+	CCellLocator() : curRow(0), curCol(1), enabled(true), bgColor(wxColor(20, 190, 40)) { }
 
 	//Should be only done once, once the mainGrid is initialized
 	void SetGrid(CComboGrid *mainGrid) { grid = mainGrid; }
 	
 	void MoveToNextButton()
 	{
+		/*if (!enabled)
+			return;*/
+
 		//remove previous cell background here
-		if (curCol < (unsigned)grid->GetNumberCols() - 1)
+		if (curCol < grid->GetNumberCols() - 1)
 		{
 			setCurrentBGColor(grid->GetDefaultCellBackgroundColour());
 			++curCol;
@@ -232,7 +241,7 @@ public:
 			grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
 			ModifySensitivity();
 		}
-		else if (curRow < (unsigned)grid->GetNumberRows() - 1)
+		else if (curRow < grid->GetNumberRows() - 1)
 		{
 			MoveToNextAction();
 		}
@@ -248,10 +257,13 @@ public:
 	}
 	void MoveToNextAction()
 	{
+		/*if (!enabled)
+			return;*/
+
 		setCurrentBGColor(grid->GetDefaultCellBackgroundColour());
 		++curRow;
 		curCol = 1;
-		setCurrentBGColor(wxColor(20, 190, 40));		//Green
+		setCurrentBGColor(bgColor);
 		grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
 		grid->Update();
 		grid->Refresh();
@@ -262,21 +274,26 @@ public:
 
 	void SetLocation(int iRow, int iCol) 
 	{
+		/*if (!enabled)
+			return;*/
+
 		if (iCol == 0) return;	//don't allow moving into Delay column
 		//remove current color before moving to another cell
 		setCurrentBGColor(grid->GetDefaultCellBackgroundColour()); //Default is White, can be changed
 		curRow = iRow;
 		curCol = iCol;
-		setCurrentBGColor(wxColor(20,190,40));	//Green
+		setCurrentBGColor(bgColor);
 		//make cuurent cell visible, if it was the first button column, show Delay column too
 		grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
-		grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
+		if(iRow != -1 || iCol != -1)
+			grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
 		grid->Update();
 		grid->Refresh();
 		grid->SetFocus();
 		ModifySensitivity();
 	}
 
+	//Get current location of Cell Locator on the grid
 	void GetLocation(wxGridCellCoords &coords)
 	{
 		coords.SetCol(curCol);
@@ -287,7 +304,10 @@ public:
 	   at last row */
 	void TestAndCorrectLocation()
 	{
-		if (curRow >= (unsigned) grid->GetNumberRows())
+		/*if (!enabled)
+			return;*/
+
+		if (curRow >= grid->GetNumberRows())
 		{
 			curRow = grid->GetNumberRows() - 1;
 			curCol = 1;
@@ -295,8 +315,42 @@ public:
 		}
 	}
 
+	////Is Cell Locator enabled?
+	//bool IsEnabled() { return enabled; }
+
+	////Enable or Disable Cell Locator, should be enabled/disabled wisely and preferably in the same caller function
+	//void SetEnabled(bool on = true)
+	//{
+
+	//	//Prevent consecutive calls with the same 'on' value.  It would break the logic of if-else statement below
+	//	//that is, calling SetEnabled(true) twice without calling SetEnabled(false) between the two calls would
+	//	//break the cell's background color
+	//	if (on == enabled) 
+	//		return;
+
+	//	if (on)
+	//	{
+	//		//curently disabled, will be enabled after this
+	//		setCurrentBGColor(bgColor);
+	//	}
+	//	else
+	//	{
+	//		setCurrentBGColor(grid->GetDefaultCellBackgroundColour());
+	//		//Reset position to the first valid cell on grid
+	//		curRow = 0;
+	//		curCol = 1;
+	//	}
+	//	
+	//	enabled = on;
+	//	//Whether it is enabled or not, set the current location and grid cursor
+	//	//it will fail to set location if disabled anyways
+	//	SetLocation(curRow, curCol);
+	//}
+
 private:
-	unsigned int curRow, curCol;
+	int curRow, curCol;
+	bool enabled;
+	wxColor bgColor;
 	CComboGrid *grid;
 
 	void setCurrentBGColor(wxColor color)

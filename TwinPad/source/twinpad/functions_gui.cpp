@@ -441,11 +441,11 @@ void SetupComboTab(wxPanel *panel)
 				GUI_Controls.btnDeleteCombo = new wxButton(panel, wxID_ANY, "&Delete Combo");
 				GUI_Controls.btnRenameCombo = new wxButton(panel, wxID_ANY, "&Rename Combo");
 				stcComboEditorSizer->Add(GUI_Controls.btnNewCombo);
-				stcComboEditorSizer->AddSpacer(10);
+				stcComboEditorSizer->AddSpacer(5);
 				stcComboEditorSizer->Add(GUI_Controls.btnDeleteCombo);
-				stcComboEditorSizer->AddSpacer(10);
+				stcComboEditorSizer->AddSpacer(5);
 				stcComboEditorSizer->Add(GUI_Controls.btnRenameCombo);
-				stcComboEditorSizer->AddSpacer(10);
+				//stcComboEditorSizer->AddSpacer(10);
 				GUI_Controls.btnNewCombo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickNewCombo);
 				GUI_Controls.btnDeleteCombo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteCombo);
 				GUI_Controls.btnRenameCombo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickRenameCombo);
@@ -455,17 +455,17 @@ void SetupComboTab(wxPanel *panel)
 				GUI_Controls.cmbComboName->SetBackgroundColour(wxColor(66,66,66));	//Dark Grey
 				GUI_Controls.cmbComboName->SetForegroundColour(wxColor("White"));
 				stcComboNameSizer->Add(GUI_Controls.cmbComboName, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
-			wxStaticBoxSizer *stcComboKeySizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "KEY");
+			wxStaticBoxSizer *stcComboKeySizer = new wxStaticBoxSizer(wxVERTICAL, panel, "KEY");
 				GUI_Controls.txtComboKey = new wxTextCtrl(panel, wxID_ANY, "NONE", wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 				GUI_Controls.txtComboKey->SetBackgroundColour(wxColor(66,66,66));
 				GUI_Controls.txtComboKey->SetForegroundColour(wxColor("White"));
 				GUI_Controls.txtComboKey->Bind(wxEVT_LEFT_UP, ::OnClickComboKey);	//Get a key
 				GUI_Controls.txtComboKey->Bind(wxEVT_RIGHT_UP, ::OnClickComboKey);	//Delete the key
 				//GUI_Controls.txtComboKey-
-				stcComboKeySizer->Add(GUI_Controls.txtComboKey);
+				stcComboKeySizer->Add(GUI_Controls.txtComboKey, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 			wxStaticBoxSizer *stcDefaultDelaySizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Delay");	
 				GUI_Controls.spnDefaultDelay = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, 
-								wxDefaultSize, 16896L, 1, 99999, 3); /*Min 1, Max 99999, Default 3*/
+								wxSize(65,25), 16896L, 1, 99999, 3); /*Min 1, Max 99999, Default 3*/
 				GUI_Controls.spnDefaultDelay->SetBackgroundColour(wxColor(66,66,66));
 				GUI_Controls.spnDefaultDelay->SetForegroundColour(wxColor("White"));
 				stcDefaultDelaySizer->Add(GUI_Controls.spnDefaultDelay);
@@ -861,9 +861,9 @@ void OnClickInsertAction(wxCommandEvent &ev)
 		}
 
 		if (selectedRows.size() > 1)
-			for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
+			for (int next = 1, previous = 0; next < (signed) selectedRows.size(); ++next, ++previous)
 			{
-				if (selectedRows[i + 1] - selectedRows[i] > 1)
+				if (selectedRows[next] - selectedRows[previous] > 1)
 				{
 					wxMessageBox("Actions selected have to be adjacent to one another. Otherwise, choose\n"
 						"'Insert Inbetween Actions' button.", "Not contiguous Actions!", wxICON_EXCLAMATION);
@@ -879,14 +879,24 @@ void OnClickInsertAction(wxCommandEvent &ev)
 
 			AddRow(GUI_Controls.virtualGrid,
 				GUI_Controls.spnDefaultDelay->GetValue(),
-				selectedRows[i]);
+				selectedRows[0]);
 		}
 
-		for (int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
-			GUI_Controls.virtualGrid->DeselectRow(i);
+		if (selectedRows[0] == 0)
+			Cell_Locator.SetLocation(0, 1);
+		else
+			Cell_Locator.SetLocation(selectedRows[0] - 1, 1);
+
+		////Disable cell locator momentarily until we are done adding rows
+		//Cell_Locator.Enabled(false);
+		//for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
+		//	AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), selectedRows[i]);
+		//Cell_Locator.Enabled(true);	//Enable Cell Locator after we are done adding rows
+
+		//for (int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
+		//	GUI_Controls.virtualGrid->DeselectRow(i);
 
 		//Move grid cursor to the first inserted action (whether it is one or more)
-		Cell_Locator.SetLocation(selectedRows[0], 1);
 	}
 	catch (exception &ex)
 	{
@@ -1019,6 +1029,11 @@ void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 			return;
 		}
 
+		//Save current cell location
+		wxGridCellCoords coords;
+		Cell_Locator.GetLocation(coords);
+		//Put Cell Locator out of the grid
+		Cell_Locator.SetLocation(-1, -1);
 		for (int i = selectedRows.GetCount() - 1; i >= 0; --i)
 			GUI_Controls.virtualGrid->DeleteRows(selectedRows[i], 1, true);
 
@@ -1026,8 +1041,11 @@ void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 		if (GUI_Controls.virtualGrid->GetNumberRows() == 0)
 			AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 
-		//if current location was deleted with the deleted action, relocate to a valid location (last row, 2nd column)
-		Cell_Locator.TestAndCorrectLocation();
+		//If previous location was deleted set it to the last row, 2nd column. Otherwise, keep the same location
+		//if (coords.GetRow() > GUI_Controls.virtualGrid->GetNumberRows() - 1)
+			Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
+		//else
+		//	Cell_Locator.SetLocation(coords.GetRow(), coords.GetCol());
 	}
 	catch (exception &e)
 	{
