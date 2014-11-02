@@ -688,6 +688,8 @@ void SetupComboTab(wxPanel *panel)
 	comboGrid->SetCellHighlightPenWidth(3);		//for Delay
 	comboGrid->SetCellHighlightROPenWidth(3);	//Thicker black border around selected "read only" cell
 
+	comboGrid->SetDoubleBuffered(true);
+
 	//Set label and width
 	for(int i = 1; i < comboGrid->GetNumberCols(); ++i)
 	{
@@ -1045,9 +1047,9 @@ void OnClickDeleteButton(wxCommandEvent &ev)
 		wxGridCellCoords coords;
 		CCellValue val;
 		Cell_Locator.GetLocation(coords);
-		val.buttonValue = -1;	//-1 is empty button, since 0 means L2
-		val.buttonSensitivity = -1;	//Illegal value
-		val.buttonName = "";
+		val.buttonValue = -1;			//-1 is empty button, since 0 means L2
+		val.buttonSensitivity = -1;		//Illegal value
+		val.buttonName = "";			//empty button
 
 		GUI_Controls.spnSensitivity->SetValue(0);
 		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
@@ -1089,7 +1091,13 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		//Clear grid - delete combo
 		//If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
 		if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
-			GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
+		{
+			GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
+			GUI_Controls.virtualGrid->Update();
+			GUI_Controls.virtualGrid->Refresh();
+			GUI_Controls.virtualGrid->ForceRefresh();
+			GUI_Controls.virtualGrid->SetFocus();
+		}
 
 		//Add name for combo box
 		GUI_Controls.cmbComboName->Append(strResponse);
@@ -1097,10 +1105,11 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		//Since this is a sorted ComboBox, position or index doesn't mean anything at all.
 		GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->FindString(strResponse, true));
 
-		//Add first row for the new combo (minimum requirement for a combo is 1 action)
-		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 		//We modified the new Combo, save it and overwrite the duplicate if there is one
 		SaveGridToCombo(strResponse);
+
+		//Add first row for the new combo (minimum requirement for a combo is 1 action)
+		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 
 		Cell_Locator.SetLocation(0, 1);
 		//still some stuff to do..
@@ -1121,25 +1130,70 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 {
 	try
 	{
-		//Clear grid - delete combo
-		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
-
-		//prevent deletion of none selected item
+		//prevent deletion of none selected item (There are no COMBOs)
 		if (GUI_Controls.cmbComboName->GetSelection() < 0)
 			return;
+
+		//Clear grid - delete combo
+		GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
+		
+		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+		{
+			if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
+			{
+				GUI_Controls.Combos.erase(it);
+				//We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
+				//because ++it will be called and it will point to an empty container, so silently get out of the loop
+				break;
+			}
+		}
 
 		//Delete name from combo box
 		wxString strTemp = GUI_Controls.cmbComboName->GetValue();
 		GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
 
-		//After deletion, select the last combo by default
+		//After deletion, select the first combo by default
 		if (GUI_Controls.cmbComboName->GetCount() > 0)
-			GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->GetCount() - 1);
-
+			GUI_Controls.cmbComboName->Select(0);
+		
+		//Delete all rows of grid
+		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
+		
 		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-		for (unsigned int i = 0; i < GUI_Controls.Combos.size(); ++i)
-			if (GUI_Controls.Combos[i]->GetName() == strTemp)
-				GUI_Controls.Combos.erase(GUI_Controls.Combos.begin() + i);
+		//to prevent flickering while adding buttons, and it is much faster this way. Show grid when we are done
+		GUI_Controls.virtualGrid->Hide();
+		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+		{
+			if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
+			{
+				for (int row = 0; row < (*it)->GetNumberActions(); ++row)
+				{
+					CAction *curAction = (*it)->GetAction(row);
+					int delay = curAction->GetDelay();
+					//Add grid row, will populate it with buttons after that
+					AddRow(GUI_Controls.virtualGrid, delay, GUI_Controls.virtualGrid->GetNumberRows());
+					//Set Action Delay
+					GUI_Controls.virtualGrid->SetCellValue(row, 0, wxString::Format("%d", delay));
+					//Move to the first button and iterate to add them
+					Cell_Locator.SetLocation(row, 1);
+					for (int button = 0; button < curAction->GetNumberOfButtons(); ++button)
+					{
+						CCellValue *val;
+						wxGridCellCoords coords;
+						val = (CCellValue *)curAction->GetButton(button);
+						Cell_Locator.GetLocation(coords);
+						GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, val);
+						GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
+						Cell_Locator.MoveToNextButton();
+					}
+				}
+				/*GUI_Controls.virtualGrid->Update();
+				GUI_Controls.virtualGrid->Refresh();
+				GUI_Controls.virtualGrid->SetFocus();*/
+				GUI_Controls.virtualGrid->Show(true); //Added, all buttons! Show the grid
+				break;
+			}
+		}
 		//still some stuff to do...
 	}
 	catch (exception &e)
@@ -1362,7 +1416,7 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev)
 		if (cellPos.x == 0)
 			buttonInfo = "Delay: Repeat this Action for " + buttonInfo + " frames.";
 		else if (val->buttonSensitivity >= 0 && val->buttonSensitivity <= 255)
-			buttonInfo += wxString::Format("\nSensitivity: %d", val->buttonSensitivity);
+			buttonInfo += wxString::Format("\nSensitivity: %d , buttonValue: %d", val->buttonSensitivity, val->buttonValue);
 		GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(buttonInfo);
 		ev.Skip();
 	}
@@ -1456,11 +1510,13 @@ void SaveGridToCombo(wxString &strUserInput)
 	curCombo->SetName(strUserInput);
 	for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
 	{
-		CCellValue *val;
-		val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
 		CAction *action = new CAction;
+		CCellValue *val;
+		//for column 0, CCellValue's buttonName = Action Delay, while all other members = -1
+		val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
 		long int delay;
-		GUI_Controls.virtualGrid->GetCellValue(row, 0).ToLong(&delay);
+		val->buttonName.ToLong(&delay);
+		/*GUI_Controls.virtualGrid->GetCellValue(row, 0).ToLong(&delay);*/
 		action->SetDelay(delay);
 
 		for (int col = 1; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)

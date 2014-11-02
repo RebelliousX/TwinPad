@@ -26,25 +26,35 @@ private:
 
 class CTableBase : public wxGridTableBase
 {
+	///-----------Note------------------
+	//-----Delete a row in 2D vector: 
+	//e.g: g[r][c] is a vector, g.erase( the beginning pointer of g 'g.begin()' + offset 'the row' to delete )
+	//-----Delete a column in 2D vector:
+	//e.g: g[r][c] is a vector, g[r].erase( the beginning pointer of g[r] 'g[r].begin() + offset 'the column' to delete )
+	//--->Note: erase will destroy elements and force reallocation.
+
 public:
 	CTableBase() { rows = cols = 0; }
+	virtual ~CTableBase() { }
+
 	virtual int GetNumberRows() { return rows; }
 	virtual int GetNumberCols() { return cols; }
 	virtual bool IsEmptyCell(int row, int col) { return GetValue(row, col).empty(); }
-	//These two functions I have to override since they are pure virtuals.
-	virtual void SetValue(int row, int col, const wxString &val) 
-		{ customCellValue[row][col].buttonName = val; /*Should Not be called from outside*/ }
-	virtual wxString GetValue(int row, int col) 
-		{ return customCellValue[row][col].buttonName; /*Should Not be called from outside*/ }
-	
+	//Set Button's Name only, nothing else.
+	virtual void SetValue(int row, int col, const wxString &val) { customCellValue[row][col].buttonName = val; }
+	//Returns a string containing Button's Name only, nothing else.
+	virtual wxString GetValue(int row, int col) { return customCellValue[row][col].buttonName; }
+	//Accept a void pointer which will be casted to CCellValue structure internally.
 	virtual void  SetValueAsCustom( int row, int col, const wxString& typeName, void* value )
 	{
 		customCellValue[row][col].buttonValue  = ((CCellValue *) value)->buttonValue;
 		customCellValue[row][col].buttonSensitivity = ((CCellValue *)value)->buttonSensitivity;
 		customCellValue[row][col].buttonName = ((CCellValue *) value)->buttonName;
 	}
-	virtual void* GetValueAsCustom( int row, int col, const wxString &typeName) { return &customCellValue[row][col]; }
+	//Return a void pointer to CCellValue structure, should be casted to " (CCellValue *) "
+	virtual void* GetValueAsCustom(int row, int col, const wxString &typeName) { return &customCellValue[row][col]; }
 	
+	//Insert rows at specified position, default is 1 row at position 0
 	virtual bool InsertRows( size_t pos = 0, size_t numRows = 1 ) 
 	{
 		rows += numRows;
@@ -53,23 +63,22 @@ public:
 		std::vector<CCellValue> temp;
 		customCellValue.insert(customCellValue.begin() + pos, temp);
 		customCellValue[pos].resize(19);
-		//ResizeCustomCellValueMatrix(rows, cols);
+		ResizeCustomCellValueMatrix(rows, cols);
 		return true;
 	}
-	virtual bool DeleteRows(size_t pos = 0, size_t numRows = 1) 
+	//Delete rows at specified position, default is 1 row at position 0
+	virtual bool DeleteRows(size_t pos = 0, size_t numRows = 1)
 	{
 		rows -= numRows;
-		if (rows < 0) rows = 0;
-		
-		for (int i = 0; i < this->GetColsCount(); ++i)
-			this->SetValue(pos, i, wxString::Format(":) %d", i));
-		
-		wxGridTableMessage msg( this, wxGRIDTABLE_NOTIFY_ROWS_DELETED, pos, numRows);
+		if (rows < 0)
+			rows = 0;
+		wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_DELETED, pos, numRows);
 		GetView()->ProcessTableMessage(msg);
 		customCellValue.erase(customCellValue.begin() + pos);
-		//ResizeCustomCellValueMatrix(rows, cols);
+		ResizeCustomCellValueMatrix(rows, cols);
 		return true;
 	}
+	//Insert columns at the specified position, default is 1 column at position 0
 	virtual bool InsertCols( size_t pos = 0, size_t numCols = 1) 
 	{
 		cols += numCols;
@@ -79,6 +88,7 @@ public:
 		ResizeCustomCellValueMatrix(rows, cols);
 		return true;
 	}
+	//Delete columns at the specified position, default is 1 column at position 0
 	virtual bool DeleteCols( size_t pos = 0, size_t numCols = 1) 
 	{
 		cols -= numCols;
@@ -89,6 +99,7 @@ public:
 		colsLabels.resize(cols);
 		return true;
 	}
+	//Set the label of column number 'numCol'
 	virtual void SetColLabelValue(int numCol, const wxString& label) 
 	{
 	   if(numCol < cols)
@@ -102,9 +113,10 @@ public:
 		  ResizeCustomCellValueMatrix(rows, cols);
 	   }
 	}
-	virtual wxString GetColLabelValue(int col) 
+	//Get the label of column number 'numCol'
+	virtual wxString GetColLabelValue(int numCol) 
 	{
-		return colsLabels[col];
+		return colsLabels[numCol];
 	}
 	virtual wxString GetTypeName(int row, int col) 
 	{
@@ -116,6 +128,8 @@ public:
 		return wxEmptyString; //Should not get here.
 	}
 
+protected:
+	//Allocate/Deallocate memory for the grid
 	void ResizeCustomCellValueMatrix(int row, int col)
 	{
 		CCellValue dummyValue;
@@ -131,7 +145,7 @@ public:
 			//Special case, handle Delay value in first column (#0)
 			dummyValue.buttonValue = -1;
 			dummyValue.buttonSensitivity = -1;
-			dummyValue.buttonName = "1";	//Default Delay value for elements in column # 0.
+			dummyValue.buttonName = "";	//Default Delay value for elements in column # 0.
 		}
 
 		//resize custemCellValue matrix and initialize with dummy value
@@ -140,7 +154,7 @@ public:
 			customCellValue[i].resize(col, dummyValue);
 	}
 
-public:
+protected:
 	std::vector<std::vector<CCellValue>> customCellValue;
 
 private:
