@@ -1131,7 +1131,7 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 	try
 	{
 		//prevent deletion of none selected item (There are no COMBOs)
-		if (GUI_Controls.cmbComboName->GetSelection() < 0)
+		if (GUI_Controls.cmbComboName->GetSelection() < 0 || GUI_Controls.Combos.size() == 0)
 			return;
 
 		//Clear grid - delete combo
@@ -1160,7 +1160,7 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
 		
 		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-		//to prevent flickering while adding buttons, and it is much faster this way. Show grid when we are done
+		//Hide grid to prevent flickering while adding buttons, and it is much faster this way. Show grid when we are done
 		GUI_Controls.virtualGrid->Hide();
 		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
 		{
@@ -1187,14 +1187,10 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 						Cell_Locator.MoveToNextButton();
 					}
 				}
-				/*GUI_Controls.virtualGrid->Update();
-				GUI_Controls.virtualGrid->Refresh();
-				GUI_Controls.virtualGrid->SetFocus();*/
-				GUI_Controls.virtualGrid->Show(true); //Added, all buttons! Show the grid
-				break;
+				break;	//No need to process other COMBOs
 			}
 		}
-		//still some stuff to do...
+		GUI_Controls.virtualGrid->Show(true); //Added all buttons! Show the grid
 	}
 	catch (exception &e)
 	{
