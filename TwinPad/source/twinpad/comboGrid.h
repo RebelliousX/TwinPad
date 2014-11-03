@@ -214,7 +214,7 @@ public:
 	//Should be only done once, once the mainGrid is initialized
 	void SetGrid(CComboGrid *mainGrid) { grid = mainGrid; }
 	
-	void MoveToNextButton()
+	void MoveToNextButton(bool setFocus = true)
 	{
 		//remove previous cell background here
 		if (curCol < grid->GetNumberCols() - 1)
@@ -225,7 +225,8 @@ public:
 			grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
 			grid->Update();
 			grid->Refresh();
-			grid->SetFocus();
+			if (setFocus)
+				grid->SetFocus();
 			grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
 			ModifySensitivity();
 		}
@@ -237,13 +238,14 @@ public:
 		{
 			grid->Update();
 			grid->Refresh();
-			grid->SetFocus();
+			if (setFocus)
+				grid->SetFocus();
 			grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
 			ModifySensitivity();
 		}
 			
 	}
-	void MoveToNextAction()
+	void MoveToNextAction(bool setFocus = true)
 	{
 		setCurrentBGColor(grid->GetDefaultCellBackgroundColour());
 		++curRow;
@@ -252,12 +254,13 @@ public:
 		grid->MakeCellVisible(curRow, (curCol == 1) ? 0 : curCol);
 		grid->Update();
 		grid->Refresh();
-		grid->SetFocus();
+		if (setFocus)
+			grid->SetFocus();
 		grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
 		ModifySensitivity();
 	}
 
-	void SetLocation(int iRow, int iCol) 
+	void SetLocation(int iRow, int iCol, bool setFocus = true) 
 	{
 		if (iCol == 0) return;	//don't allow moving into Delay column
 		//remove current color before moving to another cell
@@ -271,7 +274,8 @@ public:
 			grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
 		grid->Update();
 		grid->Refresh();
-		grid->SetFocus();
+		if (setFocus)
+			grid->SetFocus();
 		ModifySensitivity();
 	}
 

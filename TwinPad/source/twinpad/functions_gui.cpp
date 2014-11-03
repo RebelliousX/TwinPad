@@ -454,6 +454,9 @@ void SetupComboTab(wxPanel *panel)
 																wxDefaultPosition, wxSize(200,25), 0, 0, wxCB_READONLY | wxCB_SORT);
 				GUI_Controls.cmbComboName->SetBackgroundColour(wxColor(66,66,66));	//Dark Grey
 				GUI_Controls.cmbComboName->SetForegroundColour(wxColor("White"));
+				GUI_Controls.cmbComboName->Bind(wxEVT_COMBOBOX, ::OnChangeComboName);
+				GUI_Controls.cmbComboName->Bind(wxEVT_KEY_UP, ::OnChangeComboNameKey);
+				//GUI_Controls.cmbComboName->Bind(wxEVT_KEY_UP, ::OnChangeComboNameByKey);
 				stcComboNameSizer->Add(GUI_Controls.cmbComboName, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 			wxStaticBoxSizer *stcComboKeySizer = new wxStaticBoxSizer(wxVERTICAL, panel, "KEY");
 				GUI_Controls.txtComboKey = new wxTextCtrl(panel, wxID_ANY, "NONE", wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
@@ -957,9 +960,6 @@ void OnClickInsertInbetweenAction(wxCommandEvent &ev)
 
 		GUI_Controls.virtualGrid->ClearSelection();
 
-		//for (int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
-		//	GUI_Controls.virtualGrid->DeselectRow(i);
-
 		//Move grid cursor to the first inserted action (whether it is one or more)
 		//Note that if for example the first selected was row 0, now it is row 1 since it was shifted down 1 row
 		Cell_Locator.SetLocation(selectedRows[0] - 1, 1);
@@ -1034,11 +1034,7 @@ void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 		if (GUI_Controls.virtualGrid->GetNumberRows() == 0)
 			AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 
-		//If previous location was deleted set it to the last row, 2nd column. Otherwise, keep the same location
-		//if (coords.GetRow() > GUI_Controls.virtualGrid->GetNumberRows() - 1)
-			Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
-		//else
-		//	Cell_Locator.SetLocation(coords.GetRow(), coords.GetCol());
+		Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
 	}
 	catch (exception &e)
 	{
@@ -1115,6 +1111,7 @@ void OnClickNewCombo(wxCommandEvent &ev)
 
 		//Since this is a sorted ComboBox, position or index doesn't mean anything at all.
 		GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->FindString(strResponse, true));
+		GUI_Controls.strPreviousComboSelection = strResponse;
 
 		//We modified the new Combo, save it and overwrite the duplicate if there is one
 		SaveGridToCombo(strResponse);
@@ -1123,7 +1120,6 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 
 		Cell_Locator.SetLocation(0, 1);
-		//still some stuff to do..
 	}
 	catch (exception &e)
 	{
@@ -1162,10 +1158,15 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 		//Delete name from combo box
 		wxString strTemp = GUI_Controls.cmbComboName->GetValue();
 		GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
+		GUI_Controls.strPreviousComboSelection = "";
 
 		//After deletion, select the first combo by default
 		if (GUI_Controls.cmbComboName->GetCount() > 0)
+		{
 			GUI_Controls.cmbComboName->Select(0);
+			GUI_Controls.strPreviousComboSelection = GUI_Controls.cmbComboName->GetStringSelection();
+		}
+			
 		
 		//Delete all rows of grid
 		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
@@ -1236,6 +1237,7 @@ void OnClickRenameCombo(wxCommandEvent &ev)
 				{
 					(*it)->SetName(strResponse);
 					GUI_Controls.cmbComboName->SetString(GUI_Controls.cmbComboName->GetSelection(), strResponse);
+					GUI_Controls.strPreviousComboSelection = strResponse;
 					break;
 				}
 			}
@@ -1418,10 +1420,20 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev)
 
 		CCellValue *val;
 		val = (CCellValue *) GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(cellPos.y, cellPos.x, "");
-
+		
 		wxString buttonInfo = val->buttonName;
+
 		if (cellPos.x == 0)
-			buttonInfo = "Delay: Repeat this Action for " + buttonInfo + " frames.";
+		{
+			wxString strFrame;
+			long delay;
+			buttonInfo.ToLong(&delay);
+			if (delay == 1)
+				strFrame = " frame.\n";
+			else
+				strFrame = " frames.\n";
+			buttonInfo = "Delay: Repeat this Action for " + buttonInfo + strFrame + "Click here to modify its value.";
+		}
 		else if (val->buttonSensitivity >= 0 && val->buttonSensitivity <= 255)
 			buttonInfo += wxString::Format("\nSensitivity: %d , buttonValue: %d", val->buttonSensitivity, val->buttonValue);
 		GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(buttonInfo);
@@ -1536,4 +1548,149 @@ void SaveGridToCombo(wxString &strUserInput)
 		curCombo->AddAction(action);
 	}
 	GUI_Controls.Combos.push_back(curCombo);
+}
+
+//Event handling ComboBox's name change
+void OnChangeComboName(wxCommandEvent &ev)
+{
+	try
+	{
+		wxString strCurrent, strPrevious;
+		strCurrent = GUI_Controls.cmbComboName->GetStringSelection();
+		strPrevious = GUI_Controls.strPreviousComboSelection;
+
+		GUI_Controls.strPreviousComboSelection = strCurrent;
+
+		///////////SAVE COMBO////////////////
+		//Save Combo (before making a new one) from grid to Combos container if we have at least 1 Combo
+		//It is very important that we use the cmbComboName to get the name of current Combo. If the same Combo
+		//name found in the container, it will be overwritten with this one.
+		if (GUI_Controls.Combos.size() > 0)
+		{
+			wxString strKeyValue = GUI_Controls.txtComboKey->GetValue();
+			long keyValue;
+			if (strKeyValue == "NONE")
+				keyValue = 0;
+			else
+				strKeyValue.ToLong(&keyValue);
+
+			for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+			{
+				//If the COMBO already exists, erase it. I know the container should be list instead of vector
+				//erase operation is expensive, I might change it later
+				if ((*it)->GetName() == strPrevious)
+				{
+					GUI_Controls.Combos.erase(it);
+					//We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
+					//because ++it will be called and it will point to an empty container, so silently get out of the loop
+					break;
+				}
+			}
+
+			CCombo *curCombo = new CCombo;
+			curCombo->SetKey((int)keyValue);
+			curCombo->SetName(strPrevious);
+			for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+			{
+				CAction *action = new CAction;
+				CCellValue *val;
+				//for column 0, CCellValue's buttonName = Action Delay, while all other members = -1
+				val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
+				long int delay;
+				val->buttonName.ToLong(&delay);
+				/*GUI_Controls.virtualGrid->GetCellValue(row, 0).ToLong(&delay);*/
+				action->SetDelay(delay);
+
+				for (int col = 1; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+				{
+					val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+					//if button is not empty, add it
+					if (val->buttonName != "")
+						action->AddButton(val);
+				}
+				curCombo->AddAction(action);
+			}
+			GUI_Controls.Combos.push_back(curCombo);
+		}
+
+		//Clear grid - delete combo
+		//If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
+		if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
+			GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
+
+		//Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
+		//Hide grid to prevent flickering while adding buttons, and it is much faster this way. Show grid when we are done
+		GUI_Controls.virtualGrid->Hide();
+		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+		{
+			//GetValue() gets the new selected COMBO from the list
+			if ((*it)->GetName() == strCurrent)
+			{
+				for (int row = 0; row < (*it)->GetNumberActions(); ++row)
+				{
+					CAction *curAction = (*it)->GetAction(row);
+					int delay = curAction->GetDelay();
+					//Add grid row, will populate it with buttons after that
+					AddRow(GUI_Controls.virtualGrid, delay, GUI_Controls.virtualGrid->GetNumberRows());
+					//Set Action Delay
+					GUI_Controls.virtualGrid->SetCellValue(row, 0, wxString::Format("%d", delay));
+					//Move to the first button and iterate to add them
+					Cell_Locator.SetLocation(row, 1, false);
+					for (int button = 0; button < curAction->GetNumberOfButtons(); ++button)
+					{
+						CCellValue *val;
+						wxGridCellCoords coords;
+						val = (CCellValue *)curAction->GetButton(button);
+						Cell_Locator.GetLocation(coords);
+						GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, val);
+						GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
+						Cell_Locator.MoveToNextButton(false);
+					}
+				}
+				break;	//No need to process other COMBOs
+			}
+		}
+		GUI_Controls.virtualGrid->Show(true); //Added all buttons! Show the grid
+
+		Cell_Locator.SetLocation(0, 1, false);
+	}
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
+}
+
+/* This function handles keyboard UP and Down keys while navigating the ComboBox
+and refresh the grid according to selection. Note: Grid will refresh once the popup of th combobox disappears.
+I could setfocus to grid, but that will disrupt the navigation using Up/Down keys to select Combo names. */
+void OnChangeComboNameKey(wxKeyEvent &ev)
+{
+	try
+	{
+		if (ev.GetKeyCode() == WXK_UP || ev.GetKeyCode() == WXK_DOWN)
+		{
+			GUI_Controls.strPreviousComboSelection = GUI_Controls.cmbComboName->GetValue();
+			wxCommandEvent e;
+			e.SetEventType(wxEVT_COMBOBOX);
+			OnChangeComboName(e);
+			GUI_Controls.virtualGrid->Update();
+			GUI_Controls.virtualGrid->Refresh();
+			GUI_Controls.virtualGrid->ForceRefresh();
+			ev.Skip();
+		}
+	}
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
 }

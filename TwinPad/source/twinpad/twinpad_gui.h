@@ -157,7 +157,9 @@ public:
 	wxComboBox *cmbComboName;
 	wxComboBox *cmbWhichPad;
 	wxTextCtrl *txtComboKey;
-	
+	//for use when changing ComboBox selection
+	wxString strPreviousComboSelection;
+
 	/////////TAB 4: EXTRA///////////////////////////////////////////////
 	wxCheckBox *chkDisablePad1;
 	wxCheckBox *chkDisablePad2;

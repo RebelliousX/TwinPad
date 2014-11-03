@@ -155,6 +155,9 @@ void OnClickDeleteButton(wxCommandEvent &ev);
 void OnClickNewCombo(wxCommandEvent &ev);
 void OnClickDeleteCombo(wxCommandEvent &ev);
 void OnClickRenameCombo(wxCommandEvent &ev);
+////ComboBox Events
+void OnChangeComboName(wxCommandEvent &ev);
+void OnChangeComboNameKey(wxKeyEvent &ev);
 /////Combo Key
 bool Has(const unsigned int button, int row);
 void OnClickComboKey(wxMouseEvent &ev);
