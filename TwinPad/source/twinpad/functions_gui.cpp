@@ -882,21 +882,12 @@ void OnClickInsertAction(wxCommandEvent &ev)
 				selectedRows[0]);
 		}
 
+		GUI_Controls.virtualGrid->ClearSelection();
+
 		if (selectedRows[0] == 0)
 			Cell_Locator.SetLocation(0, 1);
 		else
-			Cell_Locator.SetLocation(selectedRows[0] - 1, 1);
-
-		////Disable cell locator momentarily until we are done adding rows
-		//Cell_Locator.Enabled(false);
-		//for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
-		//	AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), selectedRows[i]);
-		//Cell_Locator.Enabled(true);	//Enable Cell Locator after we are done adding rows
-
-		//for (int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
-		//	GUI_Controls.virtualGrid->DeselectRow(i);
-
-		//Move grid cursor to the first inserted action (whether it is one or more)
+			Cell_Locator.SetLocation(selectedRows[0], 1);
 	}
 	catch (exception &ex)
 	{
@@ -964,8 +955,10 @@ void OnClickInsertInbetweenAction(wxCommandEvent &ev)
 				selectedRows[j] += 1;
 		}
 
-		for (int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
-			GUI_Controls.virtualGrid->DeselectRow(i);
+		GUI_Controls.virtualGrid->ClearSelection();
+
+		//for (int i = 0; i < GUI_Controls.virtualGrid->GetNumberRows(); ++i)
+		//	GUI_Controls.virtualGrid->DeselectRow(i);
 
 		//Move grid cursor to the first inserted action (whether it is one or more)
 		//Note that if for example the first selected was row 0, now it is row 1 since it was shifted down 1 row

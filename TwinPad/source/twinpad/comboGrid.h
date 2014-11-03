@@ -37,7 +37,9 @@ public:
 	CTableBase() 
 	{ 
 		rows = cols = 0; 
-		//We use this if requesting data outside of grid, negative row, column numbers
+		//Initializing EmptyCell, will be used to create empty grid cells  - or -
+		//We use this to return a poninter to it if requesting data outside of grid, 
+		//that is, negative row and column numbers
 		EmptyCell.buttonName = "";
 		EmptyCell.buttonSensitivity = -1;
 		EmptyCell.buttonValue = -1;
@@ -127,19 +129,8 @@ public:
 	   }
 	}
 	//Get the label of column number 'numCol'
-	virtual wxString GetColLabelValue(int numCol) 
-	{
-		return colsLabels[numCol];
-	}
-	virtual wxString GetTypeName(int row, int col) 
-	{
-		if (col > 1) 
-			return wxGRID_VALUE_STRING; //"Custom"; 
-		else 
-			return wxGRID_VALUE_STRING; //"integer";
-
-		return wxEmptyString; //Should not get here.
-	}
+	virtual wxString GetColLabelValue(int numCol) { return colsLabels[numCol]; }
+	virtual wxString GetTypeName(int row, int col) { return wxGRID_VALUE_STRING; }
 
 protected:
 	//Allocate/Deallocate memory for the grid
@@ -225,9 +216,6 @@ public:
 	
 	void MoveToNextButton()
 	{
-		/*if (!enabled)
-			return;*/
-
 		//remove previous cell background here
 		if (curCol < grid->GetNumberCols() - 1)
 		{
@@ -257,9 +245,6 @@ public:
 	}
 	void MoveToNextAction()
 	{
-		/*if (!enabled)
-			return;*/
-
 		setCurrentBGColor(grid->GetDefaultCellBackgroundColour());
 		++curRow;
 		curCol = 1;
@@ -274,9 +259,6 @@ public:
 
 	void SetLocation(int iRow, int iCol) 
 	{
-		/*if (!enabled)
-			return;*/
-
 		if (iCol == 0) return;	//don't allow moving into Delay column
 		//remove current color before moving to another cell
 		setCurrentBGColor(grid->GetDefaultCellBackgroundColour()); //Default is White, can be changed
@@ -304,9 +286,6 @@ public:
 	   at last row */
 	void TestAndCorrectLocation()
 	{
-		/*if (!enabled)
-			return;*/
-
 		if (curRow >= grid->GetNumberRows())
 		{
 			curRow = grid->GetNumberRows() - 1;
@@ -314,38 +293,6 @@ public:
 			SetLocation(curRow, curCol);
 		}
 	}
-
-	////Is Cell Locator enabled?
-	//bool IsEnabled() { return enabled; }
-
-	////Enable or Disable Cell Locator, should be enabled/disabled wisely and preferably in the same caller function
-	//void SetEnabled(bool on = true)
-	//{
-
-	//	//Prevent consecutive calls with the same 'on' value.  It would break the logic of if-else statement below
-	//	//that is, calling SetEnabled(true) twice without calling SetEnabled(false) between the two calls would
-	//	//break the cell's background color
-	//	if (on == enabled) 
-	//		return;
-
-	//	if (on)
-	//	{
-	//		//curently disabled, will be enabled after this
-	//		setCurrentBGColor(bgColor);
-	//	}
-	//	else
-	//	{
-	//		setCurrentBGColor(grid->GetDefaultCellBackgroundColour());
-	//		//Reset position to the first valid cell on grid
-	//		curRow = 0;
-	//		curCol = 1;
-	//	}
-	//	
-	//	enabled = on;
-	//	//Whether it is enabled or not, set the current location and grid cursor
-	//	//it will fail to set location if disabled anyways
-	//	SetLocation(curRow, curCol);
-	//}
 
 private:
 	int curRow, curCol;
