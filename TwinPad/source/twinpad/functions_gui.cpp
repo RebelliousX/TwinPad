@@ -1083,10 +1083,19 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		static int counter = 1;
 		wxString strResponse = wxGetTextFromUser("Enter a name for the new Combo:",
 			"New COMBO name", wxString::Format("I am a Combo! #%d", counter++));
-
+		//Don't accept empty COMBO name
 		if (strResponse == wxEmptyString)
 			return;
-
+		//Don't accept duplicate COMBO names, we use the unique name to draw on grid
+		for (unsigned int i = 0; i < GUI_Controls.Combos.size(); ++i)
+			if (strResponse == GUI_Controls.Combos[i]->GetName())
+			{
+				wxMessageBox("There is another COMBO with the same name! Please choose a different name.\n\n"
+					"Note: Name is NOT case sensitive, that is 'Orange', 'oRange' or 'ORANGE' are not the same name.",
+					"Duplicate COMBO name found!", wxICON_EXCLAMATION);
+				return;
+			}
+		
 		//Save current Combo (before making a new one) from grid to Combos container if we have at least 1 Combo
 		//It is very important that we use the cmbComboName to get the name of current Combo. If the same Combo
 		//name found in the container, it will be overwritten with this one.
