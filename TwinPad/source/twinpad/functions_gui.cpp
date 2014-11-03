@@ -456,7 +456,6 @@ void SetupComboTab(wxPanel *panel)
 				GUI_Controls.cmbComboName->SetForegroundColour(wxColor("White"));
 				GUI_Controls.cmbComboName->Bind(wxEVT_COMBOBOX, ::OnChangeComboName);
 				GUI_Controls.cmbComboName->Bind(wxEVT_KEY_UP, ::OnChangeComboNameKey);
-				//GUI_Controls.cmbComboName->Bind(wxEVT_KEY_UP, ::OnChangeComboNameByKey);
 				stcComboNameSizer->Add(GUI_Controls.cmbComboName, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 			wxStaticBoxSizer *stcComboKeySizer = new wxStaticBoxSizer(wxVERTICAL, panel, "KEY");
 				GUI_Controls.txtComboKey = new wxTextCtrl(panel, wxID_ANY, "NONE", wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
@@ -464,7 +463,6 @@ void SetupComboTab(wxPanel *panel)
 				GUI_Controls.txtComboKey->SetForegroundColour(wxColor("White"));
 				GUI_Controls.txtComboKey->Bind(wxEVT_LEFT_UP, ::OnClickComboKey);	//Get a key
 				GUI_Controls.txtComboKey->Bind(wxEVT_RIGHT_UP, ::OnClickComboKey);	//Delete the key
-				//GUI_Controls.txtComboKey-
 				stcComboKeySizer->Add(GUI_Controls.txtComboKey, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 			wxStaticBoxSizer *stcDefaultDelaySizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Delay");	
 				GUI_Controls.spnDefaultDelay = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, 
