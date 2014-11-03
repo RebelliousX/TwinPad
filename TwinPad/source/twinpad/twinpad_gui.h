@@ -36,7 +36,78 @@ enum ID {	ID_BTN = 1000,
 			ID_PAD1_RADIOBTN = 5000, ID_PAD2_RADIOBTN, ID_PAD1_TAB2_RADIOBTN, ID_PAD2_TAB2_RADIOBTN,
 			ID_CHK_PAD1 = 6000, ID_CHK_PAD2, ID_CHK_MOUSE, ID_CHK_COMBOS, ID_CHK_ON_FLY, ID_CHK_KEY_EVENTS,
 			ID_CHK_HACK,
+			ID_TIMER1 = 7000, ID_TIMER2, ID_TIMER3,
 		};
+
+//-----Timer classes
+//Timer to re-animate Analog sticks to fix out of sync animation
+class CReAnimate : public wxTimer
+{
+public:
+	CReAnimate() : wxTimer() { }
+
+	virtual void Notify()
+	{
+		OnTimeReAnimateAnalogSticks();
+	}
+
+	virtual bool Start(int milliseconds)
+	{
+		return wxTimer::Start(milliseconds);
+	}
+};
+
+//Timer to get a Key for Combo tab
+class CGetComboKey : public wxTimer
+{
+public:
+	CGetComboKey() : wxTimer() { }
+
+	virtual void Notify()
+	{
+		//POLL Device for Key
+	}
+
+	virtual bool Start(int milliseconds)
+	{
+		return wxTimer::Start(milliseconds);
+	}
+};
+
+//Timer to get a Key for Keyboard tab
+class CGetKey : public wxTimer
+{
+public:
+	CGetKey() : wxTimer() { }
+
+	virtual void Notify()
+	{
+		//POLL Device for Key
+	}
+
+	virtual bool Start(int milliseconds)
+	{
+		return wxTimer::Start(milliseconds);
+	}
+};
+
+class CAutoNav : public wxTimer
+{
+public:
+	CAutoNav() : wxTimer() { }
+
+	virtual void Notify()
+	{
+		//Auto navigation between Keyboard buttons to configure them
+		//Note: It is best to use something similar to a state machine when calling the function
+	}
+
+	virtual bool Start(int milliseconds)
+	{
+		return wxTimer::Start(milliseconds);
+	}
+};
+
 
 //Purpose: to prevent TABs
 class CPS_BTN : public wxBitmapButton
@@ -126,8 +197,8 @@ public:
 	wxButton *btnCancel;
 	wxButton *btnAutoNavigate;
 	wxButton *btnNullifiesAll;
-	wxTimer *tmrGetKey;
-	wxTimer *tmrAutoNav;
+	CGetKey *tmrGetKey;
+	CAutoNav *tmrAutoNav;
 
 	/////////TAB 2: Mouse//////////////////////////////////////////////
 	wxStaticText *lblMouseLabel[intMOUSE_BUTTONS];
@@ -157,6 +228,8 @@ public:
 	wxComboBox *cmbComboName;
 	wxComboBox *cmbWhichPad;
 	wxTextCtrl *txtComboKey;
+	CReAnimate *tmrReAnimate;
+	CGetComboKey *tmrGetComboKey;
 	//for use when changing ComboBox selection
 	wxString strPreviousComboSelection;
 

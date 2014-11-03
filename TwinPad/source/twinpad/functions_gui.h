@@ -175,3 +175,5 @@ void OnClickMouseNullifiesAll(wxMouseEvent &ev);
 void ModifySensitivity();
 ////Save the Grid to the Combos container
 void SaveGridToCombo(wxString &strUserInput);
+////Timer event to reAnimate analog sticks
+void OnTimeReAnimateAnalogSticks();

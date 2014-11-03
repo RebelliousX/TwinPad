@@ -689,7 +689,13 @@ void SetupComboTab(wxPanel *panel)
 	comboGrid->SetCellHighlightPenWidth(3);		//for Delay
 	comboGrid->SetCellHighlightROPenWidth(3);	//Thicker black border around selected "read only" cell
 
-	comboGrid->SetDoubleBuffered(true);
+	comboGrid->SetDoubleBuffered(true);		//If supported by platform, it will be enabled
+
+	//Set timer to re-adjust animation sync for Analog Sticks
+	GUI_Controls.tmrReAnimate = new CReAnimate();
+	GUI_Controls.tmrReAnimate->Start(30000);	//30 seconds
+	//Allocate memory but don't start it yet, the user will start the timer when clicking on Combo Key
+	GUI_Controls.tmrGetComboKey = new CGetComboKey();
 
 	//Set label and width
 	for(int i = 1; i < comboGrid->GetNumberCols(); ++i)
@@ -1689,6 +1695,28 @@ void OnChangeComboNameKey(wxKeyEvent &ev)
 			GUI_Controls.virtualGrid->Refresh();
 			GUI_Controls.virtualGrid->ForceRefresh();
 			ev.Skip();
+		}
+	}
+	catch (exception &ex)
+	{
+		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
+}
+
+///ReAnimate Analog Sticks timer event. Because after some time, the Animation will go out of sync
+void OnTimeReAnimateAnalogSticks()
+{
+	try
+	{
+		for (int i = LANALOG_UP; i <= RANALOG_LEFT; ++i)
+		{
+			GUI_Controls.psComboButtons[i]->Stop();
+			GUI_Controls.psComboButtons[i]->Play();
 		}
 	}
 	catch (exception &ex)
