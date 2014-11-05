@@ -210,12 +210,7 @@ const wxString strMOUSE_HELP_MSG = "Note: Don't repeat the selection of an optio
 							"behave as increasing (UP) or decreasing (DOWN) the pressure sensitivity\n" \
 							"buttons. That some games depend on this! (DualShock 2 mode only.)\n\n"\
 							"Finally.. Configurations will be saved automatically! When you click\n" \
-							"[ OK ] button inside Keyboard TAB. Since both Keyboard and Mouse are using\n"
-							"the same configuration file unlike COMBOs which has its own. So if you have\n" \
-							"configured some COMBOs, then, you have to click on the [ SAVE ] button inside\n" \
-							"COMBOs TAB, which will ONLY save configured COMBOs.\n(TwinPad uses separate " \
-							"file for COMBOs, that is why!)\n\n" \
-							"Sorry for the long INFOs, and if this is inconvenient...";
+							"[ OK ] button inside Keyboard TAB. ";
 
 const wxString strEXTRA_INFO =	"Due to the massive changes, it might be necessary to suppress\n" \
 								"some features of the plugin. Although recent changes have no\n"  \
@@ -227,7 +222,7 @@ const wxString strEXTRA_INFO =	"Due to the massive changes, it might be necessar
 const wxString strEXTRA_ONFLY = "Disable the Hot Key to Load COMBOs & PAD Configs\n" \
 								"on the fly, the hot key is usefull only when running\n" \
 								"COMBOs Editor while Playing, testing and editing the\n" \
-								"Combo withoutexiting the Emu. The hot key is \"SPACE\"";
+								"Combo without exiting the Emu. The hot key is \"SPACE\"";
 
 const wxString strEXTRA_KEY   = "Disable the Plugin from sending KeyEvents to the Emu,\n" \
 								"when running 2 different PAD plugins. To prevent\n" \
