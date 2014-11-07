@@ -15,27 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\twinpad\comboGrid.h">
+    <ClInclude Include="source\twinpad\GUI\headers\comboGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\twinpad\functions_gui.h">
+    <ClInclude Include="source\twinpad\GUI\headers\functions_gui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\twinpad\labels.h">
+    <ClInclude Include="source\twinpad\GUI\headers\labels.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\twinpad\resources.h">
+    <ClInclude Include="source\twinpad\GUI\headers\resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\twinpad\twinpad_gui.h">
+    <ClInclude Include="source\twinpad\GUI\headers\twinpad_gui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\twinpad\functions_gui.cpp">
+    <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\twinpad\twinpad_gui.cpp">
+    <ClCompile Include="source\twinpad\GUI\source\twinpad_gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\main.cpp">

@@ -1,6 +1,6 @@
 //Test wxWidgets, TwinPad
 
-#include "twinpad/twinpad_gui.h"
+#include "twinpad_gui.h"
 
 #ifndef WX_PRECOM
 	#include "wx/wx.h"

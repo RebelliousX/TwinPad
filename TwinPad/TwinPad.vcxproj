@@ -10,6 +10,18 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\twinpad\GUI\headers\comboGrid.h" />
+    <ClInclude Include="source\twinpad\GUI\headers\functions_gui.h" />
+    <ClInclude Include="source\twinpad\GUI\headers\labels.h" />
+    <ClInclude Include="source\twinpad\GUI\headers\resources.h" />
+    <ClInclude Include="source\twinpad\GUI\headers\twinpad_gui.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp" />
+    <ClCompile Include="source\twinpad\GUI\source\twinpad_gui.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A4513F1B-C067-4935-992C-385309D55FA9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -41,13 +53,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(IncludePath)</IncludePath>
+    <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)\TwinPad\Source\TwinPad\GUI\headers;$(IncludePath)</IncludePath>
     <LibraryPath>$(WXWIN)\lib\vc_lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(IncludePath)</IncludePath>
+    <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)\TwinPad\Source\TwinPad\GUI\headers;$(IncludePath)</IncludePath>
     <LibraryPath>$(WXWIN)\lib\vc_lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -86,18 +98,6 @@
       <AdditionalDependencies>wxmsw30u_core.lib;wxbase30u.lib;wxjpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxscintilla.lib;wxregexu.lib;wxmsw30u_adv.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="source\twinpad\comboGrid.h" />
-    <ClInclude Include="source\twinpad\functions_gui.h" />
-    <ClInclude Include="source\twinpad\labels.h" />
-    <ClInclude Include="source\twinpad\resources.h" />
-    <ClInclude Include="source\twinpad\twinpad_gui.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\twinpad\functions_gui.cpp" />
-    <ClCompile Include="source\twinpad\twinpad_gui.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
