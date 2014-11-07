@@ -106,27 +106,17 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.noteBook->AddPage(panel, "Keyboard", false);
 	GUI_Controls.noteBook->SetPageText(KEYBOARD_TAB, "Keyboard");
 
-	wxString  fileName = "";
 	int animIndex = 0, txtIndex = 0, lblIndex = 0;
 	for (int r = 0; r < 8; r++)		//rows
 	{
 		animIndex = txtIndex = r;
 		for (int c = 0; c < 7; c++)	//columns
 		{
-			wxString  fileName = "";
 			switch(c)
 			{
 			case 0:
 			case 2:
 			case 5:
-				//Use same resource files for left and right analog, to save 79KB :)
-				if (animIndex >=16 && animIndex <= 19)
-					fileName += PS_LABEL[animIndex].name.Mid(5) + ".gif";
-				else
-					if (animIndex >=20 && animIndex <= 23)
-						fileName += PS_LABEL[animIndex].name.Mid(6) + ".gif";
-					else
-						fileName +=  PS_LABEL[animIndex].name + ".gif";
 				GUI_Controls.animCtrl[animIndex] = new CPS_Anim(panel, ID_BTN + animIndex);
 				LoadResources(GUI_Controls.animCtrl[animIndex], animIndex);
 				GUI_Controls.animCtrl[animIndex]->SetInactiveBitmap(GUI_Controls.animCtrl[animIndex]->GetInactiveBitmap());
@@ -429,6 +419,7 @@ void CPS_Anim::OnClick(wxCommandEvent &event)
 		{
 			//Implement reading DirectInput keypress
 			GUI_Controls.txtCtrl[this->GetIndex()]->SetValue(this->GetName());
+			GUI_Controls.lblEdit->SetLabel(wxString::Format("Edit Button: %s", PS_LABEL[this->GetIndex()].name));
 			this->Play();
 		}
 		else if (winID >= 1024 && winID <= 1047)	//Combo tab
@@ -489,6 +480,7 @@ void OnTxtCtrlRightClick(wxMouseEvent &ev)
 		else if (ev.GetId() >= ID_BTN && ev.GetId() <= 1023)
 			id -= ID_BTN;
 		GUI_Controls.txtCtrl[id]->SetValue("Null");
+		GUI_Controls.lblEdit->SetLabel("Edit Button: ");
 		GUI_Controls.animCtrl[id]->Stop();	//Stop animation
 		return;	//a return will disable the context menu if the even was on txtCtrl
 	}
