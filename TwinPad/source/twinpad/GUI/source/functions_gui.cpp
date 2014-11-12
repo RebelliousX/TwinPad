@@ -33,13 +33,14 @@ extern GUI_Configurations GUI_Config;
 CCellLocator Cell_Locator;
 
 //TODO: (Implement: PADgetSettingDir callback function)
-const wxString HEADER_TWINPAD = "[TwinPad Configurations v1.6]";
-const wxString HEADER_TWINPAD_COMBO = "[TwinPad COMBO Configurations v1.1]";
-const wxString LOCATION = "inis/"; //TODO: replace with given dir from emu. 
-const wxString TWIN_PAD = "TwinPad.ini";
-const wxString TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
+//Will be replaced with given dir from emu (if PADgetSettingDir() is supported by emu.)
+wxString g_Path = "inis/"; 
+const wxString g_HEADER_TWINPAD = "[TwinPad Configurations v1.6]";
+const wxString g_HEADER_TWINPAD_COMBO = "[TwinPad COMBO Configurations v1.1]";
+const wxString g_TWIN_PAD = "TwinPad.ini";
+const wxString g_TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
 
-const int IMG_WIDTH = 40;
+const int IMG_WIDTH = 40;	//40 pixels
 
 //Sorry for the inconsistencies, using fstream and wxfile at the same time, just wanted to try both :)
 
@@ -49,20 +50,22 @@ void CreateNullFile()
 	{
 		int counter;
 	
-		string file = LOCATION + TWIN_PAD;
+		string file = g_Path + g_TWIN_PAD;
 		string strPad;
 
 		ofstream m_nullfile(file.c_str(), ios::out);
 
 		if (!m_nullfile.is_open())
 		{
-			wxMessageBox("Couldn't create configuration files into the specified location!"
-				"\nMake sure 'inis' folder exists in the same directory with the emu."
-				"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-			::exit(0);
+			wxMessageBox("Couldn't create TwinPad.ini configuration file into the specified location!\n\n"
+				"\nMake sure at least 'inis' folder exists in the same directory with the emu."
+				"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+			GUI_Controls.mainFrame->Close(true);
 		}
 
-		m_nullfile << HEADER_TWINPAD << endl;
+		//Write header and config version number
+		m_nullfile << g_HEADER_TWINPAD << endl;
+		//Write assigned keys for both pads
 		for(int pad = 0; pad <= 1; pad++)
 		{
 			if (pad == 0) 
@@ -71,15 +74,16 @@ void CreateNullFile()
 				strPad = "[1][";
 		
 			counter = 0;
-			while(counter < 24)
+			while(counter < 24)		//24 PS buttons
 			{
-				m_nullfile << strPad << counter << "] = 0x" << "0" << endl;
-				GUI_Config.m_pad[pad][counter] = counter;
+				m_nullfile << strPad << counter << "] = 0x0" << endl;
+				GUI_Config.m_pad[pad][counter] = 0;
 				counter++;
 			}
-			m_nullfile << strPad << counter << "] = 0x" << "0" << endl;  //for walk/run value
+			m_nullfile << strPad << counter << "] = 0x0" << endl;  //for walk/run value
 		}
 
+		//Write Mouse configuration
 		counter = 0;
 		while(counter < 10)
 		{
@@ -92,6 +96,7 @@ void CreateNullFile()
 		m_nullfile << "1" << endl;		/* Mouse sensitivity default value. */
 		GUI_Config.m_mouseSensitivity = 1;
 
+		//Write 'Extra Options' configuration
 		counter = 0;
 		while(counter <= 6)
 		{
@@ -117,18 +122,18 @@ void CreateNullComboFile()
 {
 	try
 	{
-		string file = LOCATION + TWIN_PAD_COMBOS;
+		string file = g_Path + g_TWIN_PAD_COMBOS;
 		ofstream m_txtFile(file.c_str(), ios::out);
 
 		if (!m_txtFile.is_open())
 		{
-			wxMessageBox("Couldn't create configuration files into the specified location!"
-				"\nMake sure 'inis' folder exists in the same directory with the emu."
-				"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+			wxMessageBox("Couldn't create TwinPad_Combos.ini configuration file into the specified location!\n\n"
+				"\nMake sure at least 'inis' folder exists in the same directory with the emu."
+				"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
 			::exit(0);
 		}
 
-		m_txtFile << HEADER_TWINPAD_COMBO << endl;
+		m_txtFile << g_HEADER_TWINPAD_COMBO << endl;
 		m_txtFile << "ComboCount\t= 0\n" << "ComboPad\t= 0\n";
 
 		m_txtFile.close();
@@ -149,22 +154,17 @@ bool CheckAndCreateIfNecessary(const string &file, const string &header)
 	try
 	{
 		ifstream f(file);
-		if (!f.is_open())
-		{
-			wxMessageBox("Couldn't create configuration files into the specified location!"
-				"\nMake sure 'inis' folder exists in the same directory with the emu."
-				"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-			::exit(0);
-		}
-		string str, strMsg;
+		
+		string str = "";
+		wxString strMsg = "";
 
 		int select = 0;
-		if (header == HEADER_TWINPAD)
+		if (header == g_HEADER_TWINPAD)
 		{
 			strMsg = "Resetting Configurations in 'TwinPad.ini' File, please reconfigure the plugin.";
 			select = 1;
 		}
-		else if (header == HEADER_TWINPAD_COMBO)
+		else if (header == g_HEADER_TWINPAD_COMBO)
 		{
 			strMsg = "Resetting Configurations in 'TwinPad_COMBOs.ini' File, please reconfigure the plugin.";
 			select = 2;
@@ -175,6 +175,9 @@ bool CheckAndCreateIfNecessary(const string &file, const string &header)
 			return false;
 		}
 
+		if (!select)
+			wxMessageBox(strMsg, "Reset configuration file:", wxICON_INFORMATION);
+
 		//First: Check if file can be opened
 		if (f.is_open())
 		{
@@ -182,10 +185,13 @@ bool CheckAndCreateIfNecessary(const string &file, const string &header)
 			getline(f, str);
 			if (select == 1)
 			{
-				if (str != HEADER_TWINPAD)
+				if (str != g_HEADER_TWINPAD)
 				{
 					f.close();
 					CreateNullFile();
+					wxMessageBox(wxString::Format("TwinPad configuration file is old, all previous settings are lost.\n\n"
+						"Old version: %s\nNew version: %s", str, g_HEADER_TWINPAD),
+						"Oops!", wxICON_INFORMATION);
 					return true;	//Create null file, then is OK
 				}
 				else
@@ -193,10 +199,13 @@ bool CheckAndCreateIfNecessary(const string &file, const string &header)
 			}
 			else if (select == 2)
 			{
-				if (str != HEADER_TWINPAD_COMBO)
+				if (str != g_HEADER_TWINPAD_COMBO)
 				{
 					f.close();
 					CreateNullComboFile();
+					wxMessageBox(wxString::Format("TwinPad COMBOs configuration file is old, all previous settings are lost.\n\n"
+						"Old version: %s\nNew version: %s", str, g_HEADER_TWINPAD_COMBO),
+						"Oops!", wxICON_INFORMATION);
 					return true;	//Create null file, then is OK
 				}
 				else
@@ -228,7 +237,7 @@ void Loading_TwinPad_Main_Config()
 {
 	try
 	{
-		wxString fileName = LOCATION + TWIN_PAD;
+		wxString fileName = g_Path + g_TWIN_PAD;
 		wxTextFile file(fileName);
 		if (!file.Open(fileName))
 		{
@@ -242,7 +251,9 @@ void Loading_TwinPad_Main_Config()
 		wxString line, subStr;
 		long val = 0;
 
-		line = file.GetFirstLine();		//Get header and skip it
+		//Get header and skip it
+		line = file.GetFirstLine();
+		//Read the two pads configurations and Walk/Run key
 		for(int pad = 0; pad < 2; pad++)
 			for (int key = 0; key < 25; key++)
 			{
@@ -255,7 +266,8 @@ void Loading_TwinPad_Main_Config()
 				GUI_Config.m_pad[pad][key] = int(val);		
 			}
 
-		for(int i = 0; i < 10; i++)		//For mouse buttons and scrollup/down
+		//Read mouse buttons and scrollup/down configuration
+		for(int i = 0; i < 10; i++)
 		{
 			line = file.GetNextLine();
 			token.SetString(line, " ", wxTOKEN_STRTOK);
@@ -266,6 +278,7 @@ void Loading_TwinPad_Main_Config()
 			GUI_Config.m_mouse[i] = val;
 		}
 
+		//Read 'Extra Options' configuration
 		for(int i = 0; i < 7; i++)
 		{
 			line = file.GetNextLine();
@@ -322,92 +335,92 @@ void GetImageData(void* &data, unsigned int *length, const unsigned int index)
 	//to fix the arrays into 1 and use an index to make this more concise and pithy.
 	switch (index)
 	{
-	case 0:
+	case L2:
 		data = (void*)L2_GIF;
 		*length = sizeof(L2_GIF);
 		break;
-	case 1:
+	case R2:
 		data = (void*)R2_GIF;
 		*length = sizeof(R2_GIF);
 		break;
-	case 2:
+	case L1:
 		data = (void*)L1_GIF;
 		*length = sizeof(L1_GIF);
 		break;
-	case 3:
+	case R1:
 		data = (void*)R1_GIF;
 		*length = sizeof(R1_GIF);
 		break;
-	case 4:
+	case TRIANGLE:
 		data = (void*)TRIANGLE_GIF;
 		*length = sizeof(TRIANGLE_GIF);
 		break;
-	case 5:
+	case CIRCLE:
 		data = (void*)CIRCLE_GIF;
 		*length = sizeof(CIRCLE_GIF);
 		break;
-	case 6:
+	case CROSS:
 		data = (void*)CROSS_GIF;
 		*length = sizeof(CROSS_GIF);
 		break;
-	case 7:
+	case SQUARE:
 		data = (void*)SQUARE_GIF;
 		*length = sizeof(SQUARE_GIF);
 		break;
-	case 8:
+	case SELECT:
 		data = (void*)SELECT_GIF;
 		*length = sizeof(SELECT_GIF);
 		break;
-	case 9:
+	case L3:
 		data = (void*)L3_GIF;
 		*length = sizeof(L3_GIF);
 		break;
-	case 10:
+	case R3:
 		data = (void*)R3_GIF;
 		*length = sizeof(R3_GIF);
 		break;
-	case 11:
+	case START:
 		data = (void*)START_GIF;
 		*length = sizeof(START_GIF);
 		break;
-	case 12:
+	case UP:
 		data = (void*)UP_GIF;
 		*length = sizeof(UP_GIF);
 		break;
-	case 13:
+	case RIGHT:
 		data = (void*)RIGHT_GIF;
 		*length = sizeof(RIGHT_GIF);
 		break;
-	case 14:
+	case DOWN:
 		data = (void*)DOWN_GIF;
 		*length = sizeof(DOWN_GIF);
 		break;
-	case 15:
+	case LEFT:
 		data = (void*)LEFT_GIF;
 		*length = sizeof(LEFT_GIF);
 		break;
-	case 16:
-	case 20:
+	case LANALOG_UP:
+	case RANALOG_UP:
 		data = (void*)ANALOG_UP_GIF;
 		*length = sizeof(ANALOG_UP_GIF);
 		break;
-	case 17:
-	case 21:
+	case LANALOG_RIGHT:
+	case RANALOG_RIGHT:
 		data = (void*)ANALOG_RIGHT_GIF;
 		*length = sizeof(ANALOG_RIGHT_GIF);
 		break;
-	case 18:
-	case 22:
+	case LANALOG_DOWN:
+	case RANALOG_DOWN:
 		data = (void*)ANALOG_DOWN_GIF;
 		*length = sizeof(ANALOG_DOWN_GIF);
 		break;
-	case 19:
-	case 23:
+	case LANALOG_LEFT:
+	case RANALOG_LEFT:
 		data = (void*)ANALOG_LEFT_GIF;
 		*length = sizeof(ANALOG_LEFT_GIF);
 		break;
 	default:
-		wxMessageBox("Unknown button number in GetImageData()");
+		wxMessageBox(wxString::Format("Unknown button number in GetImageData(): Button #%d", index));
 		break;
 	}
 }
@@ -1448,7 +1461,15 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev)
 			buttonInfo = "Delay: Repeat this Action for " + buttonInfo + strFrame + "Click here to modify its value.";
 		}
 		else if (val->buttonSensitivity >= 0 && val->buttonSensitivity <= 255)
-			buttonInfo += wxString::Format("\nSensitivity: %d , buttonValue: %d", val->buttonSensitivity, val->buttonValue);
+		{
+			//For SELECT, START, L3 and R3: they have fixed sensitivity of 255
+			if (val->buttonValue == SELECT || val->buttonValue == START ||
+				val->buttonValue == L3 || val->buttonValue == R3)
+				buttonInfo += wxString::Format("\nNot a pressure sensitive button.", val->buttonSensitivity, val->buttonValue);
+			else
+				buttonInfo += wxString::Format("\nSensitivity: %d", val->buttonSensitivity, val->buttonValue);
+		}
+
 		GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(buttonInfo);
 		ev.Skip();
 	}
@@ -1481,6 +1502,14 @@ void OnChangeSensitivity(wxSpinEvent &ev)
 		//avoid changing sensitivity to empty cells
 		if (val->buttonName == "")
 			return;
+
+		//avoid changing sensitivity fo SELECT, START, L3, R3 as they are not pressure sensitive
+		if (val->buttonValue == SELECT || val->buttonValue == START ||
+			val->buttonValue == L3 || val->buttonValue == R3)
+		{
+			Cell_Locator.SetLocation(row, col);
+			return;
+		}
 
 		val->buttonSensitivity = ev.GetValue();		//modify sensitivity
 		//save it back to the table (button structure)

@@ -12,11 +12,11 @@ using namespace std;	//for exceptions
 CTwinPad_Gui GUI_Controls = { 0 };
 GUI_Configurations GUI_Config = { 0 };
 
-const wxString HEADER_TWINPAD = "[TwinPad Configurations v1.6]";
-const wxString HEADER_TWINPAD_COMBO = "[TwinPad COMBO Configurations v1.1]";
-const wxString LOCATION = "inis/"; //TODO: replace with given dir from emu. 
-const wxString TWIN_PAD = "TwinPad.ini";
-const wxString TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
+const wxString g_HEADER_TWINPAD = "[TwinPad Configurations v1.6]";
+const wxString g_HEADER_TWINPAD_COMBO = "[TwinPad COMBO Configurations v1.1]";
+const wxString g_Path = "inis/"; //TODO: replace with given dir from emu. 
+const wxString g_TWIN_PAD = "TwinPad.ini";
+const wxString g_TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
 
 void OnNotebookChange(wxCommandEvent &evt)
 {
@@ -59,10 +59,10 @@ void CreateControls(wxFrame *window)
 
 		//Check to see if configuration files are present, otherwise create null ones
 		wxString file1, file2;
-		file1 = LOCATION + TWIN_PAD;
-		CheckAndCreateIfNecessary(file1.ToStdString(), HEADER_TWINPAD.ToStdString());
-		file2 = LOCATION + TWIN_PAD_COMBOS;
-		CheckAndCreateIfNecessary(file2.ToStdString(), HEADER_TWINPAD_COMBO.ToStdString());
+		file1 = g_Path + g_TWIN_PAD;
+		CheckAndCreateIfNecessary(file1.ToStdString(), g_HEADER_TWINPAD.ToStdString());
+		file2 = g_Path + g_TWIN_PAD_COMBOS;
+		CheckAndCreateIfNecessary(file2.ToStdString(), g_HEADER_TWINPAD_COMBO.ToStdString());
 
 		Loading_TwinPad_Main_Config();
 		//////////////////////////
@@ -141,9 +141,10 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 				GUI_Controls.txtCtrl[txtIndex]->SetForegroundColour(wxColor("White"));
 				GUI_Controls.txtCtrl[txtIndex]->SetIndex(txtIndex); //Same index as the animation control
 				GUI_Controls.txtCtrl[txtIndex]->Bind(wxEVT_RIGHT_UP, ::OnTxtCtrlRightClick);
-				GUI_Controls.txtCtrl[txtIndex]->SetToolTip(wxString::Format("%s:\n%s%s", PS_LABEL[txtIndex].name,
-					"Left-Click: The icon on the left and then 'press any key' to assign it to the current Button.\n\n",
-					"Right-Click: To erase the configured Key."));
+				GUI_Controls.txtCtrl[txtIndex]->SetToolTip(wxString::Format(
+					"This shows the current Key assigned to \"%s\" button on the left.\n\n%s%s", PS_LABEL[txtIndex].name,
+					"Left-Click The icon on the left and then 'press any key' to assign it to the current Button.\n",
+					"Right-Click here to erase the configured Key."));
 				txtIndex += 8;
 				break;
 			case 4:
