@@ -3,18 +3,18 @@
 #include "twinpad_gui.h"
 #include "labels.h"
 
-using namespace std;	//for exceptions
+using namespace std;	// for exceptions
 
-//I know I should not use globals and externs, but either that or passing pointers and references
-//to GUI controls all over the files and functions that want to use them or use a couple globals. I chose the latter.
+// I know I should not use globals and externs, but either that or passing pointers and references
+// to GUI controls all over the files and functions that want to use them or use a couple globals. I chose the latter.
 
-//Global Structurea that hold all vital GUI controls and their values
+// Global Structurea that hold all vital GUI controls and their values
 CTwinPad_Gui GUI_Controls = { 0 };
 GUI_Configurations GUI_Config = { 0 };
 
 const wxString g_HEADER_TWINPAD = "[TwinPad Configurations v1.6]";
 const wxString g_HEADER_TWINPAD_COMBO = "[TwinPad COMBO Configurations v1.1]";
-const wxString g_Path = "inis/"; //TODO: replace with given dir from emu. 
+const wxString g_Path = "inis/"; // TODO: replace with given dir from emu. 
 const wxString g_TWIN_PAD = "TwinPad.ini";
 const wxString g_TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
 
@@ -54,18 +54,17 @@ void CreateControls(wxFrame *window)
 {
 	try
 	{
-		//Save the pointer of the main frame to make access easier
+		// Save the pointer of the main frame to make access easier
 		GUI_Controls.mainFrame = window;
 
-		//Check to see if configuration files are present, otherwise create null ones
+		// Check to see if configuration files are present, otherwise create null ones
 		wxString file1, file2;
 		file1 = g_Path + g_TWIN_PAD;
-		CheckAndCreateIfNecessary(file1.ToStdString(), g_HEADER_TWINPAD.ToStdString());
+		IsFileOkAndFix(file1.ToStdString(), g_HEADER_TWINPAD.ToStdString());
 		file2 = g_Path + g_TWIN_PAD_COMBOS;
-		CheckAndCreateIfNecessary(file2.ToStdString(), g_HEADER_TWINPAD_COMBO.ToStdString());
+		IsFileOkAndFix(file2.ToStdString(), g_HEADER_TWINPAD_COMBO.ToStdString());
 
 		Loading_TwinPad_Main_Config();
-		//////////////////////////
 
 		GUI_Controls.noteBook = new wxNotebook(window, ID_NOTEBOOK, wxPoint(-1, -1), wxSize(-1, -1));
 		GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
@@ -75,7 +74,7 @@ void CreateControls(wxFrame *window)
 		AddCombosTab(GUI_Controls);
 		AddMiscTab(GUI_Controls);
 
-		//AddGamePadTab(GUI_Controls);	//TODO: Maybe..
+		// AddGamePadTab(GUI_Controls);	// TODO: Maybe..
 	}
 	catch (exception &e)
 	{
@@ -85,21 +84,21 @@ void CreateControls(wxFrame *window)
 
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 {
-	//main panel will contain other controls, 
-	//this panel will be added to the notebook's first tab.
+	// main panel will contain other controls, 
+	// this panel will be added to the notebook's first tab.
 	wxPanel *panel = new wxPanel(GUI_Controls.noteBook);
 
-	//Default tab colors are ugly (pure white), so get color from the frame
+	// Default tab colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
 
-	/////main sizer//////////////////////////////////////
+	// main sizer
 	wxBoxSizer *parentSizer = new wxBoxSizer(wxVERTICAL);
 
-	/////flex grid sizer/////////////////////////////////
-	//This will contain ps2 images, labels, so we can configure them
+	// flex grid sizer
+	// This will contain ps2 images, labels, so we can configure them
 	wxFlexGridSizer *flexSizer = new wxFlexGridSizer(8, 7, 10, 10);
 
-	//Wrap the flex sizer with nice borders///////
+	// Wrap the flex sizer with nice borders
 	wxStaticBoxSizer *stcPS2Controls = new wxStaticBoxSizer(wxVERTICAL, panel, "PS2 Buttons");
 	stcPS2Controls->Add(flexSizer, 1, wxEXPAND);
 
@@ -107,10 +106,10 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.noteBook->SetPageText(KEYBOARD_TAB, "Keyboard");
 
 	int animIndex = 0, txtIndex = 0, lblIndex = 0;
-	for (int r = 0; r < 8; r++)		//rows
+	for (int r = 0; r < 8; r++)		// rows
 	{
 		animIndex = txtIndex = r;
-		for (int c = 0; c < 7; c++)	//columns
+		for (int c = 0; c < 7; c++)	// columns
 		{
 			switch(c)
 			{
@@ -137,9 +136,9 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 				flexSizer->Add(GUI_Controls.txtCtrl[txtIndex], 1, wxALIGN_CENTER);
 				GUI_Controls.txtCtrl[txtIndex]->SetEditable(false);
 				GUI_Controls.txtCtrl[txtIndex]->SetWindowStyle(wxTE_CENTER);
-				GUI_Controls.txtCtrl[txtIndex]->SetBackgroundColour(wxColor(66,66,66));		//Dark Grey
+				GUI_Controls.txtCtrl[txtIndex]->SetBackgroundColour(wxColor(66,66,66));		// Dark Grey
 				GUI_Controls.txtCtrl[txtIndex]->SetForegroundColour(wxColor("White"));
-				GUI_Controls.txtCtrl[txtIndex]->SetIndex(txtIndex); //Same index as the animation control
+				GUI_Controls.txtCtrl[txtIndex]->SetIndex(txtIndex); // Same index as the animation control
 				GUI_Controls.txtCtrl[txtIndex]->Bind(wxEVT_RIGHT_UP, ::OnTxtCtrlRightClick);
 				GUI_Controls.txtCtrl[txtIndex]->SetToolTip(wxString::Format(
 					"This shows the current Key assigned to \"%s\" button on the left.\n\n%s%s", PS_LABEL[txtIndex].name,
@@ -148,7 +147,7 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 				txtIndex += 8;
 				break;
 			case 4:
-				//label "L" or "R" for left or right
+				// label "L" or "R" for left or right
 				if(lblIndex < 4)
 					GUI_Controls.lblLabel[lblIndex] = new wxStaticText(panel, ID_LBL + lblIndex, "L");
 				else
@@ -162,12 +161,12 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 			}
 		}
 	}
-	animIndex = lblIndex = lblIndex = 0;		//in case I need them again
+	animIndex = lblIndex = lblIndex = 0;		// in case I need them again
 
-	//Sizer that contains "Choose Pad 1 or 2, and WALK or Run" sizers
+	// Sizer that contains "Choose Pad 1 or 2, and WALK or Run" sizers
 	wxBoxSizer *middleSizer = new wxBoxSizer(wxHORIZONTAL);
 
-	//Choose PAD1 or PAD2
+	// Choose PAD1 or PAD2
 	wxStaticBoxSizer *choosePadSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Which PAD?");
 	GUI_Controls.pad1RadioBtn = new wxRadioButton(panel, ID_PAD1_RADIOBTN, "PAD 1");
 	GUI_Controls.pad2RadioBtn = new wxRadioButton(panel, ID_PAD2_RADIOBTN, "PAD 2");
@@ -177,14 +176,14 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	choosePadSizer->Add(GUI_Controls.pad2RadioBtn, 0, wxALIGN_CENTER);
 	GUI_Controls.pad1RadioBtn->SetValue(true);
 
-	//WALK or RUN (FULL or HALF) Press, imitating pressure sensitive button on keyboard
+	// WALK or RUN (FULL or HALF) Press, imitating pressure sensitive button on keyboard
 	wxStaticBoxSizer *walkRunSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Toggle WALK/RUN (HALF/FULL pressure sensitivity)");
 	
 	GUI_Controls.txtWalkRun = new CPS_Txt(panel, ID_TXT_WALKRUN, "NONE", wxSize(200,20));
 	GUI_Controls.txtWalkRun->SetWindowStyle(wxTE_CENTER);
 	GUI_Controls.txtWalkRun->SetEditable(false);
 	GUI_Controls.txtWalkRun->SetWindowStyle(wxTE_CENTER);
-	GUI_Controls.txtWalkRun->SetBackgroundColour(wxColor(66,66,66));	//Dark Grey
+	GUI_Controls.txtWalkRun->SetBackgroundColour(wxColor(66,66,66));	// Dark Grey
 	GUI_Controls.txtWalkRun->SetForegroundColour(wxColor("White"));
 	walkRunSizer->Add(GUI_Controls.txtWalkRun, 0, wxLEFT | wxRIGHT, 50);
 
@@ -192,10 +191,10 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	middleSizer->AddSpacer(20);
 	middleSizer->Add(walkRunSizer, 0, wxALIGN_CENTER);
 
-	//Edit Button Label: Shows which button currently being configured
+	// Edit Button Label: Shows which button currently being configured
 	GUI_Controls.lblEdit = new wxStaticText(panel, wxID_ANY, "Edit Button: ", wxDefaultPosition, wxSize(260,20));
-	GUI_Controls.lblEdit->SetBackgroundColour(wxColor("#100075"));	//Dark Blue
-	GUI_Controls.lblEdit->SetForegroundColour(wxColor("#FFFFFF"));	//White
+	GUI_Controls.lblEdit->SetBackgroundColour(wxColor("#100075"));	// Dark Blue
+	GUI_Controls.lblEdit->SetForegroundColour(wxColor("#FFFFFF"));	// White
 	GUI_Controls.lblEdit->SetWindowStyle(wxTE_CENTER);
 
 	GUI_Controls.btnAutoNavigate = new wxButton(panel, ID_BTN_AUTO, "&Auto Navigate");
@@ -203,7 +202,7 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.btnOK = new wxButton(panel, ID_BTN_OK, "&Ok");
 	GUI_Controls.btnCancel = new wxButton(panel, ID_BTN_CANCEL, "&Cancel");
 
-	//Bottom Sizer, Contains 4 buttons: OK, Cancel, Auto Navigate, and Nullifies All
+	// Bottom Sizer, Contains 4 buttons: OK, Cancel, Auto Navigate, and Nullifies All
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	bottomSizer->Add(GUI_Controls.btnAutoNavigate, wxALIGN_CENTER);
@@ -214,11 +213,11 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	bottomSizer->AddSpacer(10);
 	bottomSizer->Add(GUI_Controls.btnCancel, wxALIGN_CENTER);
 	
-	//Notebook labels not calculated with sizer, without this, I'll be missing the buttons
+	// Notebook labels not calculated with sizer, without this, I'll be missing the buttons
 	wxBoxSizer *extraSpaceSizer = new wxBoxSizer(wxVERTICAL);
 	extraSpaceSizer->AddSpacer(30);		
 
-	//Add all sizers to parent sizer
+	// Add all sizers to parent sizer
 	parentSizer->Add(stcPS2Controls, 0, wxALIGN_CENTER | wxTOP | wxLEFT | wxRIGHT, 10);
 	parentSizer->Add(middleSizer, 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, 10);
 	parentSizer->AddSpacer(5);
@@ -227,12 +226,12 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	parentSizer->Add(bottomSizer, 0, wxALIGN_CENTER | wxBOTTOM | wxLEFT | wxRIGHT, 10);
 	parentSizer->Add(extraSpaceSizer, 0);
 
-	//prevent window from getting smaller than the threshold
+	// prevent window from getting smaller than the threshold
 	panel->GetParent()->GetParent()->SetMinClientSize(parentSizer->GetMinSize());
 	panel->SetSizerAndFit(parentSizer);
-	//Save current window size, to be used later when switching tabs and resize again
-	GUI_Controls.minWinSize[KEYBOARD_TAB] = parentSizer->GetSize();	//Save min size for Keyboard TAB
-	GUI_Controls.noteBook->SetSelection(KEYBOARD_TAB);	//Select keyboard tab
+	// Save current window size, to be used later when switching tabs and resize again
+	GUI_Controls.minWinSize[KEYBOARD_TAB] = parentSizer->GetSize();	// Save min size for Keyboard TAB
+	GUI_Controls.noteBook->SetSelection(KEYBOARD_TAB);	// Select keyboard tab
 }
 
 void AddMouseTab(CTwinPad_Gui &GUI_Controls)
@@ -241,17 +240,17 @@ void AddMouseTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.noteBook->AddPage(panel, "Mouse", false);
 	GUI_Controls.noteBook->SetPageText(MOUSE_TAB, "Mouse");
 
-	//Default tab colors are ugly (pure white), so get color from the frame
+	// Default tab colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
 
-	/////main sizer//////////////////////////////////////
+	// main sizer
 	wxBoxSizer *parentSizer = new wxBoxSizer(wxVERTICAL);
 
-	/////flex grid sizer/////////////////////////////////
-	//This will mouse labels and list boxes, so we can configure them
+	// flex grid sizer
+	// This will mouse labels and list boxes, so we can configure them
 	wxFlexGridSizer *flexSizer = new wxFlexGridSizer(10, 2, 10, 70);
 
-	//Static box around mouse controls
+	// Static box around mouse controls
 	wxStaticBoxSizer *mouseSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Mouse Button Configuration");
 
 	for (int r = 0; r < 10; r++)
@@ -268,9 +267,9 @@ void AddMouseTab(CTwinPad_Gui &GUI_Controls)
 				GUI_Controls.cmbMouseComboBox[r] = 
 						new wxComboBox(panel, wxID_ANY, "NONE", wxDefaultPosition, 	wxSize(200,20), 19, strMouseChoices,
 						wxCB_READONLY);
-				//HACK FIX: wxWidgets doesn't apply background color for combo box
-				//unless foreground color is set too, it is a known bug in wxWidgets
-				GUI_Controls.cmbMouseComboBox[r]->SetBackgroundColour(wxColor(66,66,66));	//Dark Grey
+				// HACK FIX: wxWidgets doesn't apply background color for combo box
+				// unless foreground color is set too, it is a known bug in wxWidgets
+				GUI_Controls.cmbMouseComboBox[r]->SetBackgroundColour(wxColor(66,66,66));	// Dark Grey
 				GUI_Controls.cmbMouseComboBox[r]->SetForegroundColour(wxColor("White"));
 				flexSizer->Add(GUI_Controls.cmbMouseComboBox[r]);
 				break;
@@ -279,7 +278,7 @@ void AddMouseTab(CTwinPad_Gui &GUI_Controls)
 	}
 	mouseSizer->Add(flexSizer, 0, wxALIGN_CENTER | wxALL, 10);
 
-	//Selection of Pad 1 or 2
+	// Selection of Pad 1 or 2
 	wxStaticBoxSizer *selectPadSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Which PAD?");
 	GUI_Controls.mousePad1radioButton = new wxRadioButton(panel, ID_PAD1_TAB2_RADIOBTN, "PAD 1");
 	GUI_Controls.mousePad2radioButton = new wxRadioButton(panel, ID_PAD2_TAB2_RADIOBTN, "PAD 2");
@@ -288,7 +287,7 @@ void AddMouseTab(CTwinPad_Gui &GUI_Controls)
 	selectPadSizer->Add(GUI_Controls.mousePad2radioButton, 0, wxALIGN_CENTER);
 	GUI_Controls.mousePad1radioButton->SetValue(true);
 	
-	//Nullifies All for mouse and help buttons
+	// Nullifies All for mouse and help buttons
 	GUI_Controls.btnMouseNullifiesAll = new wxButton(panel, ID_BTN_NULL_MOUSE, "&Nullifies All");
 	GUI_Controls.btnMouseHelp = new wxButton(panel, ID_BTN_HELP_MOUSE, "&Help");
 	GUI_Controls.btnMouseHelp->Bind(wxEVT_LEFT_UP, OnClickMouseHelpButton);
@@ -299,7 +298,7 @@ void AddMouseTab(CTwinPad_Gui &GUI_Controls)
 											wxDefaultSize, 6, strMouseSensitivity, wxCB_READONLY); 
 	sensitivitySizer->Add(GUI_Controls.cmbMouseSensitivity, wxALL, 10);
 
-	//Sizer contains PAD selection, Null Button, Help Button, and Sensetivity Sizer
+	// Sizer contains PAD selection, Null Button, Help Button, and Sensetivity Sizer
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	bottomSizer->Add(selectPadSizer, 0, wxALIGN_CENTER);
@@ -313,14 +312,14 @@ void AddMouseTab(CTwinPad_Gui &GUI_Controls)
 	wxBoxSizer *extraSpaceSizer = new wxBoxSizer(wxVERTICAL);
 	extraSpaceSizer->AddSpacer(60);
 
-	////////////////Final/////////////////////////////////////
+	// Finally add sub-sizers to parent sizer
 	parentSizer->Add(mouseSizer, 0, wxALIGN_CENTER  | wxLEFT | wxRIGHT, 25);
 	parentSizer->Add(bottomSizer, 0, wxALIGN_CENTER | wxALL, 5);
 	parentSizer->Add(extraSpaceSizer, 0, wxALIGN_CENTER | wxALL, 5);
 
-	////prevent window from getting smaller than the threshold
+	// prevent window from getting smaller than the threshold
 	panel->SetSizerAndFit(parentSizer);
-	GUI_Controls.minWinSize[MOUSE_TAB] = parentSizer->GetSize();	//Mouse TAB
+	GUI_Controls.minWinSize[MOUSE_TAB] = parentSizer->GetSize();	// Mouse TAB
 }
 
 void AddCombosTab(CTwinPad_Gui &GUI_Controls)
@@ -329,11 +328,11 @@ void AddCombosTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.noteBook->AddPage(panel, "COMBOs", false);
 	GUI_Controls.noteBook->SetPageText(COMBOS_TAB, "COMBOs");
 
-	//Default tabs' colors are ugly (pure white), so get color from the frame
+	// Default tabs' colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
 	
 	SetupComboTab(panel);
-	GUI_Controls.minWinSize[COMBOS_TAB] = panel->GetSize();	//COMBOs TAB
+	GUI_Controls.minWinSize[COMBOS_TAB] = panel->GetSize();	// COMBOs TAB
 }
 
 void AddMiscTab(CTwinPad_Gui &GUI_Controls)
@@ -342,13 +341,13 @@ void AddMiscTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.noteBook->AddPage(panel, "Misc", false);
 	GUI_Controls.noteBook->SetPageText(MISC_TAB, "Misc");
 
-	//Default tab colors are ugly (pure white), so get color from the frame
+	// Default tab colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
 
-	/////main sizer//////////////////////////////////////
+	// main sizer
 	wxBoxSizer *parentSizer = new wxBoxSizer(wxVERTICAL);
 
-	//Static box around mouse controls
+	// Static box around mouse controls
 	wxStaticBoxSizer *optionSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Options");
 
 
@@ -380,50 +379,49 @@ void AddMiscTab(CTwinPad_Gui &GUI_Controls)
 	optionSizer->Add(flexSizer, 0, wxALL, 10);
 	optionSizer->Add(vSizer);
 
-	///////////////Final/////////////////
+	// Finally, add sub-sizers to parent sizer
 
 	parentSizer->Add(lblLabel, 0, wxALIGN_CENTER | wxALL, 10);
 	parentSizer->Add(optionSizer, 1, wxEXPAND | wxLEFT | wxRIGHT, 20);
 	parentSizer->Add(extraSpaceSizer);
 
 	panel->SetSizerAndFit(parentSizer);
-	GUI_Controls.minWinSize[MISC_TAB] = parentSizer->GetSize();		//MISC TAB
+	GUI_Controls.minWinSize[MISC_TAB] = parentSizer->GetSize();		// MISC TAB
 }
 
 
 void AddGamePadTab(CTwinPad_Gui &GUI_Controls)
 {
-	//////////////Not a priority/////////////////
+	// Not a priority 
 	/*
 	wxPanel *panel = new wxPanel(GUI_Controls.noteBook, wxID_ANY, wxPoint(-1,-1), wxSize(-1,-1));
 	GUI_Controls.noteBook->AddPage(panel, "GamePad", false);
 	GUI_Controls.noteBook->SetPageText(GAMEPAD_TAB, "GamePad");
 	
-	//Default tab colors are ugly (pure white), so get color from the frame
+	// Default tab colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
 
 	panel->SetSizerAndFit(parentSizer);
-	GUI_Controls.minWinSize[GAMEPAD_TAB] = panel->GetSize();	//GamePad TAB
+	GUI_Controls.minWinSize[GAMEPAD_TAB] = panel->GetSize();	// GamePad TAB
 	*/	
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-///This function handles the click event for both keyboard tab and combo tab
+// This function handles the click event for both keyboard tab and combo tab
 void CPS_Anim::OnClick(wxCommandEvent &event)
 {
 	try
 	{
-		//int winID = (int) event.GetEventUserData();
+		// int winID = (int) event.GetEventUserData();
 		int winID = event.GetId();
 		
-		if (winID >= 1000 && winID < 1024)	//Keyboard tab
+		if (winID >= 1000 && winID < 1024)	// Keyboard tab
 		{
-			//Implement reading DirectInput keypress
+			// Implement reading DirectInput keypress
 			GUI_Controls.txtCtrl[this->GetIndex()]->SetValue(this->GetName());
 			GUI_Controls.lblEdit->SetLabel(wxString::Format("Edit Button: %s", PS_LABEL[this->GetIndex()].name));
 			this->Play();
 		}
-		else if (winID >= 1024 && winID <= 1047)	//Combo tab
+		else if (winID >= 1024 && winID <= 1047)	// Combo tab
 			OnClick_psComboButtons(winID);
 		else
 			throw "Unknown AnimationCtrl ID, #" + winID;
@@ -434,7 +432,7 @@ void CPS_Anim::OnClick(wxCommandEvent &event)
 	}
 }
 
-///This function handles the click event for Mouse help button
+// This function handles the click event for Mouse help button
 void OnClickMouseHelpButton(wxMouseEvent &ev)
 {
 	try
@@ -448,7 +446,7 @@ void OnClickMouseHelpButton(wxMouseEvent &ev)
 	}
 }
 
-///This function handles the click event for Mouse Nullifies All
+// This function handles the click event for Mouse Nullifies All
 void OnClickMouseNullifiesAll(wxMouseEvent &ev)
 {
 	try
@@ -458,8 +456,8 @@ void OnClickMouseNullifiesAll(wxMouseEvent &ev)
 
 		GUI_Controls.cmbMouseSensitivity->Select(0);
 		GUI_Controls.mousePad1radioButton->SetValue(true);
-		//Another bug in wxWidgets! without the skip event, the window freezes, 
-		//until it loses focus by another app (hides behind it) then set focused again.
+		// Another bug in wxWidgets! without the skip event, the window freezes, 
+		// until it loses focus by another app (hides behind it) then set focused again.
 		ev.Skip();
 	}
 	catch (exception &e)
@@ -468,22 +466,22 @@ void OnClickMouseNullifiesAll(wxMouseEvent &ev)
 	}
 }
 
-//This function handles right click even on th txtCrls/animCtrl and delete configuration for a button
-//Also, preven the context menu (right-click menu) from showing up
+// This function handles right click even on th txtCrls/animCtrl and delete configuration for a button
+// Also, preven the context menu (right-click menu) from showing up
 void OnTxtCtrlRightClick(wxMouseEvent &ev)
 {
 	try
 	{
 		int id = ev.GetId();
-		//Which id? txtCtrl or animCtrl?
+		// Which id? txtCtrl or animCtrl?
 		if (ev.GetId() >= ID_TXT && ev.GetId() <= 2023)
 			id -= ID_TXT;
 		else if (ev.GetId() >= ID_BTN && ev.GetId() <= 1023)
 			id -= ID_BTN;
 		GUI_Controls.txtCtrl[id]->SetValue("Null");
 		GUI_Controls.lblEdit->SetLabel("Edit Button: ");
-		GUI_Controls.animCtrl[id]->Stop();	//Stop animation
-		return;	//a return will disable the context menu if the even was on txtCtrl
+		GUI_Controls.animCtrl[id]->Stop();	// Stop animation
+		return;	// a return will disable the context menu if the even was on txtCtrl
 	}
 	catch (exception &ex)
 	{

@@ -51,9 +51,9 @@ const CPS_Label DIK_KEYCODES[] = {
     , 0x9   , "DIK_8"
     , 0xA   , "DIK_9"
     , 0xB   , "DIK_0"
-    , 0xC   , "DIK_MINUS"             // - on main keyboard
+    , 0xC   , "DIK_MINUS"             //  - on main keyboard
     , 0xD   , "DIK_EQUALS"
-    , 0xE   , "DIK_BACK"              // backspace
+    , 0xE   , "DIK_BACK"              //  backspace
     , 0xF   , "DIK_TAB"
     , 0x10  , "DIK_Q"
     , 0x11  , "DIK_W"
@@ -67,7 +67,7 @@ const CPS_Label DIK_KEYCODES[] = {
     , 0x19  , "DIK_P"
     , 0x1A  , "DIK_LBRACKET"
     , 0x1B  , "DIK_RBRACKET"
-    , 0x1C  , "DIK_RETURN"				// Enter on main keyboard
+    , 0x1C  , "DIK_RETURN"				//  Enter on main keyboard
     , 0x1D  , "DIK_LCONTROL"
     , 0x1E  , "DIK_A"
     , 0x1F  , "DIK_S"
@@ -80,7 +80,7 @@ const CPS_Label DIK_KEYCODES[] = {
     , 0x26  , "DIK_L"
     , 0x27  , "DIK_SEMICOLON"
     , 0x28  , "DIK_APOSTROPHE"
-    , 0x29  , "DIK_GRAVE"				// accent grave
+    , 0x29  , "DIK_GRAVE"				//  accent grave
     , 0x2A  , "DIK_LSHIFT"
     , 0x2B  , "DIK_BACKSLASH"
     , 0x2C  , "DIK_Z"
@@ -91,11 +91,11 @@ const CPS_Label DIK_KEYCODES[] = {
     , 0x31  , "DIK_N"
     , 0x32  , "DIK_M"
     , 0x33  , "DIK_COMMA"
-    , 0x34  , "DIK_PERIOD"				// . on main keyboard
-    , 0x35  , "DIK_SLASH"				// / on main keyboard
+    , 0x34  , "DIK_PERIOD"				//  . on main keyboard
+    , 0x35  , "DIK_SLASH"				//  / on main keyboard
     , 0x36  , "DIK_RSHIFT"
-    , 0x37  , "DIK_MULTIPLY"			// * on numeric keypad
-    , 0x38  , "DIK_LMENU"				// left Alt
+    , 0x37  , "DIK_MULTIPLY"			//  * on numeric keypad
+    , 0x38  , "DIK_LMENU"				//  left Alt
     , 0x39  , "DIK_SPACE"
     , 0x3A  , "DIK_CAPITAL"
     , 0x3B  , "DIK_F1"
@@ -109,20 +109,20 @@ const CPS_Label DIK_KEYCODES[] = {
     , 0x43  , "DIK_F9"
     , 0x44  , "DIK_F10"
     , 0x45  , "DIK_NUMLOCK"
-    , 0x46  , "DIK_SCROLL"				// Scroll Lock
+    , 0x46  , "DIK_SCROLL"				//  Scroll Lock
     , 0x47  , "DIK_NUMPAD7"
     , 0x48  , "DIK_NUMPAD8"
     , 0x49  , "DIK_NUMPAD9"
-    , 0x4A  , "DIK_SUBTRACT"			// - on numeric keypad
+    , 0x4A  , "DIK_SUBTRACT"			//  - on numeric keypad
     , 0x4B  , "DIK_NUMPAD4"
     , 0x4C  , "DIK_NUMPAD5"
     , 0x4D  , "DIK_NUMPAD6"
-    , 0x4E  , "DIK_ADD"					// + on numeric keypad
+    , 0x4E  , "DIK_ADD"					//  + on numeric keypad
     , 0x4F  , "DIK_NUMPAD1"
     , 0x50  , "DIK_NUMPAD2"
     , 0x51  , "DIK_NUMPAD3"
     , 0x52  , "DIK_NUMPAD0"
-    , 0x53  , "DIK_DECIMAL"				// . on numeric keypad
+    , 0x53  , "DIK_DECIMAL"				//  . on numeric keypad
     , 0x56  , "DIK_OEM_102 < > | on UK/Germany keyboards"
     , 0x57  , "DIK_F11"
     , 0x58  , "DIK_F12"
@@ -144,49 +144,48 @@ const CPS_Label DIK_KEYCODES[] = {
     , 0x95  , "DIK_STOP (NEC PC98) "
     , 0x96  , "DIK_AX (Japan AX) "
     , 0x97  , "DIK_UNLABELED (J3100) "
-    , 0x99  , "DIK_NEXTTRACK"			// Next Track
-    , 0x9C  , "DIK_NUMPADENTER"			// Enter on numeric keypad
+    , 0x99  , "DIK_NEXTTRACK"			//  Next Track
+    , 0x9C  , "DIK_NUMPADENTER"			//  Enter on numeric keypad
     , 0x9D  , "DIK_RCONTROL"
-    , 0xA0  , "DIK_MUTE"				// Mute
-    , 0xA1  , "DIK_CALCULATOR"			// Calculator
-    , 0xA2  , "DIK_PLAYPAUSE"			// Play / Pause
-    , 0xA4  , "DIK_MEDIASTOP"			// Media Stop
-    , 0xAE  , "DIK_VOLUMEDOWN"			// Volume -
-    , 0xB0  , "DIK_VOLUMEUP"			// Volume +
-    , 0xB2  , "DIK_WEBHOME"				// Web home
-    , 0xB3  , "DIK_NUMPADCOMMA"			// , on numeric keypad (NEC PC98)
-    , 0xB5  , "DIK_DIVIDE"				// / on numeric keypad
+    , 0xA0  , "DIK_MUTE"				//  Mute
+    , 0xA1  , "DIK_CALCULATOR"			//  Calculator
+    , 0xA2  , "DIK_PLAYPAUSE"			//  Play / Pause
+    , 0xA4  , "DIK_MEDIASTOP"			//  Media Stop
+    , 0xAE  , "DIK_VOLUMEDOWN"			//  Volume -
+    , 0xB0  , "DIK_VOLUMEUP"			//  Volume +
+    , 0xB2  , "DIK_WEBHOME"				//  Web home
+    , 0xB3  , "DIK_NUMPADCOMMA"			//  , on numeric keypad (NEC PC98)
+    , 0xB5  , "DIK_DIVIDE"				//  / on numeric keypad
     , 0xB7  , "DIK_SYSRQ"
-    , 0xB8  , "DIK_RMENU"				// right Alt
-    , 0xC5  , "DIK_PAUSE"				// Pause
-    , 0xC7  , "DIK_HOME"				// Home on arrow keypad
-    , 0xC8  , "DIK_UP"					// UpArrow on arrow keypad
-    , 0xC9  , "DIK_PRIOR"				// PgUp on arrow keypad
-    , 0xCB  , "DIK_LEFT"				// LeftArrow on arrow keypad
-    , 0xCD  , "DIK_RIGHT"				// RightArrow on arrow keypad
-    , 0xCF  , "DIK_END"					// End on arrow keypad
-    , 0xD0  , "DIK_DOWN"				// DownArrow on arrow keypad
-    , 0xD1  , "DIK_NEXT"				// PgDn on arrow keypad
-    , 0xD2  , "DIK_INSERT"				// Insert on arrow keypad
-    , 0xD3  , "DIK_DELETE"				// Delete on arrow keypad
-    , 0xDB  , "DIK_LWIN"				// Left Windows key
-    , 0xDC  , "DIK_RWIN"				// Right Windows key
-    , 0xDD  , "DIK_APPS"				// AppMenu key
-    , 0xDE  , "DIK_POWER"				// System Power
-    , 0xDF  , "DIK_SLEEP"				// System Sleep
-    , 0xE3  , "DIK_WAKE"				// System Wake
-    , 0xE5  , "DIK_WEBSEARCH"			// Web Search
-    , 0xE6  , "DIK_WEBFAVORITES"		// Web Favorites
-    , 0xE7  , "DIK_WEBREFRESH"			// Web Refresh
-    , 0xE8  , "DIK_WEBSTOP"				// Web Stop
-    , 0xE9  , "DIK_WEBFORWARD"			// Web Forward
-    , 0xEA  , "DIK_WEBBACK"				// Web Back
-    , 0xEB  , "DIK_MYCOMPUTER"			// My Computer
-    , 0xEC  , "DIK_MAIL"				// Mail
-    , 0xED  , "DIK_MEDIASELECT"			// Media Select
+    , 0xB8  , "DIK_RMENU"				//  right Alt
+    , 0xC5  , "DIK_PAUSE"				//  Pause
+    , 0xC7  , "DIK_HOME"				//  Home on arrow keypad
+    , 0xC8  , "DIK_UP"					//  UpArrow on arrow keypad
+    , 0xC9  , "DIK_PRIOR"				//  PgUp on arrow keypad
+    , 0xCB  , "DIK_LEFT"				//  LeftArrow on arrow keypad
+    , 0xCD  , "DIK_RIGHT"				//  RightArrow on arrow keypad
+    , 0xCF  , "DIK_END"					//  End on arrow keypad
+    , 0xD0  , "DIK_DOWN"				//  DownArrow on arrow keypad
+    , 0xD1  , "DIK_NEXT"				//  PgDn on arrow keypad
+    , 0xD2  , "DIK_INSERT"				//  Insert on arrow keypad
+    , 0xD3  , "DIK_DELETE"				//  Delete on arrow keypad
+    , 0xDB  , "DIK_LWIN"				//  Left Windows key
+    , 0xDC  , "DIK_RWIN"				//  Right Windows key
+    , 0xDD  , "DIK_APPS"				//  AppMenu key
+    , 0xDE  , "DIK_POWER"				//  System Power
+    , 0xDF  , "DIK_SLEEP"				//  System Sleep
+    , 0xE3  , "DIK_WAKE"				//  System Wake
+    , 0xE5  , "DIK_WEBSEARCH"			//  Web Search
+    , 0xE6  , "DIK_WEBFAVORITES"		//  Web Favorites
+    , 0xE7  , "DIK_WEBREFRESH"			//  Web Refresh
+    , 0xE8  , "DIK_WEBSTOP"				//  Web Stop
+    , 0xE9  , "DIK_WEBFORWARD"			//  Web Forward
+    , 0xEA  , "DIK_WEBBACK"				//  Web Back
+    , 0xEB  , "DIK_MYCOMPUTER"			//  My Computer
+    , 0xEC  , "DIK_MAIL"				//  Mail
+    , 0xED  , "DIK_MEDIASELECT"			//  Media Select
 	};
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const wxString strMouseLabels[] = { "Left Mouse Button", "Right Mouse Button", "Middle Mouse Button",
 		"Mouse Button # 4", "Mouse Button # 5", "Mouse Button # 6", "Mouse Button # 7",
 		"Mouse Button # 8", "Mouse Scroll Up", "Mouse Scroll Down" };
@@ -197,7 +196,7 @@ const wxString strMouseChoices[] = { "NONE", "L2", "R2", "L1", "R1", "Triangle",
 
 const wxString strMouseSensitivity[] = { "1", "2", "3", "4", "5", "6" };
 
-///These strings for the Misc tab, quite lengthy.. :/
+// These strings for the Misc tab, quite lengthy.. :/
 const wxString strMOUSE_HELP_MSG = "Note: Don't repeat the selection of an option twice!\n" \
 							"e.g. Cross for the Left AND Right mouse buttons at the same time.\n\n" \
 							"And there is no checking for Mouse capabilities, please configure the\n" \
@@ -235,7 +234,5 @@ const wxString strEXTRA_HACK  = "Tick this one. If the game has only one player 
 								"you play FFX, then Lulu's Fury overdrive spells will drop\n" \
 								"to half. And Tekken 3 COMBOs timing will be correct..\n" \
 								"And vice versa.";
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif

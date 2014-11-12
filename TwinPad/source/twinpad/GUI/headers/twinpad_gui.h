@@ -1,7 +1,7 @@
 #ifndef _TWINPAD_GUI_H_
 #define _TWINPAD_GUI_H_
 
-//Set to 0 if you want to use wx.h instead of precompiled header
+// Set to 0 if you want to use wx.h instead of precompiled header
 #define WX_PRECOM 1
 
 #ifndef WX_PRECOM
@@ -16,16 +16,16 @@
 
 #include <vector>
 
-///-----Don't change the Include's order for these two 
+// -----Don't change the Include's order for these two 
 #include "functions_gui.h"
 #include "comboGrid.h"
-///-------------------------
+// -------------------------
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//Don't define any IDs within these ranges...
-//ID_BTN { 1000 to 1023 }, ID_BTN2 { 1024 to 1047 }, ID_TXT { 2000 to 2023 }, ID_LBL { 3000 to 3007 }
-//ID_BTN: For Keyboard TAB, ID_BTN2: For Combos TAB
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+//// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// ///
+// Don't define any IDs within these ranges...
+// ID_BTN { 1000 to 1023 }, ID_BTN2 { 1024 to 1047 }, ID_TXT { 2000 to 2023 }, ID_LBL { 3000 to 3007 }
+// ID_BTN: For Keyboard TAB, ID_BTN2: For Combos TAB
+//// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// // 
 enum ID {	ID_BTN = 1000,
 			ID_BTN2 = 1024,
 			ID_BTN_OK = 1500, ID_BTN_CANCEL, ID_BTN_AUTO, ID_BTN_NULL,
@@ -39,8 +39,8 @@ enum ID {	ID_BTN = 1000,
 			ID_TIMER1 = 7000, ID_TIMER2, ID_TIMER3,
 		};
 
-//-----Timer classes
-//Timer to re-animate Analog sticks to fix out of sync animation
+// -----Timer classes
+// Timer to re-animate Analog sticks to fix out of sync animation
 class CReAnimate : public wxTimer
 {
 public:
@@ -57,7 +57,7 @@ public:
 	}
 };
 
-//Timer to get a Key for Combo tab
+// Timer to get a Key for Combo tab
 class CGetComboKey : public wxTimer
 {
 public:
@@ -65,7 +65,7 @@ public:
 
 	virtual void Notify()
 	{
-		//POLL Device for Key
+		// POLL Device for Key
 	}
 
 	virtual bool Start(int milliseconds)
@@ -74,7 +74,7 @@ public:
 	}
 };
 
-//Timer to get a Key for Keyboard tab
+// Timer to get a Key for Keyboard tab
 class CGetKey : public wxTimer
 {
 public:
@@ -82,7 +82,7 @@ public:
 
 	virtual void Notify()
 	{
-		//POLL Device for Key
+		// POLL Device for Key
 	}
 
 	virtual bool Start(int milliseconds)
@@ -98,8 +98,8 @@ public:
 
 	virtual void Notify()
 	{
-		//Auto navigation between Keyboard buttons to configure them
-		//Note: It is best to use something similar to a state machine when calling the function
+		// Auto navigation between Keyboard buttons to configure them
+		// Note: It is best to use something similar to a state machine when calling the function
 	}
 
 	virtual bool Start(int milliseconds)
@@ -109,14 +109,14 @@ public:
 };
 
 
-//Purpose: to prevent TABs
+// Purpose: to prevent TABs
 class CPS_BTN : public wxBitmapButton
 {
 public:
 	CPS_BTN(wxWindow *parent, wxWindowID id, const wxBitmap &bitmap, const wxPoint &pos = wxDefaultPosition,
 				const wxSize &size = wxDefaultSize, long style = 4L, const wxValidator &validator = wxDefaultValidator,
 				const wxString &name = wxButtonNameStr) : wxBitmapButton(parent, id, bitmap, pos, size, style, validator, name) { }
-	virtual bool AcceptsFocusFromKeyboard() const { return false; }  //Prevent TAB traversing chain for buttons
+	virtual bool AcceptsFocusFromKeyboard() const { return false; }  // Prevent TAB traversing chain for buttons
 };
 
 class CPS_Anim : public wxAnimationCtrl
@@ -128,8 +128,8 @@ public:
 		: wxAnimationCtrl(parent, id, wxNullAnimation, wxDefaultPosition)
 		{ }
 
-	void OnClick(wxCommandEvent &event);		//Keyboard tab
-	void OnComboClick(wxCommandEvent &event);	//Combo tab
+	void OnClick(wxCommandEvent &event);		// Keyboard tab
+	void OnComboClick(wxCommandEvent &event);	// Combo tab
 
 	void SetIndex(int i) { index = i; }
 	int GetIndex() { return index; }
@@ -148,20 +148,20 @@ public:
 	CPS_Txt(wxWindow *parent, wxWindowID id, const wxString &value, const wxSize &size = wxDefaultSize)
 		: wxTextCtrl(parent, id, value, wxDefaultPosition, size) { }
 
-	//void OnClick(wxCommandEvent &event);
+	// void OnClick(wxCommandEvent &event);
 
 	void SetIndex(int i) { index = i; }
 	int GetIndex() { return index; }
 
 	void SetName(const wxString &str) { name = str; }
-	wxString GetName() { return name; } //Not the value in text box
+	wxString GetName() { return name; } // Not the value in text box
 
 private:
 	int index;
 	wxString name;
 };
 
-//define controls
+// define controls
 const int intMOUSE_BUTTONS = 10, intPS_BUTTONS = 24, intANALOG_DIRECTIONS = 8;
 
 class CTwinPad_Gui
@@ -169,26 +169,26 @@ class CTwinPad_Gui
 public:
 	~CTwinPad_Gui()
 	{
-		//When TwinPad exits, clean all dynamic memory to avoid memory leaks.
-		//Note that CCombo destructor will call CAction's destructor, which in turn will delete all buttons.
+		// When TwinPad exits, clean all dynamic memory to avoid memory leaks.
+		// Note that CCombo destructor will call CAction's destructor, which in turn will delete all buttons.
 		for (std::vector<CCombo *>::iterator it = Combos.begin(); it != Combos.end(); ++it)
 			if (*it)
 				delete *it;
 		Combos.clear();
 
-		//C++11 comes handy in this situation, I might use this later instead.
-		/*for (auto oneCombo : Combo)
+		// C++11 comes handy in this situation, I might use this later instead.
+		/* for (auto oneCombo : Combo)
 			if (oneCombo)
 				delete oneCombo;
-		Combo.clear();*/
+		Combo.clear(); */
 	}
 
 	wxFrame *mainFrame;
 	wxNotebook *noteBook;
-	/////////TAB 1: Keyboard//////////////////////////////////////////////
-	CPS_Txt *txtCtrl[intPS_BUTTONS];		//Defined alias key
+	// TAB 1: Keyboard
+	CPS_Txt *txtCtrl[intPS_BUTTONS];					// Defined alias key
 	CPS_Anim *animCtrl[intPS_BUTTONS];
-	wxStaticText *lblLabel[intANALOG_DIRECTIONS];		//Left or Right (for analog stick)
+	wxStaticText *lblLabel[intANALOG_DIRECTIONS];		// Left or Right (for analog stick)
 	CPS_Txt *txtWalkRun;
 	wxRadioButton *pad1RadioBtn;
 	wxRadioButton *pad2RadioBtn;
@@ -200,7 +200,7 @@ public:
 	CGetKey *tmrGetKey;
 	CAutoNav *tmrAutoNav;
 
-	/////////TAB 2: Mouse//////////////////////////////////////////////
+	// TAB 2: Mouse
 	wxStaticText *lblMouseLabel[intMOUSE_BUTTONS];
 	wxComboBox *cmbMouseComboBox[intMOUSE_BUTTONS];
 	wxRadioButton *mousePad1radioButton;
@@ -209,7 +209,7 @@ public:
 	wxButton *btnMouseHelp;
 	wxComboBox *cmbMouseSensitivity;
 
-	/////////TAB 3: COMBOs//////////////////////////////////////////////
+	// TAB 3: COMBOs
 	CComboGrid *virtualGrid;
 	CTableBase *tableBaseGrid;
 	std::vector<CCombo *> Combos;
@@ -230,10 +230,10 @@ public:
 	wxTextCtrl *txtComboKey;
 	CReAnimate *tmrReAnimate;
 	CGetComboKey *tmrGetComboKey;
-	//for use when changing ComboBox selection
+	// for use when changing ComboBox selection
 	wxString strPreviousComboSelection;
 
-	/////////TAB 4: EXTRA///////////////////////////////////////////////
+	// TAB 4: EXTRA
 	wxCheckBox *chkDisablePad1;
 	wxCheckBox *chkDisablePad2;
 	wxCheckBox *chkDisableMouse;
@@ -242,9 +242,9 @@ public:
 	wxCheckBox *chkDisableKeyEvents;
 	wxCheckBox *chkEnableHack;
 
-	/////////TAB 3: GamePad//////////////////////////////////////////////
+	// TAB 3: GamePad (nothing here yet)
 
-	////////TAB Sizes///////////////////////////////////////////////
+	// TAB Sizes (stores minimum window size for each tab)
 	wxSize minWinSize[5];
 };
 
@@ -262,7 +262,7 @@ void AddMiscTab(CTwinPad_Gui &GUI_Controls);
 
 void SetupComboTab(wxPanel *panel);
 
-//To handle right click on configured button's Name (delete configuration)
+// To handle right click on configured button's Name (delete configuration)
 void OnTxtCtrlRightClick(wxMouseEvent &ev);
 
 #endif

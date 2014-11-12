@@ -1,10 +1,10 @@
 #ifndef _RESOURCES_H_
 #define _RESOURCES_H_
-/* These are created using bin2c.exe utility to convert binary files into header files 
+/*  These are created using bin2c.exe utility to convert binary files into header files 
    THis way, we can include images and arbitrary files in our application, no need to use
-   Windows resources functions, and it is portable (Linux)*/
+   Windows resources functions, and it is portable (Linux) */
 
-/* analog_down.gif */
+/*  analog_down.gif  */
 static const unsigned char ANALOG_DOWN_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  8,  8,  8,  9,  9,  9, 11,
  11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14, 15, 15, 15, 15, 15, 15, 17, 17, 17,
@@ -1029,7 +1029,7 @@ static const unsigned char ANALOG_DOWN_GIF[]={
 };
 
 
-/* analog_left.gif */
+/*  analog_left.gif  */
 static const unsigned char ANALOG_LEFT_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0, 14, 14, 14, 15, 15, 15, 16,
  16, 16, 17, 17, 17, 19, 19, 19, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22,
@@ -2053,7 +2053,7 @@ static const unsigned char ANALOG_LEFT_GIF[]={
 };
 
 
-/* Analog_Right.gif */
+/*  Analog_Right.gif  */
 static const unsigned char ANALOG_RIGHT_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0, 17, 17, 17, 18, 18, 18, 19,
  19, 19, 20, 20, 20, 21, 21, 21, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23,
@@ -3080,7 +3080,7 @@ static const unsigned char ANALOG_RIGHT_GIF[]={
 };
 
 
-/* Analog_Up.gif */
+/*  Analog_Up.gif  */
 static const unsigned char ANALOG_UP_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  6,  6,  6,  8,  8,  8,  9,
   9,  9, 12, 12, 12, 15, 15, 15, 17, 17, 17, 18, 18, 18, 18, 18, 18, 19, 19, 19,
@@ -4109,7 +4109,7 @@ static const unsigned char ANALOG_UP_GIF[]={
 142,178,148,167, 76,229, 42, 87, 57, 32,  0, 59,
 };
 
-/* Circle.gif */
+/*  Circle.gif  */
 static const unsigned char CIRCLE_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  9, 10, 10, 10, 10, 10, 11,
  12, 12, 13, 14, 14, 16, 17, 17, 19, 21, 21, 22, 24, 24, 23, 25, 25, 24, 26, 26,
@@ -4936,7 +4936,7 @@ static const unsigned char CIRCLE_GIF[]={
 };
 
 
-/* Cross.gif */
+/*  Cross.gif  */
 static const unsigned char CROSS_GIF[] = {
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  7,  7,  7,  7,  7,  8,  9,
   9,  8, 10, 10,  9, 11, 11, 10, 13, 13, 11, 14, 14, 13, 16, 16, 14, 19, 19, 16,
@@ -5798,7 +5798,7 @@ static const unsigned char CROSS_GIF[] = {
 };
 
 
-/* Down.gif */
+/*  Down.gif  */
 static const unsigned char DOWN_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  0,  0,  0,  0,  0,  0,  0,
   0,  0,  0,  0,  0,  0,  0,  0,  2,  2,  2,  4,  4,  4,  7,  7,  7,  9,  9,  9,
@@ -6564,7 +6564,7 @@ static const unsigned char DOWN_GIF[]={
 };
 
 
-/* L1.gif */
+/*  L1.gif  */
 static const unsigned char L1_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  3,  3,  3,  5,  5,  5,  6,
   6,  6,  9,  9,  9, 11, 11, 11, 12, 12, 12, 13, 13, 13, 13, 13, 13, 14, 14, 14,
@@ -7338,7 +7338,7 @@ static const unsigned char L1_GIF[]={
 };
 
 
-/* L2.gif */
+/*  L2.gif  */
 static const unsigned char L2_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  2,  2,  2,  4,  4,  4,  6,
   6,  6,  8,  8,  8, 10, 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14,
@@ -8118,7 +8118,7 @@ static const unsigned char L2_GIF[]={
 };
 
 
-/* L3.gif */
+/*  L3.gif  */
 static const unsigned char L3_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  4,  4,  4,  6,  6,  6,  8,
   8,  8, 10, 10, 10, 11, 11, 11, 13, 13, 13, 14, 14, 14, 16, 16, 16, 18, 18, 18,
@@ -8384,7 +8384,7 @@ static const unsigned char L3_GIF[]={
 };
 
 
-/* left.gif */
+/*  left.gif  */
 static const unsigned char LEFT_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  0,  0,  0,  0,  0,  0,  0,
   0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,  2,  2,
@@ -9150,7 +9150,7 @@ static const unsigned char LEFT_GIF[]={
 };
 
 
-/* R1.gif */
+/*  R1.gif  */
 static const unsigned char R1_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  4,  4,  4,  6,  6,  6,  7,
   7,  7,  9,  9,  9, 11, 11, 11, 12, 12, 12, 13, 13, 13, 13, 13, 13, 14, 14, 14,
@@ -9929,7 +9929,7 @@ static const unsigned char R1_GIF[]={
 };
 
 
-/* R2.gif */
+/*  R2.gif  */
 static const unsigned char R2_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  3,  3,  3,  5,  5,  5,  7,
   7,  7,  9,  9,  9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14,
@@ -10709,7 +10709,7 @@ static const unsigned char R2_GIF[]={
 };
 
 
-/* R3.gif */
+/*  R3.gif  */
 static const unsigned char R3_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  5,  5,  5,  6,  6,  6,  8,
   8,  8, 10, 10, 10, 12, 12, 12, 15, 15, 15, 16, 16, 16, 18, 18, 18, 20, 20, 20,
@@ -10977,7 +10977,7 @@ static const unsigned char R3_GIF[]={
 };
 
 
-/* Right.gif */
+/*  Right.gif  */
 static const unsigned char RIGHT_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  3,  3,  3,  4,  4,  4,  6,
   6,  6,  7,  7,  7,  9,  9,  9, 10, 10, 10, 12, 12, 12, 14, 14, 14, 16, 16, 16,
@@ -11731,7 +11731,7 @@ static const unsigned char RIGHT_GIF[]={
 };
 
 
-/* Select.gif */
+/*  Select.gif  */
 static const unsigned char SELECT_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  3,  3,  3,  4,  4,  4,  5,
   5,  5,  6,  6,  6,  7,  7,  7,  8,  8,  8,  9,  9,  9, 10, 10, 10, 11, 11, 11,
@@ -12382,7 +12382,7 @@ static const unsigned char SELECT_GIF[]={
 };
 
 
-/* Square.gif */
+/*  Square.gif  */
 static const unsigned char SQUARE_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  5,  6,  5,  5,  7,  5,  6,
   7,  6,  6,  8,  6,  7,  9,  7,  7,  9,  7,  8, 10,  8,  8, 11,  8,  9, 13,  9,
@@ -13242,7 +13242,7 @@ static const unsigned char SQUARE_GIF[]={
 };
 
 
-/* Start.gif */
+/*  Start.gif  */
 static const unsigned char START_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  1,  1,  1,  2,  2,  2,  3,
   3,  3,  4,  4,  4,  4,  4,  4,  5,  5,  5,  7,  7,  7,  8,  8,  8,  9,  9,  9,
@@ -13977,7 +13977,7 @@ static const unsigned char START_GIF[]={
   1,  0, 59,
 };
 
-/* Triangle.gif */
+/*  Triangle.gif  */
 static const unsigned char TRIANGLE_GIF[] = {
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  7,  4,  5,  8,  4,  5,  9,
   4,  6,  9,  5,  6, 10,  5,  7, 12,  5,  7, 13,  5,  8, 14,  5,  8, 16,  6,  9,
@@ -14831,7 +14831,7 @@ static const unsigned char TRIANGLE_GIF[] = {
 };
 
 
-/* Up.gif */
+/*  Up.gif  */
 static const unsigned char UP_GIF[]={
  71, 73, 70, 56, 57, 97, 40,  0, 40,  0,247,  0,  0,  0,  0,  0,  0,  0,  0,  0,
   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,
