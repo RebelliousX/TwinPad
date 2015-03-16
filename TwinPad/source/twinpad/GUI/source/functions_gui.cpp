@@ -303,7 +303,7 @@ void Loading_TwinPad_Main_Config()
 }
 
 // Loading images into controls
-void LoadResources(CPS_Anim *animCtrl, int index)
+void LoadResources(CPS_Anim *animCtrl, const unsigned int index)
 {
 	try
 	{
@@ -337,89 +337,90 @@ void GetImageData(void* &data, unsigned int *length, const unsigned int index)
 {
 	// I know this is awkward, but I am not gonna dig into the resources.h 
 	// to fix the arrays into 1 and use an index to make this more concise and pithy.
-	switch (index)
+	PS2BUTTON button = (PS2BUTTON)index;
+	switch (button)
 	{
-	case L2:
+	case PS2BUTTON::L2:
 		data = (void*)L2_GIF;
 		*length = sizeof(L2_GIF);
 		break;
-	case R2:
+	case PS2BUTTON::R2:
 		data = (void*)R2_GIF;
 		*length = sizeof(R2_GIF);
 		break;
-	case L1:
+	case PS2BUTTON::L1:
 		data = (void*)L1_GIF;
 		*length = sizeof(L1_GIF);
 		break;
-	case R1:
+	case PS2BUTTON::R1:
 		data = (void*)R1_GIF;
 		*length = sizeof(R1_GIF);
 		break;
-	case TRIANGLE:
+	case PS2BUTTON::TRIANGLE:
 		data = (void*)TRIANGLE_GIF;
 		*length = sizeof(TRIANGLE_GIF);
 		break;
-	case CIRCLE:
+	case PS2BUTTON::CIRCLE:
 		data = (void*)CIRCLE_GIF;
 		*length = sizeof(CIRCLE_GIF);
 		break;
-	case CROSS:
+	case PS2BUTTON::CROSS:
 		data = (void*)CROSS_GIF;
 		*length = sizeof(CROSS_GIF);
 		break;
-	case SQUARE:
+	case PS2BUTTON::SQUARE:
 		data = (void*)SQUARE_GIF;
 		*length = sizeof(SQUARE_GIF);
 		break;
-	case SELECT:
+	case PS2BUTTON::SELECT:
 		data = (void*)SELECT_GIF;
 		*length = sizeof(SELECT_GIF);
 		break;
-	case L3:
+	case PS2BUTTON::L3:
 		data = (void*)L3_GIF;
 		*length = sizeof(L3_GIF);
 		break;
-	case R3:
+	case PS2BUTTON::R3:
 		data = (void*)R3_GIF;
 		*length = sizeof(R3_GIF);
 		break;
-	case START:
+	case PS2BUTTON::START:
 		data = (void*)START_GIF;
 		*length = sizeof(START_GIF);
 		break;
-	case UP:
+	case PS2BUTTON::UP:
 		data = (void*)UP_GIF;
 		*length = sizeof(UP_GIF);
 		break;
-	case RIGHT:
+	case PS2BUTTON::RIGHT:
 		data = (void*)RIGHT_GIF;
 		*length = sizeof(RIGHT_GIF);
 		break;
-	case DOWN:
+	case PS2BUTTON::DOWN:
 		data = (void*)DOWN_GIF;
 		*length = sizeof(DOWN_GIF);
 		break;
-	case LEFT:
+	case PS2BUTTON::LEFT:
 		data = (void*)LEFT_GIF;
 		*length = sizeof(LEFT_GIF);
 		break;
-	case LANALOG_UP:
-	case RANALOG_UP:
+	case PS2BUTTON::LANALOG_UP:
+	case PS2BUTTON::RANALOG_UP:
 		data = (void*)ANALOG_UP_GIF;
 		*length = sizeof(ANALOG_UP_GIF);
 		break;
-	case LANALOG_RIGHT:
-	case RANALOG_RIGHT:
+	case PS2BUTTON::LANALOG_RIGHT:
+	case PS2BUTTON::RANALOG_RIGHT:
 		data = (void*)ANALOG_RIGHT_GIF;
 		*length = sizeof(ANALOG_RIGHT_GIF);
 		break;
-	case LANALOG_DOWN:
-	case RANALOG_DOWN:
+	case PS2BUTTON::LANALOG_DOWN:
+	case PS2BUTTON::RANALOG_DOWN:
 		data = (void*)ANALOG_DOWN_GIF;
 		*length = sizeof(ANALOG_DOWN_GIF);
 		break;
-	case LANALOG_LEFT:
-	case RANALOG_LEFT:
+	case PS2BUTTON::LANALOG_LEFT:
+	case PS2BUTTON::RANALOG_LEFT:
 		data = (void*)ANALOG_LEFT_GIF;
 		*length = sizeof(ANALOG_LEFT_GIF);
 		break;
@@ -583,22 +584,22 @@ void SetupComboTab(wxPanel *panel)
 				wxBoxSizer *lowLevelContainerSizer = new wxBoxSizer(wxHORIZONTAL);
 					wxStaticBoxSizer *stcL1L2Sizer = new wxStaticBoxSizer(wxVERTICAL, panel, "L1 && L2");
 						wxGridSizer *L1L2Sizer = new wxGridSizer(3, 1, 0, 0);
-							L1L2Sizer->Add(GUI_Controls.psComboButtons[L1]);
+						L1L2Sizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::L1]);
 							L1L2Sizer->AddSpacer(IMG_WIDTH);
-							L1L2Sizer->Add(GUI_Controls.psComboButtons[L2]);
+							L1L2Sizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::L2]);
 							stcL1L2Sizer->Add(L1L2Sizer);
 							lowLevelContainerSizer->Add(stcL1L2Sizer);
 							lowLevelContainerSizer->AddSpacer(5);
 					wxStaticBoxSizer *stcDpadArrowSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "D-Pad Arrows");
 						wxGridSizer *dpadArrowSizer = new wxGridSizer(3, 3, 0, 0);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
-							dpadArrowSizer->Add(GUI_Controls.psComboButtons[UP]);
+							dpadArrowSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::UP]);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
-							dpadArrowSizer->Add(GUI_Controls.psComboButtons[LEFT]);
+							dpadArrowSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::LEFT]);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
-							dpadArrowSizer->Add(GUI_Controls.psComboButtons[RIGHT]);
+							dpadArrowSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::RIGHT]);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
-							dpadArrowSizer->Add(GUI_Controls.psComboButtons[DOWN]);
+							dpadArrowSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::DOWN]);
 							dpadArrowSizer->AddSpacer(IMG_WIDTH);
 							stcDpadArrowSizer->Add(dpadArrowSizer);
 							lowLevelContainerSizer->Add(stcDpadArrowSizer);
@@ -606,13 +607,13 @@ void SetupComboTab(wxPanel *panel)
 					wxStaticBoxSizer *stcLeftAnalogSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Left Analog Stick");
 						wxGridSizer *leftAnalogSizer = new wxGridSizer(3, 3, 0, 0);
 							leftAnalogSizer->AddSpacer(IMG_WIDTH);
-							leftAnalogSizer->Add(GUI_Controls.psComboButtons[LANALOG_UP]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::LANALOG_UP]);
 							leftAnalogSizer->AddSpacer(IMG_WIDTH);
-							leftAnalogSizer->Add(GUI_Controls.psComboButtons[LANALOG_LEFT]);
-							leftAnalogSizer->Add(GUI_Controls.psComboButtons[L3]);
-							leftAnalogSizer->Add(GUI_Controls.psComboButtons[LANALOG_RIGHT]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::LANALOG_LEFT]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::L3]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::LANALOG_RIGHT]);
 							leftAnalogSizer->AddSpacer(IMG_WIDTH);
-							leftAnalogSizer->Add(GUI_Controls.psComboButtons[LANALOG_DOWN]);
+							leftAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::LANALOG_DOWN]);
 							leftAnalogSizer->AddSpacer(IMG_WIDTH);
 							stcLeftAnalogSizer->Add(leftAnalogSizer);
 							lowLevelContainerSizer->Add(stcLeftAnalogSizer);
@@ -625,22 +626,22 @@ void SetupComboTab(wxPanel *panel)
 							startSelectSizer->AddSpacer(IMG_WIDTH);
 							startSelectSizer->AddSpacer(IMG_WIDTH);
 							startSelectSizer->AddSpacer(IMG_WIDTH);
-							startSelectSizer->Add(GUI_Controls.psComboButtons[SELECT]);
+							startSelectSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::SELECT]);
 							startSelectSizer->AddSpacer(IMG_WIDTH);
-							startSelectSizer->Add(GUI_Controls.psComboButtons[START]);
+							startSelectSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::START]);
 							stcStartSelectSizer->Add(startSelectSizer);
 							lowLevelContainerSizer->Add(stcStartSelectSizer);
 							lowLevelContainerSizer->AddSpacer(5);
 					wxStaticBoxSizer *stcRightAnalogSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Right Analog Stick");
 						wxGridSizer *rightAnalogSizer = new wxGridSizer(3, 3, 0, 0);
 							rightAnalogSizer->AddSpacer(IMG_WIDTH);
-							rightAnalogSizer->Add(GUI_Controls.psComboButtons[RANALOG_UP]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::RANALOG_UP]);
 							rightAnalogSizer->AddSpacer(IMG_WIDTH);
-							rightAnalogSizer->Add(GUI_Controls.psComboButtons[RANALOG_LEFT]);
-							rightAnalogSizer->Add(GUI_Controls.psComboButtons[R3]);
-							rightAnalogSizer->Add(GUI_Controls.psComboButtons[RANALOG_RIGHT]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::RANALOG_LEFT]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::R3]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::RANALOG_RIGHT]);
 							rightAnalogSizer->AddSpacer(IMG_WIDTH);
-							rightAnalogSizer->Add(GUI_Controls.psComboButtons[RANALOG_DOWN]);
+							rightAnalogSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::RANALOG_DOWN]);
 							rightAnalogSizer->AddSpacer(IMG_WIDTH);
 							stcRightAnalogSizer->Add(rightAnalogSizer);
 							lowLevelContainerSizer->Add(stcRightAnalogSizer);
@@ -648,22 +649,22 @@ void SetupComboTab(wxPanel *panel)
 					wxStaticBoxSizer *stcTriCirCroSqrSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Digital Buttons");
 						wxGridSizer *triCirCroSqrSizer = new wxGridSizer(3, 3, 0, 0);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
-							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[TRIANGLE]);
+							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::TRIANGLE]);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
-							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[SQUARE]);
+							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::SQUARE]);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
-							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[CIRCLE]);
+							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::CIRCLE]);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
-							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[CROSS]);
+							triCirCroSqrSizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::CROSS]);
 							triCirCroSqrSizer->AddSpacer(IMG_WIDTH);
 							stcTriCirCroSqrSizer->Add(triCirCroSqrSizer);
 							lowLevelContainerSizer->Add(stcTriCirCroSqrSizer);
 							lowLevelContainerSizer->AddSpacer(5);
 					wxStaticBoxSizer *stcR1R2Sizer = new wxStaticBoxSizer(wxVERTICAL, panel, "R1 && R2");
 						wxGridSizer *R1R2Sizer = new wxGridSizer(3, 1, 0, 0);
-							R1R2Sizer->Add(GUI_Controls.psComboButtons[R1]);
+						R1R2Sizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::R1]);
 							R1R2Sizer->AddSpacer(IMG_WIDTH);
-							R1R2Sizer->Add(GUI_Controls.psComboButtons[R2]);
+							R1R2Sizer->Add(GUI_Controls.psComboButtons[(int)PS2BUTTON::R2]);
 							stcR1R2Sizer->Add(R1R2Sizer);
 							lowLevelContainerSizer->Add(stcR1R2Sizer);
 							lowLevelContainerSizer->AddSpacer(5);
@@ -1351,18 +1352,24 @@ void OnClick_psComboButtons(int winID)
 		// e.g UP and DOWN at the same time. So, 6 if-clauses get rid of 6 unneeded
 		// columns in grid from 24 to 18, unlike before.
 		wxString errorMSG = "";
-		if ((button == UP && Has(DOWN, curRow)) || (button == DOWN && Has(UP, curRow)))
-			errorMSG = "Can't have both UP and DOWN in the same Action.";
-		if ((button == RIGHT && Has(LEFT, curRow)) || (button == LEFT && Has(RIGHT, curRow)))
-			errorMSG = "Can't have both LEFT and RIGHT in the same Action.";
-		if ((button == LANALOG_UP && Has(LANALOG_DOWN, curRow)) || (button == LANALOG_DOWN && Has(LANALOG_UP, curRow)))
-			errorMSG = "Can't have both Left Analog's UP and DOWN in the same Action.";
-		if ((button == LANALOG_LEFT && Has(LANALOG_RIGHT, curRow)) || (button == LANALOG_RIGHT && Has(LANALOG_LEFT, curRow)))
-			errorMSG = "Can't have both Left Analog's LEFT and RIGHT in the same Action.";
-		if ((button == RANALOG_UP && Has(RANALOG_DOWN, curRow)) || (button == RANALOG_DOWN && Has(RANALOG_UP, curRow)))
-			errorMSG = "Can't have both Right Analog's UP and DOWN in the same Action.";
-		if ((button == RANALOG_LEFT && Has(RANALOG_RIGHT, curRow)) || (button == RANALOG_RIGHT && Has(RANALOG_LEFT, curRow)))
-			errorMSG = "Can't have both Right Analog's LEFT and RIGHT in the same Action.";
+		if ((button == (int)PS2BUTTON::UP && Has((int)PS2BUTTON::DOWN, curRow)) || 
+			(button == (int)PS2BUTTON::DOWN && Has((int)PS2BUTTON::UP, curRow)))
+				errorMSG = "Can't have both UP and DOWN in the same Action.";
+		if ((button == (int)PS2BUTTON::RIGHT && Has((int)PS2BUTTON::LEFT, curRow)) || 
+			(button == (int)PS2BUTTON::LEFT && Has((int)PS2BUTTON::RIGHT, curRow)))
+				errorMSG = "Can't have both LEFT and RIGHT in the same Action.";
+		if ((button == (int)PS2BUTTON::LANALOG_UP && Has((int)PS2BUTTON::LANALOG_DOWN, curRow)) || 
+			(button == (int)PS2BUTTON::LANALOG_DOWN && Has((int)PS2BUTTON::LANALOG_UP, curRow)))
+				errorMSG = "Can't have both Left Analog's UP and DOWN in the same Action.";
+		if ((button == (int)PS2BUTTON::LANALOG_LEFT && Has((int)PS2BUTTON::LANALOG_RIGHT, curRow)) || 
+			(button == (int)PS2BUTTON::LANALOG_RIGHT && Has((int)PS2BUTTON::LANALOG_LEFT, curRow)))
+				errorMSG = "Can't have both Left Analog's LEFT and RIGHT in the same Action.";
+		if ((button == (int)PS2BUTTON::RANALOG_UP && Has((int)PS2BUTTON::RANALOG_DOWN, curRow)) || 
+			(button == (int)PS2BUTTON::RANALOG_DOWN && Has((int)PS2BUTTON::RANALOG_UP, curRow)))
+				errorMSG = "Can't have both Right Analog's UP and DOWN in the same Action.";
+		if ((button == (int)PS2BUTTON::RANALOG_LEFT && Has((int)PS2BUTTON::RANALOG_RIGHT, curRow)) || 
+			(button == (int)PS2BUTTON::RANALOG_RIGHT && Has((int)PS2BUTTON::RANALOG_LEFT, curRow)))
+				errorMSG = "Can't have both Right Analog's LEFT and RIGHT in the same Action.";
 		if (Has(button, curRow))
 			errorMSG = "The same button already exists in this Action.";
 		
@@ -1376,9 +1383,10 @@ void OnClick_psComboButtons(int winID)
 		// Set default sensitivity for new buttons.Regular buttons max is 255.
 		// Analogs' Max is 255 for Down/Right. And Max is 0 for UP/LEFT
 		int sensitivity;
-		if (button >= LANALOG_UP)
+		if (button >= (int)PS2BUTTON::LANALOG_UP)
 		{
-			if (button == LANALOG_DOWN || button == RANALOG_DOWN || button == LANALOG_RIGHT || button == RANALOG_RIGHT)
+			if (button == (int)PS2BUTTON::LANALOG_DOWN || button == (int)PS2BUTTON::RANALOG_DOWN || 
+				button == (int)PS2BUTTON::LANALOG_RIGHT || button == (int)PS2BUTTON::RANALOG_RIGHT)
 				sensitivity = 255; // max DOWN/RIGHT
 			else
 				sensitivity = 0; // max UP/LEFT
@@ -1475,8 +1483,8 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev)
 		else if (val->buttonSensitivity >= 0 && val->buttonSensitivity <= 255)
 		{
 			// For SELECT, START, L3 and R3: they have fixed sensitivity of 255
-			if (val->buttonValue == SELECT || val->buttonValue == START ||
-				val->buttonValue == L3 || val->buttonValue == R3)
+			if (val->buttonValue == (int)PS2BUTTON::SELECT || val->buttonValue == (int)PS2BUTTON::START ||
+				val->buttonValue == (int)PS2BUTTON::L3 || val->buttonValue == (int)PS2BUTTON::R3)
 				buttonInfo += wxString::Format("\nNot a pressure sensitive button.", val->buttonSensitivity, val->buttonValue);
 			else
 				buttonInfo += wxString::Format("\nSensitivity: %d", val->buttonSensitivity, val->buttonValue);
@@ -1516,8 +1524,8 @@ void OnChangeSensitivity(wxSpinEvent &ev)
 			return;
 
 		// avoid changing sensitivity fo SELECT, START, L3, R3 as they are not pressure sensitive
-		if (val->buttonValue == SELECT || val->buttonValue == START ||
-			val->buttonValue == L3 || val->buttonValue == R3)
+		if (val->buttonValue == (int)PS2BUTTON::SELECT || val->buttonValue == (int)PS2BUTTON::START ||
+			val->buttonValue == (int)PS2BUTTON::L3 || val->buttonValue == (int)PS2BUTTON::R3)
 		{
 			Cell_Locator.SetLocation(row, col);
 			return;
@@ -1753,7 +1761,7 @@ void OnTimeReAnimateAnalogSticks()
 {
 	try
 	{
-		for (int i = LANALOG_UP; i <= RANALOG_LEFT; ++i)
+		for (int i = (int)PS2BUTTON::LANALOG_UP; i <= (int)PS2BUTTON::RANALOG_LEFT; ++i)
 		{
 			GUI_Controls.psComboButtons[i]->Stop();
 			GUI_Controls.psComboButtons[i]->Play();

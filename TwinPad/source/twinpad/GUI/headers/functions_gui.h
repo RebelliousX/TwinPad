@@ -139,7 +139,7 @@ void Loading_TwinPad_Main_Config();
 
 // Forward declaration is necessary, to avoid problems
 class CPS_Anim;
-void LoadResources(CPS_Anim *animCtrl, int index);
+void LoadResources(CPS_Anim *animCtrl, const unsigned int index);
 // used by LoadResources() and SetCustomCellRenderer()
 // iData: Image data, length: size of image in bytes, index: image index
 void GetImageData(void* &iData, unsigned int *length, const unsigned int index);
