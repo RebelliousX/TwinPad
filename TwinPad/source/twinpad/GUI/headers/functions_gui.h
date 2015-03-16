@@ -118,7 +118,7 @@ public:
 
 private:
 	std::vector<CAction *> m_actions;	// vector of pointers to Actions
-	int m_key;							// will hold assigned key for current combo
+	int m_key;							// holds assigned key for current combo
 	wxString m_comboName;				// current combo name
 };
 
@@ -169,11 +169,17 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev);
 // SpinCtrl Events
 void OnChangeSensitivity(wxSpinEvent &ev);
 // Mouse Events
-void OnClickMouseHelpButton(wxMouseEvent &ev);
-void OnClickMouseNullifiesAll(wxMouseEvent &ev);
+void OnClickMouseHelpButton(wxCommandEvent &ev);
+void OnClickMouseNullifiesAll(wxCommandEvent &ev);
 // Modify sensitivity inside spin control
 void ModifySensitivity();
 // Save the Grid to the Combos container
 void SaveGridToCombo(wxString &strUserInput);
 // Timer event to reAnimate analog sticks
 void OnTimeReAnimateAnalogSticks();
+// Keyboard tab Events
+// Buttons (Cancel, Ok, 'Nullifies All' for Keyboard and Auto Navigate) Events
+void OnClickKeyboardNullifiesAll(wxCommandEvent &ev);
+void OnClickAutoNavigate(wxCommandEvent &ev);
+void OnClickCancel(wxCommandEvent &ev);
+void OnClickOk(wxCommandEvent &ev);

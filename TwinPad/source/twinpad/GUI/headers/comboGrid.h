@@ -75,6 +75,8 @@ public:
 	// Insert rows at specified position, default is 1 row at position 0
 	virtual bool InsertRows( size_t pos = 0, size_t numRows = 1 ) 
 	{
+		if (numRows < 1)
+			return true;
 		rows += numRows;
 		wxGridTableMessage msg( this, wxGRIDTABLE_NOTIFY_ROWS_INSERTED, pos, numRows);
 		GetView()->ProcessTableMessage( msg );
@@ -85,6 +87,8 @@ public:
 	// Delete rows at specified position, default is 1 row at position 0
 	virtual bool DeleteRows(size_t pos = 0, size_t numRows = 1)
 	{
+		if (numRows < 1)
+			return true;
 		rows -= numRows;
 		if (rows < 0)
 			rows = 0;
@@ -96,6 +100,8 @@ public:
 	// Insert columns at the specified position, default is 1 column at position 0
 	virtual bool InsertCols( size_t pos = 0, size_t numCols = 1) 
 	{
+		if (numCols < 1)
+			return true;
 		cols += numCols;
 		wxGridTableMessage msg( this, wxGRIDTABLE_NOTIFY_COLS_INSERTED, 0, numCols);
 		GetView()->ProcessTableMessage( msg );
@@ -106,6 +112,8 @@ public:
 	// Delete columns at the specified position, default is 1 column at position 0
 	virtual bool DeleteCols( size_t pos = 0, size_t numCols = 1) 
 	{
+		if (numCols < 1)
+			return true;
 		cols -= numCols;
 		if (cols < 0) 
 			cols = 0;

@@ -454,18 +454,18 @@ void SetupComboTab(wxPanel *panel)
 	wxBoxSizer *parentSizer = new wxBoxSizer(wxVERTICAL);
 		wxStaticBoxSizer *topLevelSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Key Combinations (COMBOs)");
 			wxStaticBoxSizer *stcComboEditorSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "COMBO Editor");
-				GUI_Controls.btnNewCombo = new wxButton(panel, wxID_ANY, "&New Combo");
-				GUI_Controls.btnDeleteCombo = new wxButton(panel, wxID_ANY, "&Delete Combo");
-				GUI_Controls.btnRenameCombo = new wxButton(panel, wxID_ANY, "&Rename Combo");
+				GUI_Controls.btnNewCombo = new wxButton(panel, wxID_ANY, "New Combo");
+				GUI_Controls.btnDeleteCombo = new wxButton(panel, wxID_ANY, "Delete Combo");
+				GUI_Controls.btnRenameCombo = new wxButton(panel, wxID_ANY, "Rename Combo");
 				stcComboEditorSizer->Add(GUI_Controls.btnNewCombo);
 				stcComboEditorSizer->AddSpacer(5);
 				stcComboEditorSizer->Add(GUI_Controls.btnDeleteCombo);
 				stcComboEditorSizer->AddSpacer(5);
 				stcComboEditorSizer->Add(GUI_Controls.btnRenameCombo);
 				// stcComboEditorSizer->AddSpacer(10);
-				GUI_Controls.btnNewCombo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickNewCombo);
-				GUI_Controls.btnDeleteCombo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteCombo);
-				GUI_Controls.btnRenameCombo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickRenameCombo);
+				GUI_Controls.btnNewCombo->Bind(wxEVT_BUTTON, ::OnClickNewCombo);
+				GUI_Controls.btnDeleteCombo->Bind(wxEVT_BUTTON, ::OnClickDeleteCombo);
+				GUI_Controls.btnRenameCombo->Bind(wxEVT_BUTTON, ::OnClickRenameCombo);
 			wxStaticBoxSizer *stcComboNameSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "COMBO Name");
 				GUI_Controls.cmbComboName = new wxComboBox(panel, wxID_ANY, wxEmptyString, 
 																wxDefaultPosition, wxSize(200,25), 0, 0, wxCB_READONLY | wxCB_SORT);
@@ -478,8 +478,8 @@ void SetupComboTab(wxPanel *panel)
 				GUI_Controls.txtComboKey = new wxTextCtrl(panel, wxID_ANY, "NONE", wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 				GUI_Controls.txtComboKey->SetBackgroundColour(wxColor(66,66,66));
 				GUI_Controls.txtComboKey->SetForegroundColour(wxColor("White"));
-				GUI_Controls.txtComboKey->Bind(wxEVT_LEFT_UP, ::OnClickComboKey);	// Get a key
-				GUI_Controls.txtComboKey->Bind(wxEVT_RIGHT_UP, ::OnClickComboKey);	// Delete the key
+				GUI_Controls.txtComboKey->Bind(wxEVT_LEFT_UP, OnClickComboKey);	// Get a key
+				GUI_Controls.txtComboKey->Bind(wxEVT_RIGHT_UP, OnClickComboKey);	// Delete the key
 				stcComboKeySizer->Add(GUI_Controls.txtComboKey, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 			wxStaticBoxSizer *stcDefaultDelaySizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Delay");	
 				GUI_Controls.spnDefaultDelay = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, 
@@ -531,22 +531,22 @@ void SetupComboTab(wxPanel *panel)
 				comboGridSizer->Add(comboGrid, 0, 0, 5);
 			wxBoxSizer *actionAndButtonSizer = new wxBoxSizer(wxVERTICAL);
 				wxStaticBoxSizer *editComboSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Action Editor");
-					GUI_Controls.btnNewAction = new wxButton(panel, wxID_ANY, "New &Action");
-					GUI_Controls.btnDeleteLastAction = new wxButton(panel, wxID_ANY, "Delete &Last Action");
-					GUI_Controls.btnInsertActions = new wxButton(panel, wxID_ANY, "Ins&ert Actions");
-					GUI_Controls.btnInsertInbetweenAction = new wxButton(panel, wxID_ANY, "&Insert Inbetween Actions");
-					GUI_Controls.btnDeleteSelectedActions = new wxButton(panel, wxID_ANY, "Delete &Selected Actions");
-					GUI_Controls.btnDeleteButton = new wxButton(panel, wxID_ANY, "Delete Selected &Button");
+					GUI_Controls.btnNewAction = new wxButton(panel, wxID_ANY, "New Action");
+					GUI_Controls.btnDeleteLastAction = new wxButton(panel, wxID_ANY, "Delete Last Action");
+					GUI_Controls.btnInsertActions = new wxButton(panel, wxID_ANY, "Insert Actions");
+					GUI_Controls.btnInsertInbetweenAction = new wxButton(panel, wxID_ANY, "Insert Inbetween Actions");
+					GUI_Controls.btnDeleteSelectedActions = new wxButton(panel, wxID_ANY, "Delete Selected Actions");
+					GUI_Controls.btnDeleteButton = new wxButton(panel, wxID_ANY, "Delete Selected Button");
 					wxSize largestButtonSize = GUI_Controls.btnInsertInbetweenAction->GetSize();
 					GUI_Controls.btnNewAction->SetMinSize(largestButtonSize);
 					GUI_Controls.btnDeleteLastAction->SetMinSize(largestButtonSize);
 					GUI_Controls.btnInsertInbetweenAction->SetMinSize(largestButtonSize);
-					GUI_Controls.btnNewAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickNewAction);
-					GUI_Controls.btnDeleteLastAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteLastAction);
-					GUI_Controls.btnInsertInbetweenAction->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickInsertInbetweenAction);
-					GUI_Controls.btnInsertActions->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickInsertAction);
-					GUI_Controls.btnDeleteSelectedActions->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteSelectedActions);
-					GUI_Controls.btnDeleteButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ::OnClickDeleteButton);
+					GUI_Controls.btnNewAction->Bind(wxEVT_BUTTON, OnClickNewAction);
+					GUI_Controls.btnDeleteLastAction->Bind(wxEVT_BUTTON, OnClickDeleteLastAction);
+					GUI_Controls.btnInsertInbetweenAction->Bind(wxEVT_BUTTON, OnClickInsertInbetweenAction);
+					GUI_Controls.btnInsertActions->Bind(wxEVT_BUTTON, OnClickInsertAction);
+					GUI_Controls.btnDeleteSelectedActions->Bind(wxEVT_BUTTON, OnClickDeleteSelectedActions);
+					GUI_Controls.btnDeleteButton->Bind(wxEVT_BUTTON, OnClickDeleteButton);
 					editComboSizer->Add(GUI_Controls.btnNewAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
 					editComboSizer->AddSpacer(5);
 					editComboSizer->Add(GUI_Controls.btnDeleteLastAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
@@ -1207,8 +1207,9 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
 		
 		// Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-		// Hide grid to prevent flickering while adding buttons, and it is much faster this way. Show grid when we are done
-		GUI_Controls.virtualGrid->Hide();
+		// Freeze grid to prevent flickering while adding buttons, and it is much faster this way. Thaw grid when we are done
+		// Note: Hide & Show do the same thing, but they show flicker for a split second
+		GUI_Controls.virtualGrid->Freeze();
 		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
 		{
 			if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
@@ -1237,7 +1238,8 @@ void OnClickDeleteCombo(wxCommandEvent &ev)
 				break;	// No need to process other COMBOs
 			}
 		}
-		GUI_Controls.virtualGrid->Show(true); // Added all buttons! Show the grid
+		GUI_Controls.virtualGrid->Scroll(0, 0);	// Prevent showing scroll bar moving from bottom to top
+		GUI_Controls.virtualGrid->Thaw();
 	}
 	catch (exception &e)
 	{

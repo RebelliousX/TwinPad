@@ -197,10 +197,15 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.lblEdit->SetForegroundColour(wxColor("#FFFFFF"));	// White
 	GUI_Controls.lblEdit->SetWindowStyle(wxTE_CENTER);
 
-	GUI_Controls.btnAutoNavigate = new wxButton(panel, ID_BTN_AUTO, "&Auto Navigate");
-	GUI_Controls.btnNullifiesAll = new wxButton(panel, ID_BTN_NULL, "&Nullifies All");
-	GUI_Controls.btnOK = new wxButton(panel, ID_BTN_OK, "&Ok");
-	GUI_Controls.btnCancel = new wxButton(panel, ID_BTN_CANCEL, "&Cancel");
+	GUI_Controls.btnAutoNavigate = new wxButton(panel, ID_BTN_AUTO, "Auto Navigate");
+	GUI_Controls.btnNullifiesAll = new wxButton(panel, ID_BTN_NULL, "Nullifies All");
+	GUI_Controls.btnOK = new wxButton(panel, ID_BTN_OK, "Ok");
+	GUI_Controls.btnCancel = new wxButton(panel, ID_BTN_CANCEL, "Cancel");
+
+	GUI_Controls.btnCancel->Bind(wxEVT_BUTTON, OnClickCancel);
+	GUI_Controls.btnOK->Bind(wxEVT_BUTTON, OnClickOk);
+	GUI_Controls.btnNullifiesAll->Bind(wxEVT_BUTTON, OnClickKeyboardNullifiesAll);
+	GUI_Controls.btnAutoNavigate->Bind(wxEVT_BUTTON, OnClickAutoNavigate);
 
 	// Bottom Sizer, Contains 4 buttons: OK, Cancel, Auto Navigate, and Nullifies All
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -288,10 +293,10 @@ void AddMouseTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.mousePad1radioButton->SetValue(true);
 	
 	// Nullifies All for mouse and help buttons
-	GUI_Controls.btnMouseNullifiesAll = new wxButton(panel, ID_BTN_NULL_MOUSE, "&Nullifies All");
-	GUI_Controls.btnMouseHelp = new wxButton(panel, ID_BTN_HELP_MOUSE, "&Help");
-	GUI_Controls.btnMouseHelp->Bind(wxEVT_LEFT_UP, OnClickMouseHelpButton);
-	GUI_Controls.btnMouseNullifiesAll->Bind(wxEVT_LEFT_UP, OnClickMouseNullifiesAll);
+	GUI_Controls.btnMouseNullifiesAll = new wxButton(panel, ID_BTN_NULL_MOUSE, "Nullifies All");
+	GUI_Controls.btnMouseHelp = new wxButton(panel, ID_BTN_HELP_MOUSE, "Help");
+	GUI_Controls.btnMouseHelp->Bind(wxEVT_BUTTON, OnClickMouseHelpButton);
+	GUI_Controls.btnMouseNullifiesAll->Bind(wxEVT_BUTTON, OnClickMouseNullifiesAll);
 
 	wxStaticBoxSizer *sensitivitySizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Sensitivity");
 	GUI_Controls.cmbMouseSensitivity = new wxComboBox(panel, wxID_ANY, "1", wxDefaultPosition, 
@@ -430,10 +435,19 @@ void CPS_Anim::OnClick(wxCommandEvent &event)
 	{
 		wxMessageBox(e.what());
 	}
+	catch (char *msg)
+	{
+		wxMessageBox(msg);
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
 // This function handles the click event for Mouse help button
-void OnClickMouseHelpButton(wxMouseEvent &ev)
+void OnClickMouseHelpButton(wxCommandEvent &ev)
 {
 	try
 	{
@@ -444,10 +458,15 @@ void OnClickMouseHelpButton(wxMouseEvent &ev)
 	{
 		wxMessageBox(e.what());
 	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
 // This function handles the click event for Mouse Nullifies All
-void OnClickMouseNullifiesAll(wxMouseEvent &ev)
+void OnClickMouseNullifiesAll(wxCommandEvent &ev)
 {
 	try
 	{
@@ -455,7 +474,6 @@ void OnClickMouseNullifiesAll(wxMouseEvent &ev)
 			GUI_Controls.cmbMouseComboBox[i]->Select(0);
 
 		GUI_Controls.cmbMouseSensitivity->Select(0);
-		GUI_Controls.mousePad1radioButton->SetValue(true);
 		// Another bug in wxWidgets! without the skip event, the window freezes, 
 		// until it loses focus by another app (hides behind it) then set focused again.
 		ev.Skip();
@@ -464,10 +482,15 @@ void OnClickMouseNullifiesAll(wxMouseEvent &ev)
 	{
 		wxMessageBox(e.what());
 	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
 }
 
-// This function handles right click even on th txtCrls/animCtrl and delete configuration for a button
-// Also, preven the context menu (right-click menu) from showing up
+// This function handles right click event on the txtCrls/animCtrl and delete configuration for a button
+// Also, prevent the context menu (right-click menu) from showing up
 void OnTxtCtrlRightClick(wxMouseEvent &ev)
 {
 	try
@@ -481,11 +504,86 @@ void OnTxtCtrlRightClick(wxMouseEvent &ev)
 		GUI_Controls.txtCtrl[id]->SetValue("Null");
 		GUI_Controls.lblEdit->SetLabel("Edit Button: ");
 		GUI_Controls.animCtrl[id]->Stop();	// Stop animation
-		return;	// a return will disable the context menu if the even was on txtCtrl
+		return;	// a return will disable the context menu if the event was on txtCtrl
 	}
 	catch (exception &ex)
 	{
 		wxMessageBox(ex.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
+}
+
+// This function handles the click event for Keyboard Nullifies All
+void OnClickKeyboardNullifiesAll(wxCommandEvent &ev)
+{
+	try
+	{
+		
+		// Another bug in wxWidgets! without the skip event, the window freezes, 
+		// until it loses focus by another app (hides behind it) then set focused again.
+		ev.Skip();
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
+}
+
+// This function handles the click event for Cancel button
+void OnClickCancel(wxCommandEvent &ev)
+{
+	try
+	{
+		GUI_Controls.mainFrame->Close(true);
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
+}
+
+// This function handles the click event for 'Auto Navigate' button
+void OnClickAutoNavigate(wxCommandEvent &ev)
+{
+	try
+	{
+		// TODO: Implement auto navigation feature
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
+	}
+	catch (...)
+	{
+		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
+			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+	}
+}
+
+// This function handles the click event for Cancel button
+void OnClickOk(wxCommandEvent &ev)
+{
+	try
+	{
+		// TODO: Implement Ok button to save Configurations from all tabs
+	}
+	catch (exception &e)
+	{
+		wxMessageBox(e.what());
 	}
 	catch (...)
 	{
