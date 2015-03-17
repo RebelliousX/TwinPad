@@ -2,6 +2,14 @@
 #include "DirectInput.h"
 #include "DI_Globals.h"
 
+#include "twinpad_gui.h"
+
+#ifndef WX_PRECOM
+#include "wx/wx.h"
+#else
+#include "wx/wxprec.h"
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////Added DirectInput Functions//////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +30,7 @@ bool InitDI()
 
 	if (fDI == NULL)
 	{
-		MessageBox(NULL, "DirectInput Connection Creation Failed!", "TwinPad", NULL);
+		wxMessageBox("DirectInput Connection Creation Failed!", "TwinPad", wxICON_EXCLAMATION);
 		return FALSE;
 	}
 	
@@ -42,7 +50,7 @@ bool InitDI()
 		}
 		else
 		{
-			MessageBox(NULL,"DirectInput Keyboard initialization Failed!", "TwinPad", NULL);
+			wxMessageBox("DirectInput Keyboard initialization Failed!", "TwinPad", wxICON_EXCLAMATION);
 			return FALSE;
 		}
 
@@ -60,7 +68,7 @@ bool InitDI()
 		}
 		else
 		{
-			MessageBox(0,"DirectInput Mouse Initialization Failed!!", "TwinPad",0);
+			wxMessageBox("DirectInput Mouse Initialization Failed!!", "TwinPad", wxICON_EXCLAMATION);
 			return FALSE;
 		}
 		

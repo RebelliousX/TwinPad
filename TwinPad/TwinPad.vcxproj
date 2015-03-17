@@ -16,11 +16,27 @@
     <ClInclude Include="source\twinpad\GUI\headers\labels.h" />
     <ClInclude Include="source\twinpad\GUI\headers\resources.h" />
     <ClInclude Include="source\twinpad\GUI\headers\twinpad_gui.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\Callbacks.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\COMBOs.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\DirectInput.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\DI_Globals.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\Externals.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\GeneralOptions.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\Loading.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\MouseMapping.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\PS2Etypes.h" />
+    <ClInclude Include="source\twinpad\Plugin\headers\TwinPad.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\twinpad_gui.cpp" />
+    <ClCompile Include="source\twinpad\Plugin\source\Callbacks.cpp" />
+    <ClCompile Include="source\twinpad\Plugin\source\COMBOs.cpp" />
+    <ClCompile Include="source\twinpad\Plugin\source\DirectInput.cpp" />
+    <ClCompile Include="source\twinpad\Plugin\source\Loading.cpp" />
+    <ClCompile Include="source\twinpad\Plugin\source\MouseMapping.cpp" />
+    <ClCompile Include="source\twinpad\Plugin\source\TwinPad.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A4513F1B-C067-4935-992C-385309D55FA9}</ProjectGuid>
@@ -53,14 +69,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)\TwinPad\Source\TwinPad\GUI\headers;$(IncludePath)</IncludePath>
-    <LibraryPath>$(WXWIN)\lib\vc_lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)\TwinPad\Source\TwinPad\GUI\headers;$(SolutionDir)\TwinPad\Source\TwinPad\Plugin\headers;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(WXWIN)\lib\vc_lib;$(DXSDK_DIR)\lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)\TwinPad\Source\TwinPad\GUI\headers;$(IncludePath)</IncludePath>
-    <LibraryPath>$(WXWIN)\lib\vc_lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(WXWIN)\include;$(WXWIN)\include\msvc;$(SolutionDir)\TwinPad\Source\TwinPad\GUI\headers;$(SolutionDir)\TwinPad\Source\TwinPad\Plugin\headers;$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(WXWIN)\lib\vc_lib;$(DXSDK_DIR)\lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -75,7 +91,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>wxmsw30ud_core.lib;wxbase30ud.lib;wxjpegd.lib;wxpngd.lib;wxtiffd.lib;wxzlibd.lib;wxscintillad.lib;wxregexud.lib;wxmsw30ud_adv.lib</AdditionalDependencies>
+      <AdditionalDependencies>wxmsw30ud_core.lib;wxbase30ud.lib;wxjpegd.lib;wxpngd.lib;wxtiffd.lib;wxzlibd.lib;wxscintillad.lib;wxregexud.lib;wxmsw30ud_adv.lib;winmm.lib;dinput8.lib;dxguid.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,7 +111,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>wxmsw30u_core.lib;wxbase30u.lib;wxjpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxscintilla.lib;wxregexu.lib;wxmsw30u_adv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wxmsw30u_core.lib;wxbase30u.lib;wxjpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxscintilla.lib;wxregexu.lib;wxmsw30u_adv.lib;%(AdditionalDependencies);dinput8.lib;dxguid.lib;winmm.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -21,13 +21,7 @@
 
 #include <windows.h>
 #include "DirectInput.h"
-#define PADdefs
-#include "PS2Edefs.h"
 
-#pragma comment (lib, "winmm.lib")
-#pragma comment (lib, "dinput.lib")
-#pragma comment (lib, "dinput8.lib")
-#pragma comment (lib, "dxguid.lib")
 #pragma warning(disable : 4996)  //Disable deprecated warnings.
 
 //The following data types will be used as global externs.

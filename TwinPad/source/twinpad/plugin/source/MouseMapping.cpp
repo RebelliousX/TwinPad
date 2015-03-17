@@ -1,4 +1,13 @@
 #include <windows.h>
+
+#include "twinpad_gui.h"
+
+#ifndef WX_PRECOM
+#include "wx/wx.h"
+#else
+#include "wx/wxprec.h"
+#endif
+
 #include "MouseMapping.h"
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////Action Mapping Functions /////////////////////////////////////////////////////
@@ -21,8 +30,7 @@ void ActionMapper(int func, int pad)
 		_itoa(func, errCode, 10);
 		strcat(strError, errCode);
 
-		MessageBox(0, strError,
-			"TwinPad: Error", MB_ICONERROR);
+		wxMessageBox(strError, "TwinPad: Error", wxICON_ERROR);
 		return;
 	}
 

@@ -6,6 +6,14 @@
 
 #include "Loading.h"
 
+#include "twinpad_gui.h"
+
+#ifndef WX_PRECOM
+#include "wx/wx.h"
+#else
+#include "wx/wxprec.h"
+#endif
+
 using std::vector;
 
 vector<vector<vector<int>>> COMBO; //3D Array.. COMBO[Action][Button][COMBO]
@@ -132,7 +140,7 @@ void LoadCombos()
 		comboFile.close();
 	}
 	else
-		MessageBox(0, "Can't open COMBOs file!!", "TwinPad", 0);
+		wxMessageBox("Can't open COMBOs file!!", "TwinPad", wxICON_ERROR);
 
 }
 

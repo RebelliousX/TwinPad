@@ -13,33 +13,93 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{34069525-b14a-4008-87c7-27dcf0bd4d0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{c9f1e4ae-250d-451c-8c83-fe3e731b5e17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Plugin">
+      <UniqueIdentifier>{36d37e05-ff93-4133-8863-7944ecd28d34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Plugin">
+      <UniqueIdentifier>{43cb9829-d47b-4c4e-95eb-46dff9926204}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\twinpad\GUI\headers\comboGrid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\twinpad\GUI\headers\functions_gui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\twinpad\GUI\headers\labels.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\twinpad\GUI\headers\twinpad_gui.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="source\twinpad\GUI\headers\resources.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="source\twinpad\GUI\headers\twinpad_gui.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\twinpad\GUI\headers\labels.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\GUI\headers\functions_gui.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\GUI\headers\comboGrid.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\Callbacks.h">
+      <Filter>Header Files\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\COMBOs.h">
+      <Filter>Header Files\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\DI_Globals.h">
+      <Filter>Header Files\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\DirectInput.h">
+      <Filter>Header Files\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\Externals.h">
+      <Filter>Header Files\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\GeneralOptions.h">
+      <Filter>Header Files\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\Loading.h">
+      <Filter>Header Files\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\MouseMapping.h">
+      <Filter>Header Files\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\PS2Etypes.h">
+      <Filter>Header Files\Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\Plugin\headers\TwinPad.h">
+      <Filter>Header Files\Plugin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\twinpad\GUI\source\twinpad_gui.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="source\main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\GUI\source\twinpad_gui.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\Plugin\source\Callbacks.cpp">
+      <Filter>Source Files\Plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\Plugin\source\COMBOs.cpp">
+      <Filter>Source Files\Plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\Plugin\source\DirectInput.cpp">
+      <Filter>Source Files\Plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\Plugin\source\Loading.cpp">
+      <Filter>Source Files\Plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\Plugin\source\MouseMapping.cpp">
+      <Filter>Source Files\Plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\Plugin\source\TwinPad.cpp">
+      <Filter>Source Files\Plugin</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

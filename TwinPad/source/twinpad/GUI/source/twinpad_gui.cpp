@@ -580,6 +580,8 @@ void OnClickOk(wxCommandEvent &ev)
 	try
 	{
 		// TODO: Implement Ok button to save Configurations from all tabs
+
+		GUI_Controls.mainFrame->Close(true);
 	}
 	catch (exception &e)
 	{
