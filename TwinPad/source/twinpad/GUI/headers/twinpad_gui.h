@@ -167,6 +167,15 @@ const int intMOUSE_BUTTONS = 10, intPS_BUTTONS = 24, intANALOG_DIRECTIONS = 8;
 class CTwinPad_Gui
 {
 public:
+	CTwinPad_Gui()
+	{
+		HEADER_TWINPAD = "[TwinPad Configurations v1.6]";
+		HEADER_TWINPAD_COMBO = "[TwinPad COMBO Configurations v1.1]";
+		TWIN_PAD = "TwinPad.ini";
+		TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
+		PATH_DIR = "inis/";		// Will be replaced with a proper directory if supported by the emu using PADsettingsDir()
+	}
+
 	~CTwinPad_Gui()
 	{
 		// When TwinPad exits, clean all dynamic memory to avoid memory leaks.
@@ -246,7 +255,24 @@ public:
 
 	// TAB Sizes (stores minimum window size for each tab)
 	wxSize minWinSize[5];
+
+	//Files header names, Files names and Settings directory
+	void SetSettingsPath(wxString dir) { PATH_DIR = dir; }
+	wxString GetTwinPad_Header() { return HEADER_TWINPAD; }
+	wxString GetTwinPad_ComboHeader() { return HEADER_TWINPAD_COMBO; }
+	wxString GetTwinPad_FileName()	{ return TWIN_PAD; }
+	wxString GetTwinPad_ComboFileName() { return TWIN_PAD_COMBOS; }
+	wxString GetSettingsPath() { return PATH_DIR; }
+private:
+	//Some strings
+	wxString HEADER_TWINPAD;
+	wxString HEADER_TWINPAD_COMBO;
+	wxString TWIN_PAD;
+	wxString TWIN_PAD_COMBOS;
+	wxString PATH_DIR;
 };
+
+extern CTwinPad_Gui GUI_Controls;
 
 enum TAB_INDEX { KEYBOARD_TAB, MOUSE_TAB, COMBOS_TAB, MISC_TAB, GAMEPAD_TAB };
 enum class PS2BUTTON { L2, R2, L1, R1, TRIANGLE, CIRCLE, CROSS, SQUARE, SELECT, L3, R3,

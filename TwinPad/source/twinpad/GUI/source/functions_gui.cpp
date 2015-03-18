@@ -24,21 +24,13 @@
 
 using namespace std;
 
-// externs: Defined in TwinPad_Gui.cpp
+// global externs: Defined in TwinPad_Gui.cpp
 extern CTwinPad_Gui GUI_Controls;
 extern GUI_Configurations GUI_Config;
 
 // Cell Locator: for current/previous cell editing. We need a pointer to the main
 // grid after it is initialized, using method SetGrid()
 CCellLocator Cell_Locator;
-
-// TODO: (Implement: PADgetSettingDir callback function)
-// Will be replaced with given dir from emu (if PADgetSettingDir() is supported by emu.)
-wxString g_Path = "inis/"; 
-const wxString g_HEADER_TWINPAD = "[TwinPad Configurations v1.6]";
-const wxString g_HEADER_TWINPAD_COMBO = "[TwinPad COMBO Configurations v1.1]";
-const wxString g_TWIN_PAD = "TwinPad.ini";
-const wxString g_TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
 
 const int IMG_WIDTH = 40;	// 40 pixels
 
@@ -51,7 +43,7 @@ void CreateNullFile()
 	{
 		int counter;
 	
-		string file = g_Path + g_TWIN_PAD;
+		string file = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
 		string strPad;
 
 		ofstream nullfile(file.c_str(), ios::out);
@@ -65,7 +57,7 @@ void CreateNullFile()
 		}
 
 		// Write header and config version number
-		nullfile << g_HEADER_TWINPAD << endl;
+		nullfile << GUI_Controls.GetTwinPad_Header() << endl;
 		// Write assigned keys for both pads
 		for(int pad = 0; pad <= 1; pad++)
 		{
@@ -124,7 +116,7 @@ void CreateNullComboFile()
 {
 	try
 	{
-		string file = g_Path + g_TWIN_PAD_COMBOS;
+		string file = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
 		ofstream txtFile(file.c_str(), ios::out);
 
 		if (!txtFile.is_open())
@@ -135,7 +127,7 @@ void CreateNullComboFile()
 			::exit(0);
 		}
 
-		txtFile << g_HEADER_TWINPAD_COMBO << endl;
+		txtFile << GUI_Controls.GetTwinPad_ComboHeader() << endl;
 		txtFile << "ComboCount\t= 0\n";
 
 		txtFile.close();
@@ -161,9 +153,9 @@ bool IsFileOkAndFix(const string &file, const string &header)
 		wxString strMsg = "";
 
 		int select = 0;
-		if (header == g_HEADER_TWINPAD)
+		if (header == GUI_Controls.GetTwinPad_Header())
 			select = 1;		// TwinPad.ini
-		else if (header == g_HEADER_TWINPAD_COMBO)
+		else if (header == GUI_Controls.GetTwinPad_ComboHeader())
 			select = 2;		// TwinPad_COMBOs.ini
 		
 		// First: Check if file can be opened
@@ -173,16 +165,16 @@ bool IsFileOkAndFix(const string &file, const string &header)
 			getline(f, str);
 			if (select == 1)
 			{
-				if (str != g_HEADER_TWINPAD)
+				if (str != GUI_Controls.GetTwinPad_Header())
 				{
 					f.close();
 					CreateNullFile();
 					int len = str.length();
 					string strCmp = "TwinPad Configurations";
 					string substring = str.substr(1, strCmp.length());
-					if (len == g_HEADER_TWINPAD.length() && substring == strCmp)
+					if (len == GUI_Controls.GetTwinPad_Header().length() && substring == strCmp)
 						wxMessageBox(wxString::Format("TwinPad configuration file is old, all previous settings are lost.\n\n"
-							"Old version: %s\nNew version: %s", str, g_HEADER_TWINPAD),
+							"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_Header()),
 							"Oops!", wxICON_INFORMATION);
 					else
 						wxMessageBox("TwinPad configuration file is corrupted, all previous settings are lost.\n\n",
@@ -195,16 +187,16 @@ bool IsFileOkAndFix(const string &file, const string &header)
 			}
 			else if (select == 2)
 			{
-				if (str != g_HEADER_TWINPAD_COMBO)
+				if (str != GUI_Controls.GetTwinPad_ComboHeader())
 				{
 					f.close();
 					CreateNullComboFile();
 					int len = str.length();
 					string strCmp = "TwinPad COMBO Configurations";
 					string substring = str.substr(1, strCmp.length());
-					if (len == g_HEADER_TWINPAD_COMBO.length() && substring == strCmp)
+					if (len == GUI_Controls.GetTwinPad_ComboHeader().length() && substring == strCmp)
 						wxMessageBox(wxString::Format("TwinPad COMBOs configuration file is old, all previous settings are lost.\n\n"
-							"Old version: %s\nNew version: %s", str, g_HEADER_TWINPAD_COMBO),
+							"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_ComboHeader()),
 							"Oops!", wxICON_INFORMATION);
 					else
 						wxMessageBox("TwinPad COMBOs configuration file is corrupted, all previous settings are lost.\n\n",
@@ -241,7 +233,7 @@ void Loading_TwinPad_Main_Config()
 {
 	try
 	{
-		wxString fileName = g_Path + g_TWIN_PAD;
+		wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
 		wxTextFile file(fileName);
 		if (!file.Open(fileName))
 		{

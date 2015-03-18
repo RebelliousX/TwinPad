@@ -117,7 +117,7 @@ void LoadCombos()
 			{
 				getline(comboFile, strLine); //ActionDelay
 				cstrTemp = _strdup(strLine.c_str());
-				cstrToken = strtok(cstrTemp, " ="); //Skip "ActionDelay  = "
+				strtok(cstrTemp, " ="); //Skip "ActionDelay  = "
 				cstrToken = strtok(NULL, " ="); //read ActionDelay value..
 				value = atoi(cstrToken);
 				ActionDelay[i][comboCount] = value;

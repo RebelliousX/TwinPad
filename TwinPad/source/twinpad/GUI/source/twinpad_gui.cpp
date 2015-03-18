@@ -3,20 +3,16 @@
 #include "twinpad_gui.h"
 #include "labels.h"
 
+#include "Externals.h"
+
 using namespace std;	// for exceptions
 
 // I know I should not use globals and externs, but either that or passing pointers and references
 // to GUI controls all over the files and functions that want to use them or use a couple globals. I chose the latter.
 
 // Global Structurea that hold all vital GUI controls and their values
-CTwinPad_Gui GUI_Controls = { 0 };
-GUI_Configurations GUI_Config = { 0 };
-
-const wxString g_HEADER_TWINPAD = "[TwinPad Configurations v1.6]";
-const wxString g_HEADER_TWINPAD_COMBO = "[TwinPad COMBO Configurations v1.1]";
-const wxString g_Path = "inis/"; // TODO: replace with given dir from emu. 
-const wxString g_TWIN_PAD = "TwinPad.ini";
-const wxString g_TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
+CTwinPad_Gui GUI_Controls;
+GUI_Configurations GUI_Config;
 
 void OnNotebookChange(wxCommandEvent &evt)
 {
@@ -59,10 +55,10 @@ void CreateControls(wxFrame *window)
 
 		// Check to see if configuration files are present, otherwise create null ones
 		wxString file1, file2;
-		file1 = g_Path + g_TWIN_PAD;
-		IsFileOkAndFix(file1.ToStdString(), g_HEADER_TWINPAD.ToStdString());
-		file2 = g_Path + g_TWIN_PAD_COMBOS;
-		IsFileOkAndFix(file2.ToStdString(), g_HEADER_TWINPAD_COMBO.ToStdString());
+		file1 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
+		IsFileOkAndFix(file1.ToStdString(), GUI_Controls.GetTwinPad_Header().ToStdString());
+		file2 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
+		IsFileOkAndFix(file2.ToStdString(), GUI_Controls.GetTwinPad_ComboHeader().ToStdString());
 
 		Loading_TwinPad_Main_Config();
 

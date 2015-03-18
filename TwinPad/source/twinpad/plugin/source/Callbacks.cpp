@@ -10,6 +10,8 @@
 	#include "wx/wxprec.h"
 #endif
 
+#include "Externals.h"
+
 // Name of this plugin and the version number
 char *libraryName      = "TwinPad";
 
@@ -31,6 +33,12 @@ extern "C" __declspec(dllexport) char* CALLBACK PS2EgetLibName()
 extern "C" __declspec(dllexport) u32 CALLBACK PS2EgetLibVersion2(u32 type)
 { 
 	return (subversion << 24) | (version << 16) | (revision << 8) | build; 
+}
+
+extern "C" __declspec(dllexport) void CALLBACK PADsetSettingsDir(const char* dir)
+{
+	wxString path = (dir == NULL) ? "inis/" : dir;
+	GUI_Controls.SetSettingsPath(path);
 }
 
 extern "C" __declspec(dllexport) void CALLBACK PADshutdown() { }
