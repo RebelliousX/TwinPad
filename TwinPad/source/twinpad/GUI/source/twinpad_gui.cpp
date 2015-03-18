@@ -470,6 +470,7 @@ void OnClickMouseNullifiesAll(wxCommandEvent &ev)
 			GUI_Controls.cmbMouseComboBox[i]->Select(0);
 
 		GUI_Controls.cmbMouseSensitivity->Select(0);
+		GUI_Controls.mousePad1radioButton->SetValue(true);
 		// Another bug in wxWidgets! without the skip event, the window freezes, 
 		// until it loses focus by another app (hides behind it) then set focused again.
 		ev.Skip();
@@ -539,7 +540,7 @@ void OnClickCancel(wxCommandEvent &ev)
 {
 	try
 	{
-		GUI_Controls.mainFrame->Close(true);
+		GUI_Controls.mainFrame->Show(false);
 	}
 	catch (exception &e)
 	{
@@ -576,8 +577,8 @@ void OnClickOk(wxCommandEvent &ev)
 	try
 	{
 		// TODO: Implement Ok button to save Configurations from all tabs
-
-		GUI_Controls.mainFrame->Close(true);
+		
+		GUI_Controls.mainFrame->Show(false);
 	}
 	catch (exception &e)
 	{

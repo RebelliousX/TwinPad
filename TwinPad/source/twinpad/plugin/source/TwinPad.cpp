@@ -468,12 +468,12 @@ void AllInOne(int pad)
 	memcpy(BufferKeyState, KeyState, sizeof(KeyState));
 }
 
-BOOL APIENTRY DllMain(HANDLE hModule,                  // DLL INIT
-                      DWORD  dwReason, 
-                      LPVOID lpReserved) {
-	hDI = (HMODULE)hModule;
-	return TRUE;                                          // very quick :)
-}
+//BOOL APIENTRY DllMain(HANDLE hModule,                  // DLL INIT
+//                      DWORD  dwReason, 
+//                      LPVOID lpReserved) {
+//	hDI = (HMODULE)hModule;
+//	return TRUE;                                          // very quick :)
+//}
 
 void _PADEvent(int pad) {
 

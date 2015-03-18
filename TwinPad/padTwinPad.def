@@ -1,0 +1,26 @@
+LIBRARY	"TwinPad"
+
+EXPORTS
+    ; Explicit exports can go here
+	PADabout
+	PADclose
+	PADconfigure
+	PADfreeze
+	PADinit
+	PADkeyEvent
+	PADopen
+	PADpoll
+	PADquery
+	PADreadPort1
+	PADreadPort2
+	PADsetSettingsDir
+	PADshutdown
+	PADstartPoll
+	PADtest
+	PADupdate
+	PS2EgetLibName
+	PS2EgetLibType
+	PS2EgetLibVersion2
+	PSEgetLibName
+	PSEgetLibType
+	PSEgetLibVersion

@@ -72,6 +72,9 @@
     <ClInclude Include="source\twinpad\Plugin\headers\TwinPad.h">
       <Filter>Header Files\Plugin</Filter>
     </ClInclude>
+    <ClInclude Include="source\main.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp">
