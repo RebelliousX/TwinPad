@@ -15,12 +15,24 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#include <windows.h>
-#include <windowsx.h>
-#include "TwinPad.h"
+//#include <windows.h>
+//#include <windowsx.h>
 
-HMODULE hDI  = NULL;
-HWND hObjWnd = NULL, GShwnd = NULL;
+#include "fastCompile.h"
+
+#ifndef WX_PRECOM
+	#include "wx/wx.h"
+#else
+	#include "wx/wxprec.h"
+#endif
+
+#include "wx/msw/wrapwin.h"
+#include "wx/msw/private.h"
+
+#include "TwinPad.h"
+#include "main.h"
+#include "Externals.h"
+
 unsigned int pads=0;
 
 int ScreenWidth = 0, ScreenHeight = 0;		//To handle Analog Coords correctly.
@@ -96,7 +108,7 @@ s32  _PADopen(HWND hDsp) {
 	}
 
 	LoadConfig();
-	LoadCombos();
+	//LoadCombos();
 
 	//If DirectInput Fails, return error..
 	if (fDI == NULL)
@@ -467,13 +479,6 @@ void AllInOne(int pad)
 	//Make a copy of old Keyboard state..
 	memcpy(BufferKeyState, KeyState, sizeof(KeyState));
 }
-
-//BOOL APIENTRY DllMain(HANDLE hModule,                  // DLL INIT
-//                      DWORD  dwReason, 
-//                      LPVOID lpReserved) {
-//	hDI = (HMODULE)hModule;
-//	return TRUE;                                          // very quick :)
-//}
 
 void _PADEvent(int pad) {
 

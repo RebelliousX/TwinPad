@@ -1,4 +1,7 @@
-#include <windows.h>
+//#include <windows.h>
+#include "wx/msw/wrapwin.h"
+#include "wx/msw/private.h"
+
 #include "CALLBACKS.h"
 #include "DirectInput.h"
 
@@ -42,7 +45,11 @@ void CALLBACK PADsetSettingsDir(const char* dir)
 	GUI_Controls.SetSettingsPath(path);
 }
 
-void CALLBACK PADshutdown() { }
+void CALLBACK PADshutdown() 
+{ 
+	//DLL clean up
+	//ShutdownTwinPad();
+}
 
 s32 CALLBACK PADopen(HWND hDsp)
 { 
@@ -114,9 +121,6 @@ void _PADclose() {
 
 	TermDI();
 	
-	//DLL clean up
-	ShutdownTwinPad();
-
 	GShwnd = hObjWnd = NULL;
 	curByte[0] = curByte[1] = 0;
 	cmdLen[0]  = cmdLen[1]  = 0;

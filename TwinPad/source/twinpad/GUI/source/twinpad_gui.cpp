@@ -46,7 +46,7 @@ void OnNotebookChange(wxCommandEvent &evt)
 	}
 }
 
-void CreateControls(wxFrame *window)
+void CreateControls(wxDialog *window)
 {
 	try
 	{
@@ -195,8 +195,8 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 
 	GUI_Controls.btnAutoNavigate = new wxButton(panel, ID_BTN_AUTO, "Auto Navigate");
 	GUI_Controls.btnNullifiesAll = new wxButton(panel, ID_BTN_NULL, "Nullifies All");
-	GUI_Controls.btnOK = new wxButton(panel, ID_BTN_OK, "Ok");
-	GUI_Controls.btnCancel = new wxButton(panel, ID_BTN_CANCEL, "Cancel");
+	GUI_Controls.btnOK = new wxButton(panel, wxID_OK, "Ok");				//wxID_OK for the dialog return value
+	GUI_Controls.btnCancel = new wxButton(panel, wxID_CANCEL, "Cancel");	//wxID_CANCEL for the dialog return value
 
 	GUI_Controls.btnCancel->Bind(wxEVT_BUTTON, OnClickCancel);
 	GUI_Controls.btnOK->Bind(wxEVT_BUTTON, OnClickOk);
@@ -540,7 +540,9 @@ void OnClickCancel(wxCommandEvent &ev)
 {
 	try
 	{
-		GUI_Controls.mainFrame->Show(false);
+		GUI_Controls.mainFrame->EndModal(wxID_CANCEL);
+		GUI_Controls.mainFrame->Destroy();
+
 	}
 	catch (exception &e)
 	{
@@ -578,7 +580,11 @@ void OnClickOk(wxCommandEvent &ev)
 	{
 		// TODO: Implement Ok button to save Configurations from all tabs
 		
-		GUI_Controls.mainFrame->Show(false);
+		// Stop all Timers
+		GUI_Controls.tmrReAnimate->Stop();
+
+		GUI_Controls.mainFrame->EndModal(wxID_OK);
+		GUI_Controls.mainFrame->Destroy();
 	}
 	catch (exception &e)
 	{

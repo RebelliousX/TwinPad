@@ -702,7 +702,7 @@ void SetupComboTab(wxPanel *panel)
 	comboGrid->SetDoubleBuffered(true);			// If supported by platform, it will be enabled
 
 	// Set timer to re-adjust animation sync for Analog Sticks
-	GUI_Controls.tmrReAnimate = new CReAnimate();
+	GUI_Controls.tmrReAnimate = new CReAnimate((wxWindow *) GUI_Controls.mainFrame);
 	GUI_Controls.tmrReAnimate->Start(30000);	// 30 seconds
 	// Allocate memory but don't start it yet, the user will start the timer when clicking on Combo Key
 	GUI_Controls.tmrGetComboKey = new CGetComboKey();

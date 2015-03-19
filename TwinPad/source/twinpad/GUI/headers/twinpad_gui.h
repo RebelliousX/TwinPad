@@ -1,8 +1,7 @@
 #ifndef _TWINPAD_GUI_H_
 #define _TWINPAD_GUI_H_
 
-// Set to 0 if you want to use wx.h instead of precompiled header
-#define WX_PRECOM 1
+#include "fastCompile.h"
 
 #ifndef WX_PRECOM
 	#include "wx/wx.h"
@@ -44,7 +43,7 @@ enum ID {	ID_BTN = 1000,
 class CReAnimate : public wxTimer
 {
 public:
-	CReAnimate() : wxTimer() { }
+	CReAnimate(wxWindow *win) : wxTimer(), win(win) { }
 
 	virtual void Notify()
 	{
@@ -55,6 +54,8 @@ public:
 	{
 		return wxTimer::Start(milliseconds);
 	}
+private:
+	wxWindow *win;
 };
 
 // Timer to get a Key for Combo tab
@@ -192,7 +193,7 @@ public:
 		Combo.clear(); */
 	}
 
-	wxFrame *mainFrame;
+	wxDialog *mainFrame;
 	wxNotebook *noteBook;
 	// TAB 1: Keyboard
 	CPS_Txt *txtCtrl[intPS_BUTTONS];					// Defined alias key
@@ -279,7 +280,7 @@ enum class PS2BUTTON { L2, R2, L1, R1, TRIANGLE, CIRCLE, CROSS, SQUARE, SELECT, 
 				START, UP, RIGHT, DOWN, LEFT, LANALOG_UP, LANALOG_RIGHT, LANALOG_DOWN,
 				LANALOG_LEFT, RANALOG_UP, RANALOG_RIGHT, RANALOG_DOWN, RANALOG_LEFT };
 
-void CreateControls(wxFrame * window);
+void CreateControls(wxDialog * window);
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls);
 void AddMouseTab(CTwinPad_Gui &GUI_Controls);
 void AddGamePadTab(CTwinPad_Gui &GUI_Controls);

@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\fastCompile.h" />
     <ClInclude Include="source\main.h" />
     <ClInclude Include="source\twinpad\GUI\headers\comboGrid.h" />
     <ClInclude Include="source\twinpad\GUI\headers\functions_gui.h" />
@@ -95,7 +96,7 @@
     <LibraryPath>$(WXWIN)\lib\vc_lib;$(DXSDK_DIR)\lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
     <TargetName>padTwinPad</TargetName>
-    <OutDir>F:\PCSX2\plugins\</OutDir>
+    <OutDir>F:\Pcsx2_Project\bin\Plugins\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -135,7 +136,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>wxmsw30ud_core.lib;wxbase30ud.lib;wxjpegd.lib;wxpngd.lib;wxtiffd.lib;wxzlibd.lib;wxscintillad.lib;wxregexud.lib;wxmsw30ud_adv.lib;winmm.lib;dinput8.lib;dxguid.lib</AdditionalDependencies>
       <ImportLibrary>$(OutDir)padTwinPad.lib</ImportLibrary>
       <ModuleDefinitionFile>padTwinPad.def</ModuleDefinitionFile>

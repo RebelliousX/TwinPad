@@ -6,11 +6,12 @@
 #include <dinput.h>
 #include "PS2Etypes.h"
 
+extern HMODULE hDI;
 extern HWND hObjWnd;
 extern HWND GShwnd;
 
 extern unsigned char KeyState[256], BufferKeyState[256];
-extern HMODULE hDI;
+
 extern int lbutDown;
 extern int rbutDown;
 extern int mbutDown;
