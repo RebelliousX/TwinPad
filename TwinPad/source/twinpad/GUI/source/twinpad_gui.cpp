@@ -540,9 +540,11 @@ void OnClickCancel(wxCommandEvent &ev)
 {
 	try
 	{
-		GUI_Controls.mainFrame->EndModal(wxID_CANCEL);
-		GUI_Controls.mainFrame->Destroy();
+		// Stop all Timers
+		GUI_Controls.tmrReAnimate->Stop();
 
+		GUI_Controls.mainFrame->Hide();
+		GUI_Controls.mainFrame->Close(true);
 	}
 	catch (exception &e)
 	{
@@ -583,8 +585,8 @@ void OnClickOk(wxCommandEvent &ev)
 		// Stop all Timers
 		GUI_Controls.tmrReAnimate->Stop();
 
-		GUI_Controls.mainFrame->EndModal(wxID_OK);
-		GUI_Controls.mainFrame->Destroy();
+		GUI_Controls.mainFrame->Hide();
+		GUI_Controls.mainFrame->Close(true);
 	}
 	catch (exception &e)
 	{

@@ -54,6 +54,11 @@ public:
 	{
 		return wxTimer::Start(milliseconds);
 	}
+
+	virtual void Stop()
+	{
+		return wxTimer::Stop();
+	}
 private:
 	wxWindow *win;
 };
