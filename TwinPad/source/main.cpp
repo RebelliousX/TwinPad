@@ -139,6 +139,7 @@ IMPLEMENT_APP_NO_MAIN(TwinPad_DLL)
 			break;
 		case DLL_PROCESS_DETACH:
 			wxEntryCleanup();
+			wxTheApp->ExitMainLoop();
 			break;
 		}
 		return TRUE;
