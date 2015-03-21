@@ -15,6 +15,7 @@
 
 #include <vector>
 
+#include "main.h"
 // -----Don't change the Include's order for these two 
 #include "functions_gui.h"
 #include "comboGrid.h"
@@ -37,83 +38,6 @@ enum ID {	ID_BTN = 1000,
 			ID_CHK_HACK,
 			ID_TIMER1 = 7000, ID_TIMER2, ID_TIMER3,
 		};
-
-// -----Timer classes
-// Timer to re-animate Analog sticks to fix out of sync animation
-class CReAnimate : public wxTimer
-{
-public:
-	CReAnimate(wxWindow *win) : wxTimer(), win(win) { }
-
-	virtual void Notify()
-	{
-		OnTimeReAnimateAnalogSticks();
-	}
-
-	virtual bool Start(int milliseconds)
-	{
-		return wxTimer::Start(milliseconds);
-	}
-
-	virtual void Stop()
-	{
-		return wxTimer::Stop();
-	}
-private:
-	wxWindow *win;
-};
-
-// Timer to get a Key for Combo tab
-class CGetComboKey : public wxTimer
-{
-public:
-	CGetComboKey() : wxTimer() { }
-
-	virtual void Notify()
-	{
-		// POLL Device for Key
-	}
-
-	virtual bool Start(int milliseconds)
-	{
-		return wxTimer::Start(milliseconds);
-	}
-};
-
-// Timer to get a Key for Keyboard tab
-class CGetKey : public wxTimer
-{
-public:
-	CGetKey() : wxTimer() { }
-
-	virtual void Notify()
-	{
-		// POLL Device for Key
-	}
-
-	virtual bool Start(int milliseconds)
-	{
-		return wxTimer::Start(milliseconds);
-	}
-};
-
-class CAutoNav : public wxTimer
-{
-public:
-	CAutoNav() : wxTimer() { }
-
-	virtual void Notify()
-	{
-		// Auto navigation between Keyboard buttons to configure them
-		// Note: It is best to use something similar to a state machine when calling the function
-	}
-
-	virtual bool Start(int milliseconds)
-	{
-		return wxTimer::Start(milliseconds);
-	}
-};
-
 
 // Purpose: to prevent TABs
 class CPS_BTN : public wxBitmapButton
@@ -198,7 +122,7 @@ public:
 		Combo.clear(); */
 	}
 
-	wxDialog *mainFrame;
+	TwinPad_Frame *mainFrame;
 	wxNotebook *noteBook;
 	// TAB 1: Keyboard
 	CPS_Txt *txtCtrl[intPS_BUTTONS];					// Defined alias key
@@ -212,8 +136,6 @@ public:
 	wxButton *btnCancel;
 	wxButton *btnAutoNavigate;
 	wxButton *btnNullifiesAll;
-	CGetKey *tmrGetKey;
-	CAutoNav *tmrAutoNav;
 
 	// TAB 2: Mouse
 	wxStaticText *lblMouseLabel[intMOUSE_BUTTONS];
@@ -243,8 +165,7 @@ public:
 	wxComboBox *cmbComboName;
 	wxComboBox *cmbWhichPad;
 	wxTextCtrl *txtComboKey;
-	CReAnimate *tmrReAnimate;
-	CGetComboKey *tmrGetComboKey;
+
 	// for use when changing ComboBox selection
 	wxString strPreviousComboSelection;
 
@@ -285,7 +206,7 @@ enum class PS2BUTTON { L2, R2, L1, R1, TRIANGLE, CIRCLE, CROSS, SQUARE, SELECT, 
 				START, UP, RIGHT, DOWN, LEFT, LANALOG_UP, LANALOG_RIGHT, LANALOG_DOWN,
 				LANALOG_LEFT, RANALOG_UP, RANALOG_RIGHT, RANALOG_DOWN, RANALOG_LEFT };
 
-void CreateControls(wxDialog * window);
+void CreateControls(TwinPad_Frame * window);
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls);
 void AddMouseTab(CTwinPad_Gui &GUI_Controls);
 void AddGamePadTab(CTwinPad_Gui &GUI_Controls);

@@ -1,5 +1,5 @@
 #include <exception>
-
+#include "main.h"
 #include "twinpad_gui.h"
 #include "labels.h"
 
@@ -46,7 +46,7 @@ void OnNotebookChange(wxCommandEvent &evt)
 	}
 }
 
-void CreateControls(wxDialog *window)
+void CreateControls(TwinPad_Frame *window)
 {
 	try
 	{
@@ -541,7 +541,7 @@ void OnClickCancel(wxCommandEvent &ev)
 	try
 	{
 		// Stop all Timers
-		GUI_Controls.tmrReAnimate->Stop();
+		GUI_Controls.mainFrame->tmrAnimate->Stop();
 
 		GUI_Controls.mainFrame->Hide();
 		GUI_Controls.mainFrame->Close(true);
@@ -583,7 +583,7 @@ void OnClickOk(wxCommandEvent &ev)
 		// TODO: Implement Ok button to save Configurations from all tabs
 		
 		// Stop all Timers
-		GUI_Controls.tmrReAnimate->Stop();
+		GUI_Controls.mainFrame->tmrAnimate->Stop();
 
 		GUI_Controls.mainFrame->Hide();
 		GUI_Controls.mainFrame->Close(true);

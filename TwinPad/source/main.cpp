@@ -1,11 +1,5 @@
 // Test wxWidgets, TwinPad
-
-#include "twinpad_gui.h"
-#include "main.h"
-
- #ifndef __WINDOWS__
-	#error "Currently TwinPad is Windows-only"
- #endif
+#include "fastCompile.h"
 
 #ifndef WX_PRECOM
 	#include "wx/wx.h"
@@ -15,6 +9,13 @@
 
 #include "wx/app.h"
 #include "Externals.h"
+
+#include "main.h"
+#include "twinpad_gui.h"
+
+#ifndef __WINDOWS__
+	#error "Currently TwinPad is Windows-only"
+#endif
 
 #ifdef _WINDOWS
 
@@ -66,59 +67,50 @@ HWND hEmuWnd;							// Hackish, get handle to emulator, since wxDialog can't hav
 // processID for the emulator, used to find its main Window, to deal with wxDialog shortcomings.
 int processId = NULL;
 
-class TwinPad_Frame : public wxDialog
+TwinPad_Frame::TwinPad_Frame() : TwinPad_Frame("TwinPad Configuration Utility", wxDefaultSize) { }
+TwinPad_Frame::TwinPad_Frame(wxString title, wxSize size) : wxDialog(0, wxID_ANY, title, wxDefaultPosition, size,
+	wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxSTAY_ON_TOP)
 {
-public:
-	TwinPad_Frame(wxString title, wxSize size) 
-		: wxDialog(0, wxID_ANY, title, wxDefaultPosition, size,
-		wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxSTAY_ON_TOP)
-	{
-		hEmuWnd = find_main_window(processId);
-		
-		CreateControls(this);
+	hEmuWnd = find_main_window(processId);
 
-		SetSize(GetMinSize());
-		SetPosition(wxPoint(200, 20));
+	tmrAnimate = new CReAnimate(this);
 
-		Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(TwinPad_Frame::OnClose));
-	}
+	tmrAutoNavigate = new CAutoNav(this);
+	tmrGetKey = new CGetKey(this);
+	tmrGetComboKey = new CGetComboKey(this);
+	tmrGetLoadComboKey = new CGetLoadComboKey(this);
 
-	void OnClose(wxCloseEvent &event)
-	{
-		SetForegroundWindow(hEmuWnd);
-		ShowWindow(hEmuWnd, SW_RESTORE);
-		event.Skip();
-	}
+	CreateControls(this);
 
-	void TwinPad_Configuration()
-	{
-		ShowModal();
-		Destroy();
-	}
-};
+	SetSize(GetMinSize());
+	SetPosition(wxPoint(200, 20));
+
+	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(TwinPad_Frame::OnClose));
+}
+
+void TwinPad_Frame::OnClose(wxCloseEvent &event)
+{
+	SetForegroundWindow(hEmuWnd);
+	ShowWindow(hEmuWnd, SW_RESTORE);
+	event.Skip();
+}
+
+void TwinPad_Frame::TwinPad_Configuration()
+{
+	ShowModal();
+	Destroy();
+}
 
 class TwinPad_DLL : public wxApp
 {
 public:
 	TwinPad_DLL() { }
-	bool OnInit()
-	{
-		// If different images support is needed, either add 
-		
-		//wxInitAllImageHandlers();
-		
-		// ... or one or more image handlers of the following individually,
-		// I listed two here but there is more....
-
-		//wxImage::AddHandler(new wxPNGHandler);
-		//wxImage::AddHandler(new wxICOHandler); //use only when needed, otherwise big.exe's
-	
-		return true;
-	}
+	bool OnInit() { return true; }
 };
 
 TwinPad_Frame *twinPad_Frame;
 
+// This is called from PADconfigure which in turn called from the emu
 void ConfigureTwinPad()
 {
 	twinPad_Frame = new TwinPad_Frame("TwinPad Configuration Utility", wxDefaultSize);
