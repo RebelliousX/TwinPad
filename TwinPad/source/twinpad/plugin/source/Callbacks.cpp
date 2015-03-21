@@ -1,4 +1,4 @@
-//#include <windows.h>
+// #include <windows.h>
 #include "wx/msw/wrapwin.h"
 #include "wx/msw/private.h"
 
@@ -26,7 +26,7 @@ const unsigned char subversion = 0;  // vX.X.0
 
 u32 CALLBACK PS2EgetLibType()
 {	
-	return 0x02; //PS2E_LT_PAD
+	return 0x02; // PS2E_LT_PAD
 } 
 
 char* CALLBACK PS2EgetLibName()
@@ -122,7 +122,7 @@ void _PADclose() {
 	cmdLen[0]  = cmdLen[1]  = 0;
 }
 
-/////////////////////////////////////////////////PSX related functions/////////////////////////////
+// // // // // // // // // // // // // // // // // // // // // // // // /PSX related functions// // // // // // // // // // // // // // /
 typedef struct {
 	unsigned char controllerType;
 	unsigned short buttonStatus;
@@ -135,16 +135,16 @@ typedef struct {
 	unsigned long int dummy;
 } PadInitS;
 
-//Newer PSX EMUs wont use these 2 functions, instead they'll use PADstartPoll() padPoll()
-//they are here for compatibility with PSEmu Pro specifications..
+// Newer PSX EMUs wont use these 2 functions, instead they'll use PADstartPoll() padPoll()
+// they are here for compatibility with PSEmu Pro specifications..
 
 long CALLBACK PADreadPort1(PadDataS* pads)
 {
 	memset(pads, 0, sizeof(PadDataS));
 	if ((padID[0] & 0xf0) == 0x40)
-		pads->controllerType = 4; //Digital
+		pads->controllerType = 4; // Digital
 	else
-		pads->controllerType = 7; //Analog
+		pads->controllerType = 7; // Analog
 	pads->buttonStatus = status[0];
 	pads->leftJoyX = lanalog[0].x;
 	pads->leftJoyY = lanalog[0].y;
@@ -157,9 +157,9 @@ long CALLBACK PADreadPort2(PadDataS* pads)
 {
 	memset(pads, 0, sizeof(PadDataS));
 	if ((padID[1] & 0xf0) == 0x40)
-		pads->controllerType = 4; //Digital
+		pads->controllerType = 4; // Digital
 	else
-		pads->controllerType = 7; //Analog
+		pads->controllerType = 7; // Analog
 	pads->buttonStatus = status[1];
 	pads->leftJoyX = lanalog[1].x;
 	pads->leftJoyY = lanalog[1].y;

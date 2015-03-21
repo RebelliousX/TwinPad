@@ -39,289 +39,228 @@ const int IMG_WIDTH = 40;	// 40 pixels
 // Creates a default TwinPad.ini file
 void CreateNullFile()
 {
-	try
-	{
-		int counter;
+	int counter;
 	
-		string file = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
-		string strPad;
+	string file = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
+	string strPad;
 
-		ofstream nullfile(file.c_str(), ios::out);
+	ofstream nullfile(file.c_str(), ios::out);
 
-		if (!nullfile.is_open())
-		{
-			wxMessageBox("Couldn't create TwinPad.ini configuration file into the specified location!\n\n"
-				"\nMake sure at least 'inis' folder exists in the same directory with the emu."
-				"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-			GUI_Controls.mainFrame->Close(true);
-		}
+	if (!nullfile.is_open())
+	{
+		wxMessageBox("Couldn't create TwinPad.ini configuration file into the specified location!\n\n"
+			"\nMake sure at least 'inis' folder exists in the same directory with the emu."
+			"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+		GUI_Controls.mainFrame->Close(true);
+	}
 
-		// Write header and config version number
-		nullfile << GUI_Controls.GetTwinPad_Header() << endl;
-		// Write assigned keys for both pads
-		for(int pad = 0; pad <= 1; pad++)
-		{
-			if (pad == 0) 
-				strPad = "[0][";
-			else
-				strPad = "[1][";
+	// Write header and config version number
+	nullfile << GUI_Controls.GetTwinPad_Header() << endl;
+	// Write assigned keys for both pads
+	for(int pad = 0; pad <= 1; pad++)
+	{
+		if (pad == 0) 
+			strPad = "[0][";
+		else
+			strPad = "[1][";
 		
-			counter = 0;
-			while(counter < 24)		// 24 PS buttons
-			{
-				nullfile << strPad << counter << "] = 0x0" << endl;
-				GUI_Config.m_pad[pad][counter] = 0;
-				counter++;
-			}
-			nullfile << strPad << counter << "] = 0x0" << endl;  // for walk/run value
-		}
-
-		// Write Mouse configuration
 		counter = 0;
-		while(counter < 10)
+		while(counter < 24)		// 24 PS buttons
 		{
-			nullfile << wxString("[") << counter << "] = 36" << endl;
-			GUI_Config.m_mouse[counter] = 36;
+			nullfile << strPad << counter << "] = 0x0" << endl;
+			GUI_Config.m_pad[pad][counter] = 0;
 			counter++;
 		}
-		nullfile << "0" << endl;		/*  Mouse as PAD 1  */ 
-		GUI_Config.m_mouseAsPad = 0;
-		nullfile << "1" << endl;		/*  Mouse sensitivity default value.  */
-		GUI_Config.m_mouseSensitivity = 1;
+		nullfile << strPad << counter << "] = 0x0" << endl;  // for walk/run value
+	}
 
-		// Write 'Extra Options' configuration
-		counter = 0;
-		while(counter <= 6)
-		{
-			nullfile << "0" << endl;
-			GUI_Config.m_extra[counter] = 0;
-			counter++;
-		}
+	// Write Mouse configuration
+	counter = 0;
+	while(counter < 10)
+	{
+		nullfile << wxString("[") << counter << "] = 36" << endl;
+		GUI_Config.m_mouse[counter] = 36;
+		counter++;
+	}
+	nullfile << "0" << endl;		/*  Mouse as PAD 1  */ 
+	GUI_Config.m_mouseAsPad = 0;
+	nullfile << "1" << endl;		/*  Mouse sensitivity default value.  */
+	GUI_Config.m_mouseSensitivity = 1;
+
+	// Write 'Extra Options' configuration
+	counter = 0;
+	while(counter <= 6)
+	{
+		nullfile << "0" << endl;
+		GUI_Config.m_extra[counter] = 0;
+		counter++;
+	}
 	
-		nullfile.close();
-	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	nullfile.close();
 }
 
 // Creates a default TwinPad_COMBOs.ini file
 void CreateNullComboFile()
 {
-	try
-	{
-		string file = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
-		ofstream txtFile(file.c_str(), ios::out);
+	string file = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
+	ofstream txtFile(file.c_str(), ios::out);
 
-		if (!txtFile.is_open())
-		{
-			wxMessageBox("Couldn't create TwinPad_Combos.ini configuration file into the specified location!\n\n"
-				"\nMake sure at least 'inis' folder exists in the same directory with the emu."
-				"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-			::exit(0);
-		}
-
-		txtFile << GUI_Controls.GetTwinPad_ComboHeader() << endl;
-		txtFile << "ComboCount\t= 0\n";
-
-		txtFile.close();
-	}
-	catch (exception &ex)
+	if (!txtFile.is_open())
 	{
-		wxMessageBox(ex.what());
+		wxMessageBox("Couldn't create TwinPad_Combos.ini configuration file into the specified location!\n\n"
+			"\nMake sure at least 'inis' folder exists in the same directory with the emu."
+			"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+		::exit(0);
 	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+
+	txtFile << GUI_Controls.GetTwinPad_ComboHeader() << endl;
+	txtFile << "ComboCount\t= 0\n";
+
+	txtFile.close();
 }
 
 bool IsFileOkAndFix(const string &file, const string &header)
 {
-	try
-	{
-		ifstream f(file);
+	ifstream f(file);
 		
-		string str = "";
-		wxString strMsg = "";
+	string str = "";
+	wxString strMsg = "";
 
-		int select = 0;
-		if (header == GUI_Controls.GetTwinPad_Header())
-			select = 1;		// TwinPad.ini
-		else if (header == GUI_Controls.GetTwinPad_ComboHeader())
-			select = 2;		// TwinPad_COMBOs.ini
+	int select = 0;
+	if (header == GUI_Controls.GetTwinPad_Header())
+		select = 1;		// TwinPad.ini
+	else if (header == GUI_Controls.GetTwinPad_ComboHeader())
+		select = 2;		// TwinPad_COMBOs.ini
 		
-		// First: Check if file can be opened
-		if (f.is_open())
+	// First: Check if file can be opened
+	if (f.is_open())
+	{
+		// Second: Check the Header if version is compatible
+		getline(f, str);
+		if (select == 1)
 		{
-			// Second: Check the Header if version is compatible
-			getline(f, str);
-			if (select == 1)
+			if (str != GUI_Controls.GetTwinPad_Header())
 			{
-				if (str != GUI_Controls.GetTwinPad_Header())
-				{
-					f.close();
-					CreateNullFile();
-					int len = str.length();
-					string strCmp = "TwinPad Configurations";
-					string substring = str.substr(1, strCmp.length());
-					if (len == GUI_Controls.GetTwinPad_Header().length() && substring == strCmp)
-						wxMessageBox(wxString::Format("TwinPad configuration file is old, all previous settings are lost.\n\n"
-							"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_Header()),
-							"Oops!", wxICON_INFORMATION);
-					else
-						wxMessageBox("TwinPad configuration file is corrupted, all previous settings are lost.\n\n",
-									 "Oops!", wxICON_EXCLAMATION);
+				f.close();
+				CreateNullFile();
+				int len = str.length();
+				string strCmp = "TwinPad Configurations";
+				string substring = str.substr(1, strCmp.length());
+				if (len == GUI_Controls.GetTwinPad_Header().length() && substring == strCmp)
+					wxMessageBox(wxString::Format("TwinPad configuration file is old, all previous settings are lost.\n\n"
+						"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_Header()),
+						"Oops!", wxICON_INFORMATION);
+				else
+					wxMessageBox("TwinPad configuration file is corrupted, all previous settings are lost.\n\n",
+									"Oops!", wxICON_EXCLAMATION);
 					
-					return true;	// Created null file, then it is OK. If didn't create null file, shouldn't have reached here.
-				}
-				else
-					return true;	// File is OK
+				return true;	// Created null file, then it is OK. If didn't create null file, shouldn't have reached here.
 			}
-			else if (select == 2)
-			{
-				if (str != GUI_Controls.GetTwinPad_ComboHeader())
-				{
-					f.close();
-					CreateNullComboFile();
-					int len = str.length();
-					string strCmp = "TwinPad COMBO Configurations";
-					string substring = str.substr(1, strCmp.length());
-					if (len == GUI_Controls.GetTwinPad_ComboHeader().length() && substring == strCmp)
-						wxMessageBox(wxString::Format("TwinPad COMBOs configuration file is old, all previous settings are lost.\n\n"
-							"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_ComboHeader()),
-							"Oops!", wxICON_INFORMATION);
-					else
-						wxMessageBox("TwinPad COMBOs configuration file is corrupted, all previous settings are lost.\n\n",
-									 "Oops!", wxICON_EXCLAMATION);
-
-					return true;	// Create null file, then is OK
-				}
-				else
-					return true;	// File is OK
-			}
+			else
+				return true;	// File is OK
 		}
-		else
+		else if (select == 2)
 		{
-			if (select == 1) CreateNullFile();
-			if (select == 2) CreateNullComboFile();
+			if (str != GUI_Controls.GetTwinPad_ComboHeader())
+			{
+				f.close();
+				CreateNullComboFile();
+				int len = str.length();
+				string strCmp = "TwinPad COMBO Configurations";
+				string substring = str.substr(1, strCmp.length());
+				if (len == GUI_Controls.GetTwinPad_ComboHeader().length() && substring == strCmp)
+					wxMessageBox(wxString::Format("TwinPad COMBOs configuration file is old, all previous settings are lost.\n\n"
+						"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_ComboHeader()),
+						"Oops!", wxICON_INFORMATION);
+				else
+					wxMessageBox("TwinPad COMBOs configuration file is corrupted, all previous settings are lost.\n\n",
+									"Oops!", wxICON_EXCLAMATION);
+
+				return true;	// Create null file, then is OK
+			}
+			else
+				return true;	// File is OK
 		}
+	}
+	else
+	{
+		if (select == 1) CreateNullFile();
+		if (select == 2) CreateNullComboFile();
+	}
 	
-		f.close();
-		return false;
-	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
-	return false; // shouldn't reach here
+	f.close();
+	return false;
 }
 
 void Loading_TwinPad_Main_Config()
 {
-	try
+	wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
+	wxTextFile file(fileName);
+	if (!file.Open(fileName))
 	{
-		wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
-		wxTextFile file(fileName);
-		if (!file.Open(fileName))
-		{
-			wxMessageBox("Couldn't open configuration files from the specified location!"
-				"\nMake sure 'inis' folder exists in the same directory with the emu."
-				"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-			::exit(0);
-		}
+		wxMessageBox("Couldn't open configuration files from the specified location!"
+			"\nMake sure 'inis' folder exists in the same directory with the emu."
+			"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+		::exit(0);
+	}
 
-		wxStringTokenizer token;
-		wxString line, subStr;
-		long val = 0;
+	wxStringTokenizer token;
+	wxString line, subStr;
+	long val = 0;
 
-		// Get header and skip it
-		line = file.GetFirstLine();
-		// Read the two pads configurations and Walk/Run key
-		for(int pad = 0; pad < 2; pad++)
-			for (int key = 0; key < 25; key++)
-			{
-				line = file.GetNextLine();
-				token.SetString(line, " ", wxTOKEN_STRTOK);
-				subStr = token.GetNextToken();				// Skips first token [n][n]
-				subStr = token.GetNextToken();				// Skips second token =
-				subStr = token.GetNextToken();				// we are interested in this token 0xNN
-				subStr.ToLong(&val, 16);					// Convert string to hex
-				GUI_Config.m_pad[pad][key] = int(val);		
-			}
-
-		// Read mouse buttons and scrollup/down configuration
-		for(int i = 0; i < 10; i++)
+	// Get header and skip it
+	line = file.GetFirstLine();
+	// Read the two pads configurations and Walk/Run key
+	for(int pad = 0; pad < 2; pad++)
+		for (int key = 0; key < 25; key++)
 		{
 			line = file.GetNextLine();
 			token.SetString(line, " ", wxTOKEN_STRTOK);
-			subStr = token.GetNextToken();	// skips first token [n]
-			subStr = token.GetNextToken();	// skips second token =
-			subStr = token.GetNextToken();	// we are interested in this token N (DECIMAL)
-			subStr.ToLong(&val, 10);		// Convert string to dec
-			GUI_Config.m_mouse[i] = val;
+			subStr = token.GetNextToken();				// Skips first token [n][n]
+			subStr = token.GetNextToken();				// Skips second token =
+			subStr = token.GetNextToken();				// we are interested in this token 0xNN
+			subStr.ToLong(&val, 16);					// Convert string to hex
+			GUI_Config.m_pad[pad][key] = int(val);		
 		}
 
-		// Read 'Extra Options' configuration
-		for(int i = 0; i < 7; i++)
-		{
-			line = file.GetNextLine();
-			line.ToLong(&val, 10);
-			GUI_Config.m_extra[i] = val;
-		}
-		file.Close();
-	}
-	catch (exception &ex)
+	// Read mouse buttons and scrollup/down configuration
+	for(int i = 0; i < 10; i++)
 	{
-		wxMessageBox(ex.what());
+		line = file.GetNextLine();
+		token.SetString(line, " ", wxTOKEN_STRTOK);
+		subStr = token.GetNextToken();	// skips first token [n]
+		subStr = token.GetNextToken();	// skips second token =
+		subStr = token.GetNextToken();	// we are interested in this token N (DECIMAL)
+		subStr.ToLong(&val, 10);		// Convert string to dec
+		GUI_Config.m_mouse[i] = val;
 	}
-	catch (...)
+
+	// Read 'Extra Options' configuration
+	for(int i = 0; i < 7; i++)
 	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+		line = file.GetNextLine();
+		line.ToLong(&val, 10);
+		GUI_Config.m_extra[i] = val;
 	}
+	file.Close();
 }
 
 // Loading images into controls
 void LoadResources(CPS_Anim *animCtrl, const unsigned int index)
 {
-	try
-	{
-		void *iData = 0;	// hold image data
-		size_t length = 0;  // hold image size in bytes
+	void *iData = 0;	// hold image data
+	size_t length = 0;  // hold image size in bytes
 
-		GetImageData(iData, &length, index);
+	GetImageData(iData, &length, index);
 
-		unsigned char *buffer = new unsigned char[length];
-		memcpy(buffer, iData, length);
+	unsigned char *buffer = new unsigned char[length];
+	memcpy(buffer, iData, length);
 
-		wxMemoryInputStream iStream(buffer, length);
+	wxMemoryInputStream iStream(buffer, length);
 
-		animCtrl->Load(iStream, wxANIMATION_TYPE_ANY);
+	animCtrl->Load(iStream, wxANIMATION_TYPE_ANY);
 
-		delete[] buffer;
-	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	delete[] buffer;
 }
 
 // This function is called from LoadResources() and SetCustomCellRenderer()
@@ -422,7 +361,7 @@ void GetImageData(void* &data, unsigned int *length, const unsigned int index)
 	}
 }
 
-//// //// //// //// //// //// //// //// Combo  Tab //// //// //// //// //// //// //// ////
+// // // // // // // // // // // // // // // // Combo  Tab // // // // // // // // // // // // // // // // 
 
 void SetupComboTab(wxPanel *panel)
 {
@@ -729,582 +668,449 @@ void SetupComboTab(wxPanel *panel)
 // This function add one or more rows to the grid (typically we add one row at a time from caller function)
 void AddRow(CComboGrid *grid, unsigned int defaultDelay, unsigned int rowPos)
 {
-	try
-	{
-		wxString str = wxString::Format("%d", defaultDelay);
+	wxString str = wxString::Format("%d", defaultDelay);
 
-		grid->InsertRows(rowPos, 1, true);
-		grid->SetCellValue(rowPos, 0, str);
+	grid->InsertRows(rowPos, 1, true);
+	grid->SetCellValue(rowPos, 0, str);
 
-		// Resize column width and change label
-		for (int i = 1; i < grid->GetNumberCols(); ++i)
-		{
-			grid->SetColumnWidth(i, IMG_WIDTH);
-			grid->SetColLabelValue(i, wxString::Format("#%d", i));
-		}
-		grid->SetRowSize(rowPos, IMG_WIDTH);
-		// Set Column 0 attr, the range of acceptable numbers from 1 to 99999 (delay values)
-		// Setup attributes, seems like I have to do this for each new row!! to ensure I have
-		// a spin control, otherwise, it will work but with no spin ctrl and no protection if the
-		// delay value is not in range.
-		wxGridCellAttr *attrDelayColumn = new wxGridCellAttr;
-		attrDelayColumn->SetEditor(new wxGridCellNumberEditor(1, 99999));
-		attrDelayColumn->SetBackgroundColour(wxColor(66, 66, 66));
-		attrDelayColumn->SetTextColour(wxColor(255, 255, 255));
-		attrDelayColumn->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false));
-		attrDelayColumn->SetAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
-		attrDelayColumn->SetReadOnly(false); // only first column is editable
-		grid->SetColAttr(0, attrDelayColumn);
-	}
-	catch (exception &e)
+	// Resize column width and change label
+	for (int i = 1; i < grid->GetNumberCols(); ++i)
 	{
-		wxMessageBox(e.what());
+		grid->SetColumnWidth(i, IMG_WIDTH);
+		grid->SetColLabelValue(i, wxString::Format("#%d", i));
 	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	grid->SetRowSize(rowPos, IMG_WIDTH);
+	// Set Column 0 attr, the range of acceptable numbers from 1 to 99999 (delay values)
+	// Setup attributes, seems like I have to do this for each new row!! to ensure I have
+	// a spin control, otherwise, it will work but with no spin ctrl and no protection if the
+	// delay value is not in range.
+	wxGridCellAttr *attrDelayColumn = new wxGridCellAttr;
+	attrDelayColumn->SetEditor(new wxGridCellNumberEditor(1, 99999));
+	attrDelayColumn->SetBackgroundColour(wxColor(66, 66, 66));
+	attrDelayColumn->SetTextColour(wxColor(255, 255, 255));
+	attrDelayColumn->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false));
+	attrDelayColumn->SetAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
+	attrDelayColumn->SetReadOnly(false); // only first column is editable
+	grid->SetColAttr(0, attrDelayColumn);
 }
 
 // Handles click event on New Action button
 void OnClickNewAction(wxCommandEvent &ev)
 {
-	try
+	if (GUI_Controls.Combos.size() == 0)
 	{
-		if (GUI_Controls.Combos.size() == 0)
-		{
-			wxMessageBox("You need to create a Combo first before you can add Actions.",
-				"COMBO's list is empty!", wxICON_INFORMATION);
-			return;
-		}
-		AddRow(GUI_Controls.virtualGrid,
-			GUI_Controls.spnDefaultDelay->GetValue(),
-			GUI_Controls.virtualGrid->GetNumberRows());
+		wxMessageBox("You need to create a Combo first before you can add Actions.",
+			"COMBO's list is empty!", wxICON_INFORMATION);
+		return;
+	}
+	AddRow(GUI_Controls.virtualGrid,
+		GUI_Controls.spnDefaultDelay->GetValue(),
+		GUI_Controls.virtualGrid->GetNumberRows());
 
-		for (int c = 0; c < GUI_Controls.virtualGrid->GetNumberRows(); ++c)
-			GUI_Controls.virtualGrid->SetRowHeight(c, IMG_WIDTH);
+	for (int c = 0; c < GUI_Controls.virtualGrid->GetNumberRows(); ++c)
+		GUI_Controls.virtualGrid->SetRowHeight(c, IMG_WIDTH);
 
-		// Adding new action, set cursor to the last action and first button
-		Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
-		// Modify sensitivity inside the SpinControl
-		ModifySensitivity();
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	// Adding new action, set cursor to the last action and first button
+	Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
+	// Modify sensitivity inside the SpinControl
+	ModifySensitivity();
 }
 
 // Handles click event on Delete Last Action button
 void OnClickDeleteLastAction(wxCommandEvent &ev)
 {
-	try
+	if (GUI_Controls.Combos.size() > 0)
 	{
-		if (GUI_Controls.Combos.size() > 0)
+		if (GUI_Controls.virtualGrid->GetNumberRows() == 1)
 		{
-			if (GUI_Controls.virtualGrid->GetNumberRows() == 1)
-			{
-				// Minimum requirement: to have at least 1 action to have a combo, even if it is empty
-				GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
-				AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
-				Cell_Locator.SetLocation(0, 1);
-			}
-			else
-				GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
+			// Minimum requirement: to have at least 1 action to have a combo, even if it is empty
+			GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
+			AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
+			Cell_Locator.SetLocation(0, 1);
 		}
 		else
-			wxMessageBox("There are no Actions, and you did not create a COMBO!!", "No Actions, nor a Combo:",
-			wxICON_INFORMATION);
+			GUI_Controls.virtualGrid->DeleteRows(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
+	}
+	else
+		wxMessageBox("There are no Actions, and you did not create a COMBO!!", "No Actions, nor a Combo:",
+		wxICON_INFORMATION);
 
-		// if current location was deleted with the deleted action, relocate to a valid location (last row, 2nd column)
-		Cell_Locator.TestAndCorrectLocation();
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	// if current location was deleted with the deleted action, relocate to a valid location (last row, 2nd column)
+	Cell_Locator.TestAndCorrectLocation();
 }
 
 // Handles click event on Insert Actions button
 void OnClickInsertAction(wxCommandEvent &ev)
 {
-	try
+	wxArrayInt selectedRows;
+	for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
 	{
-		wxArrayInt selectedRows;
-		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
-		{
-			bool blnIsRowSelected = false;
-			for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
-				if (GUI_Controls.virtualGrid->IsInSelection(row, col))
-					blnIsRowSelected = true;
-				else
-				{
-					blnIsRowSelected = false;
-					break;	// If even one cell not selected in a row, then the row is not selected, so skip to next row				
-				}
-
-			if (blnIsRowSelected)
-				selectedRows.push_back(row);
-		}
-
-		if (selectedRows.empty())
-		{
-			// Long error & help message :)
-			wxMessageBox("Both 'Insert Actions' & 'Insert Inbetween Actions' work the same for a single Action. "
-				"But they differ when trying to insert more than one Action at once. Please read to know the difference:\n\n"
-				"You have to specify where to insert the new Action first, so select an Action "
-				"by clicking on the Action number to make sure the whole action is selected. "
-				"You have to select at least ONE whole Action before you insert another. "
-				"You can select more than one by holding CTRL or SHIFT keys, and new Actions\nwill be inserted there.\n\n"
-				"Lastly, selected Actions have to be next to each other unlike 'INSERT INBETWEEN ACTIONS'. "
-				"The new inserted Action will have the same 'ABSOLUTE' position (same Action number) as the one "
-				"you selected. Thus, the remaining Actions will be pushed further down the list. "
-				"Even if you selected more than one Action, the new ones will retain the absolute "
-				"position to other nearby Actions.\n\nFor example, it is very similar to Microsoft Excel when inserting new rows. :)",
-				"New Action location is unknown!",
-				wxICON_EXCLAMATION);
-			return;
-		}
-
-		if (selectedRows.size() > 1)
-			for (int next = 1, previous = 0; next < (signed) selectedRows.size(); ++next, ++previous)
+		bool blnIsRowSelected = false;
+		for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+			if (GUI_Controls.virtualGrid->IsInSelection(row, col))
+				blnIsRowSelected = true;
+			else
 			{
-				if (selectedRows[next] - selectedRows[previous] > 1)
-				{
-					wxMessageBox("Actions selected have to be adjacent to one another. Otherwise, choose\n"
-						"'Insert Inbetween Actions' button.", "Not contiguous Actions!", wxICON_EXCLAMATION);
-					return;
-				}
+				blnIsRowSelected = false;
+				break;	// If even one cell not selected in a row, then the row is not selected, so skip to next row				
 			}
 
-		for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
-		{
-			// Move grid cursor outside of the table, before we insert anything
-			// to avoid hard to fix problems related to grid-cursor's previous location
-			Cell_Locator.SetLocation(-1, -1);
+		if (blnIsRowSelected)
+			selectedRows.push_back(row);
+	}
 
-			AddRow(GUI_Controls.virtualGrid,
-				GUI_Controls.spnDefaultDelay->GetValue(),
-				selectedRows[0]);
+	if (selectedRows.empty())
+	{
+		// Long error & help message :)
+		wxMessageBox("Both 'Insert Actions' & 'Insert Inbetween Actions' work the same for a single Action. "
+			"But they differ when trying to insert more than one Action at once. Please read to know the difference:\n\n"
+			"You have to specify where to insert the new Action first, so select an Action "
+			"by clicking on the Action number to make sure the whole action is selected. "
+			"You have to select at least ONE whole Action before you insert another. "
+			"You can select more than one by holding CTRL or SHIFT keys, and new Actions\nwill be inserted there.\n\n"
+			"Lastly, selected Actions have to be next to each other unlike 'INSERT INBETWEEN ACTIONS'. "
+			"The new inserted Action will have the same 'ABSOLUTE' position (same Action number) as the one "
+			"you selected. Thus, the remaining Actions will be pushed further down the list. "
+			"Even if you selected more than one Action, the new ones will retain the absolute "
+			"position to other nearby Actions.\n\nFor example, it is very similar to Microsoft Excel when inserting new rows. :)",
+			"New Action location is unknown!",
+			wxICON_EXCLAMATION);
+		return;
+	}
+
+	if (selectedRows.size() > 1)
+		for (int next = 1, previous = 0; next < (signed) selectedRows.size(); ++next, ++previous)
+		{
+			if (selectedRows[next] - selectedRows[previous] > 1)
+			{
+				wxMessageBox("Actions selected have to be adjacent to one another. Otherwise, choose\n"
+					"'Insert Inbetween Actions' button.", "Not contiguous Actions!", wxICON_EXCLAMATION);
+				return;
+			}
 		}
 
-		GUI_Controls.virtualGrid->ClearSelection();
+	for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
+	{
+		// Move grid cursor outside of the table, before we insert anything
+		// to avoid hard to fix problems related to grid-cursor's previous location
+		Cell_Locator.SetLocation(-1, -1);
 
-		if (selectedRows[0] == 0)
-			Cell_Locator.SetLocation(0, 1);
-		else
-			Cell_Locator.SetLocation(selectedRows[0], 1);
+		AddRow(GUI_Controls.virtualGrid,
+			GUI_Controls.spnDefaultDelay->GetValue(),
+			selectedRows[0]);
 	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+
+	GUI_Controls.virtualGrid->ClearSelection();
+
+	if (selectedRows[0] == 0)
+		Cell_Locator.SetLocation(0, 1);
+	else
+		Cell_Locator.SetLocation(selectedRows[0], 1);
 }
 
 // Handles click event on Insert Inbetween Actions button
 void OnClickInsertInbetweenAction(wxCommandEvent &ev)
 {
-	try
+	// See OnClickDeleteSelectedActions below for more details about this
+	wxArrayInt selectedRows;
+	for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
 	{
-		// See OnClickDeleteSelectedActions below for more details about this
-		wxArrayInt selectedRows;
-		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
-		{
-			bool IsRowSelected = false;
-			for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
-				if (GUI_Controls.virtualGrid->IsInSelection(row, col))
-					IsRowSelected = true;
-				else
-				{
-					IsRowSelected = false;
-					break;	// If even one cell not selected in a row, then the row is not selected, so skip to next row				
-				}
+		bool IsRowSelected = false;
+		for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+			if (GUI_Controls.virtualGrid->IsInSelection(row, col))
+				IsRowSelected = true;
+			else
+			{
+				IsRowSelected = false;
+				break;	// If even one cell not selected in a row, then the row is not selected, so skip to next row				
+			}
 
-			if (IsRowSelected)
-				selectedRows.push_back(row);
-		}
-
-		if (selectedRows.empty())
-		{
-			// Long error & help message :)
-			wxMessageBox("Both 'Insert Actions' & 'Insert Inbetween Actions' work the same for a single Action. "
-				"But they differ when trying to insert more than one Action at once. Please read to know the difference:\n\n"
-				"You have to specify where to insert the new Action first, so select an Action "
-				"by clicking on the Action number to make sure the whole action is selected. "
-				"You have to select at least ONE whole Action before you insert another. "
-				"You can select more than one by holding CTRL or SHIFT keys, and new Actions will be inserted there.\n\n"
-				"Lastly, the new inserted Action will have the same 'RELATIVE' position as the one "
-				"you selected (relative to the Action above and below. Thus, the remaining Actions will be pushed "
-				"further down the list. Even if you selected more than one Action, the new ones will retain the relative "
-				"position to other nearby Actions.\n\n"
-				"This is a unique way of inserting rows (a.k.a Actions), I am not aware of another application can do this "
-				"to compare the behavior with this one. :)",
-				"New Action location is unknown!",
-				wxICON_EXCLAMATION);
-			return;
-		}
-
-		for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
-		{
-			// Move grid cursor outside of the table, before we insert anything
-			// to avoid hard to fix problems related to grid-cursor's previous location
-			Cell_Locator.SetLocation(-1, -1);
-
-			AddRow(GUI_Controls.virtualGrid,
-				GUI_Controls.spnDefaultDelay->GetValue(),
-				selectedRows[i]);
-			for (unsigned int j = i; j < (unsigned int)selectedRows.size(); ++j)
-				selectedRows[j] += 1;
-		}
-
-		GUI_Controls.virtualGrid->ClearSelection();
-
-		// Move grid cursor to the first inserted action (whether it is one or more)
-		// Note that if for example the first selected was row 0, now it is row 1 since it was shifted down 1 row
-		Cell_Locator.SetLocation(selectedRows[0] - 1, 1);
+		if (IsRowSelected)
+			selectedRows.push_back(row);
 	}
-	catch (exception &e)
+
+	if (selectedRows.empty())
 	{
-		wxMessageBox(e.what());
+		// Long error & help message :)
+		wxMessageBox("Both 'Insert Actions' & 'Insert Inbetween Actions' work the same for a single Action. "
+			"But they differ when trying to insert more than one Action at once. Please read to know the difference:\n\n"
+			"You have to specify where to insert the new Action first, so select an Action "
+			"by clicking on the Action number to make sure the whole action is selected. "
+			"You have to select at least ONE whole Action before you insert another. "
+			"You can select more than one by holding CTRL or SHIFT keys, and new Actions will be inserted there.\n\n"
+			"Lastly, the new inserted Action will have the same 'RELATIVE' position as the one "
+			"you selected (relative to the Action above and below. Thus, the remaining Actions will be pushed "
+			"further down the list. Even if you selected more than one Action, the new ones will retain the relative "
+			"position to other nearby Actions.\n\n"
+			"This is a unique way of inserting rows (a.k.a Actions), I am not aware of another application can do this "
+			"to compare the behavior with this one. :)",
+			"New Action location is unknown!",
+			wxICON_EXCLAMATION);
+		return;
 	}
-	catch (...)
+
+	for (unsigned int i = 0; i < (unsigned int)selectedRows.size(); ++i)
 	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+		// Move grid cursor outside of the table, before we insert anything
+		// to avoid hard to fix problems related to grid-cursor's previous location
+		Cell_Locator.SetLocation(-1, -1);
+
+		AddRow(GUI_Controls.virtualGrid,
+			GUI_Controls.spnDefaultDelay->GetValue(),
+			selectedRows[i]);
+		for (unsigned int j = i; j < (unsigned int)selectedRows.size(); ++j)
+			selectedRows[j] += 1;
 	}
+
+	GUI_Controls.virtualGrid->ClearSelection();
+
+	// Move grid cursor to the first inserted action (whether it is one or more)
+	// Note that if for example the first selected was row 0, now it is row 1 since it was shifted down 1 row
+	Cell_Locator.SetLocation(selectedRows[0] - 1, 1);
 }
 
 void OnClickDeleteSelectedActions(wxCommandEvent &ev)
 {
-	try
+	/*
+	Check this ticket for wxWidgets, GetSelectedRows() is not reliable and doesn't work correctly.
+	The documentation says it is intended and I have to use GetSlectionTopLeft/BottomRight instead,
+	I say this is BS. I hate wxWidgets more now.
+	http:// trac.wxwidgets.org/changeset/54665
+	// wxArrayInt selectedRows = GUI_Controls.virtualGrid->GetSelectedRows(); <- Doesn't work.
+	*/
+
+	// My implementation works better :)
+	wxArrayInt selectedRows;
+	for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
 	{
-		/*
-		Check this ticket for wxWidgets, GetSelectedRows() is not reliable and doesn't work correctly.
-		The documentation says it is intended and I have to use GetSlectionTopLeft/BottomRight instead,
-		I say this is BS. I hate wxWidgets more now.
-		http:// trac.wxwidgets.org/changeset/54665
-		// wxArrayInt selectedRows = GUI_Controls.virtualGrid->GetSelectedRows(); <- Doesn't work.
-		*/
+		bool IsRowSelected = false;
+		for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+			if (GUI_Controls.virtualGrid->IsInSelection(row, col))
+				IsRowSelected = true;
+			else
+			{
+				IsRowSelected = false;
+				break;	// If even one cell not selected in a row, then the row is not selected, so skip to next row				
+			}
 
-		// My implementation works better :)
-		wxArrayInt selectedRows;
-		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
-		{
-			bool IsRowSelected = false;
-			for (int col = 0; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
-				if (GUI_Controls.virtualGrid->IsInSelection(row, col))
-					IsRowSelected = true;
-				else
-				{
-					IsRowSelected = false;
-					break;	// If even one cell not selected in a row, then the row is not selected, so skip to next row				
-				}
-
-			if (IsRowSelected)
-				selectedRows.push_back(row);
-		}
-
-		if (selectedRows.empty())
-		{
-			// Long error & help message :)
-			wxMessageBox("You have to specify which Actions you want to delete first, so select an Action by clicking on\n"
-				"the Action number to make sure the whole action is selected.\n\n"
-				"You can select more than one Action by holding CTRL key or SHIFT key while clicking on the\nAction number. "
-				"Or even simply by dragging the mouse to highlight the whole row then delete the Action.\n\n"
-				"Please note that if some cells are highlighted, that doesn't mean the row was selected!\n\n"
-				"You can highlight All Actions simply by clicking on the empty Square to the left of 'Delay'\n"
-				"and above Action numbers, then delete them by clicking on 'Delete Selected Actions' button.\n\n"
-				"Note: If you deleted all Actions, another Action will be created by default, A COMBO needs\n"
-				"at least one empty Action. The created Action will have the delay value specified in the Delay\n"
-				"field next to the COMBO's name.\n",
-				"Action location is unknown!", wxICON_INFORMATION);
-			return;
-		}
-
-		// Save current cell location
-		wxGridCellCoords coords;
-		Cell_Locator.GetLocation(coords);
-		// Put Cell Locator out of the grid
-		Cell_Locator.SetLocation(-1, -1);
-		for (int i = selectedRows.GetCount() - 1; i >= 0; --i)
-			GUI_Controls.virtualGrid->DeleteRows(selectedRows[i], 1, true);
-
-		// Minimum requirement: to have at least 1 action to have a combo, even if it is empty
-		if (GUI_Controls.virtualGrid->GetNumberRows() == 0)
-			AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
-
-		Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
+		if (IsRowSelected)
+			selectedRows.push_back(row);
 	}
-	catch (exception &e)
+
+	if (selectedRows.empty())
 	{
-		wxMessageBox(e.what());
+		// Long error & help message :)
+		wxMessageBox("You have to specify which Actions you want to delete first, so select an Action by clicking on\n"
+			"the Action number to make sure the whole action is selected.\n\n"
+			"You can select more than one Action by holding CTRL key or SHIFT key while clicking on the\nAction number. "
+			"Or even simply by dragging the mouse to highlight the whole row then delete the Action.\n\n"
+			"Please note that if some cells are highlighted, that doesn't mean the row was selected!\n\n"
+			"You can highlight All Actions simply by clicking on the empty Square to the left of 'Delay'\n"
+			"and above Action numbers, then delete them by clicking on 'Delete Selected Actions' button.\n\n"
+			"Note: If you deleted all Actions, another Action will be created by default, A COMBO needs\n"
+			"at least one empty Action. The created Action will have the delay value specified in the Delay\n"
+			"field next to the COMBO's name.\n",
+			"Action location is unknown!", wxICON_INFORMATION);
+		return;
 	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+
+	// Save current cell location
+	wxGridCellCoords coords;
+	Cell_Locator.GetLocation(coords);
+	// Put Cell Locator out of the grid
+	Cell_Locator.SetLocation(-1, -1);
+	for (int i = selectedRows.GetCount() - 1; i >= 0; --i)
+		GUI_Controls.virtualGrid->DeleteRows(selectedRows[i], 1, true);
+
+	// Minimum requirement: to have at least 1 action to have a combo, even if it is empty
+	if (GUI_Controls.virtualGrid->GetNumberRows() == 0)
+		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
+
+	Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);
 }
 
 // Handles click event on delete button "delete PS button" from grid
 void OnClickDeleteButton(wxCommandEvent &ev)
 {
-	try
-	{
-		wxGridCellCoords coords;
-		CCellValue val;
-		Cell_Locator.GetLocation(coords);
-		val.buttonValue = -1;			// -1 is empty button, since 0 means L2
-		val.buttonSensitivity = -1;		// Illegal value
-		val.buttonName = "";			// empty button
+	wxGridCellCoords coords;
+	CCellValue val;
+	Cell_Locator.GetLocation(coords);
+	val.buttonValue = -1;			// -1 is empty button, since 0 means L2
+	val.buttonSensitivity = -1;		// Illegal value
+	val.buttonName = "";			// empty button
 
-		GUI_Controls.spnSensitivity->SetValue(0);
-		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
-		GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
-		GUI_Controls.virtualGrid->Update();
-		GUI_Controls.virtualGrid->Refresh();
-		GUI_Controls.virtualGrid->SetFocus();
-	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
-	return;
+	GUI_Controls.spnSensitivity->SetValue(0);
+	GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
+	GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
+	GUI_Controls.virtualGrid->Update();
+	GUI_Controls.virtualGrid->Refresh();
+	GUI_Controls.virtualGrid->SetFocus();	
 }
 
 // Combo Buttons Events
 void OnClickNewCombo(wxCommandEvent &ev)
 {
-	try
-	{
-		static int counter = 1;
-		wxString strResponse = wxGetTextFromUser("Enter a name for the new Combo:",
-			"New COMBO name", wxString::Format("I am a Combo! #%d", counter++));
-		// Don't accept empty COMBO name
-		if (strResponse == wxEmptyString)
-			return;
-		// Don't accept duplicate COMBO names, we use the unique name to draw on grid
-		for (unsigned int i = 0; i < GUI_Controls.Combos.size(); ++i)
-			if (strResponse == GUI_Controls.Combos[i]->GetName())
-			{
-				wxMessageBox("There is another COMBO with the same name! Please choose a different name.\n\n"
-					"Note: Name is NOT case sensitive, that is 'Orange', 'oRange' or 'ORANGE' are not the same name.",
-					"Duplicate COMBO name found!", wxICON_EXCLAMATION);
-				return;
-			}
-		
-		// Save current Combo (before making a new one) from grid to Combos container if we have at least 1 Combo
-		// It is very important that we use the cmbComboName to get the name of current Combo. If the same Combo
-		// name found in the container, it will be overwritten with this one.
-		if(GUI_Controls.Combos.size() > 0)
-			SaveGridToCombo(GUI_Controls.cmbComboName->GetStringSelection());
-		
-		// Clear grid - delete combo
-		// If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
-		if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
+	static int counter = 1;
+	wxString strResponse = wxGetTextFromUser("Enter a name for the new Combo:",
+		"New COMBO name", wxString::Format("I am a Combo! #%d", counter++));
+	// Don't accept empty COMBO name
+	if (strResponse == wxEmptyString)
+		return;
+	// Don't accept duplicate COMBO names, we use the unique name to draw on grid
+	for (unsigned int i = 0; i < GUI_Controls.Combos.size(); ++i)
+		if (strResponse == GUI_Controls.Combos[i]->GetName())
 		{
-			GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
-			GUI_Controls.virtualGrid->Update();
-			GUI_Controls.virtualGrid->Refresh();
-			GUI_Controls.virtualGrid->ForceRefresh();
-			GUI_Controls.virtualGrid->SetFocus();
+			wxMessageBox("There is another COMBO with the same name! Please choose a different name.\n\n"
+				"Note: Name is NOT case sensitive, that is 'Orange', 'oRange' or 'ORANGE' are not the same name.",
+				"Duplicate COMBO name found!", wxICON_EXCLAMATION);
+			return;
 		}
-
-		// Add name for combo box
-		GUI_Controls.cmbComboName->Append(strResponse);
-
-		// Since this is a sorted ComboBox, position or index doesn't mean anything at all.
-		GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->FindString(strResponse, true));
-		GUI_Controls.strPreviousComboSelection = strResponse;
-
-		// We modified the new Combo, save it and overwrite the duplicate if there is one
-		SaveGridToCombo(strResponse);
-
-		// Add first row for the new combo (minimum requirement for a combo is 1 action)
-		AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
-
-		Cell_Locator.SetLocation(0, 1);
-	}
-	catch (exception &e)
+		
+	// Save current Combo (before making a new one) from grid to Combos container if we have at least 1 Combo
+	// It is very important that we use the cmbComboName to get the name of current Combo. If the same Combo
+	// name found in the container, it will be overwritten with this one.
+	if(GUI_Controls.Combos.size() > 0)
+		SaveGridToCombo(GUI_Controls.cmbComboName->GetStringSelection());
+		
+	// Clear grid - delete combo
+	// If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
+	if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
 	{
-		wxMessageBox(e.what());
+		GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
+		GUI_Controls.virtualGrid->Update();
+		GUI_Controls.virtualGrid->Refresh();
+		GUI_Controls.virtualGrid->ForceRefresh();
+		GUI_Controls.virtualGrid->SetFocus();
 	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+
+	// Add name for combo box
+	GUI_Controls.cmbComboName->Append(strResponse);
+
+	// Since this is a sorted ComboBox, position or index doesn't mean anything at all.
+	GUI_Controls.cmbComboName->Select(GUI_Controls.cmbComboName->FindString(strResponse, true));
+	GUI_Controls.strPreviousComboSelection = strResponse;
+
+	// We modified the new Combo, save it and overwrite the duplicate if there is one
+	SaveGridToCombo(strResponse);
+
+	// Add first row for the new combo (minimum requirement for a combo is 1 action)
+	AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
+
+	Cell_Locator.SetLocation(0, 1);
 }
 
 // Clear current grid then delete combo and combo name from combo box
 void OnClickDeleteCombo(wxCommandEvent &ev)
 {
-	try
-	{
-		// prevent deletion of none selected item (There are no COMBOs)
-		if (GUI_Controls.cmbComboName->GetSelection() < 0 || GUI_Controls.Combos.size() == 0)
-			return;
+	// prevent deletion of none selected item (There are no COMBOs)
+	if (GUI_Controls.cmbComboName->GetSelection() < 0 || GUI_Controls.Combos.size() == 0)
+		return;
 
-		// Clear grid - delete combo
-		GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
+	// Clear grid - delete combo
+	GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
 		
-		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+	for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+	{
+		if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
 		{
-			if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
-			{
-				GUI_Controls.Combos.erase(it);
-				// We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
-				// because ++it will be called and it will point to an empty container, so silently get out of the loop
-				break;
-			}
+			GUI_Controls.Combos.erase(it);
+			// We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
+			// because ++it will be called and it will point to an empty container, so silently get out of the loop
+			break;
 		}
+	}
 
-		// Delete name from combo box
-		wxString strTemp = GUI_Controls.cmbComboName->GetValue();
-		GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
-		GUI_Controls.strPreviousComboSelection = "";
+	// Delete name from combo box
+	wxString strTemp = GUI_Controls.cmbComboName->GetValue();
+	GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
+	GUI_Controls.strPreviousComboSelection = "";
 
-		// After deletion, select the first combo by default
-		if (GUI_Controls.cmbComboName->GetCount() > 0)
-		{
-			GUI_Controls.cmbComboName->Select(0);
-			GUI_Controls.strPreviousComboSelection = GUI_Controls.cmbComboName->GetStringSelection();
-		}
+	// After deletion, select the first combo by default
+	if (GUI_Controls.cmbComboName->GetCount() > 0)
+	{
+		GUI_Controls.cmbComboName->Select(0);
+		GUI_Controls.strPreviousComboSelection = GUI_Controls.cmbComboName->GetStringSelection();
+	}
 			
 		
-		// Delete all rows of grid
-		GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
+	// Delete all rows of grid
+	GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
 		
-		// Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-		// Freeze grid to prevent flickering while adding buttons, and it is much faster this way. Thaw grid when we are done
-		// Note: Hide & Show do the same thing, but they show flicker for a split second
-		GUI_Controls.virtualGrid->Freeze();
-		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+	// Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
+	// Freeze grid to prevent flickering while adding buttons, and it is much faster this way. Thaw grid when we are done
+	// Note: Hide & Show do the same thing, but they show flicker for a split second
+	GUI_Controls.virtualGrid->Freeze();
+	for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+	{
+		if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
 		{
-			if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
+			for (int row = 0; row < (*it)->GetNumberActions(); ++row)
 			{
-				for (int row = 0; row < (*it)->GetNumberActions(); ++row)
+				CAction *curAction = (*it)->GetAction(row);
+				int delay = curAction->GetDelay();
+				// Add grid row, will populate it with buttons after that
+				AddRow(GUI_Controls.virtualGrid, delay, GUI_Controls.virtualGrid->GetNumberRows());
+				// Set Action Delay
+				GUI_Controls.virtualGrid->SetCellValue(row, 0, wxString::Format("%d", delay));
+				// Move to the first button and iterate to add them
+				Cell_Locator.SetLocation(row, 1);
+				for (int button = 0; button < curAction->GetNumberOfButtons(); ++button)
 				{
-					CAction *curAction = (*it)->GetAction(row);
-					int delay = curAction->GetDelay();
-					// Add grid row, will populate it with buttons after that
-					AddRow(GUI_Controls.virtualGrid, delay, GUI_Controls.virtualGrid->GetNumberRows());
-					// Set Action Delay
-					GUI_Controls.virtualGrid->SetCellValue(row, 0, wxString::Format("%d", delay));
-					// Move to the first button and iterate to add them
-					Cell_Locator.SetLocation(row, 1);
-					for (int button = 0; button < curAction->GetNumberOfButtons(); ++button)
-					{
-						CCellValue *val;
-						wxGridCellCoords coords;
-						val = (CCellValue *)curAction->GetButton(button);
-						Cell_Locator.GetLocation(coords);
-						GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, val);
-						GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
-						Cell_Locator.MoveToNextButton();
-					}
+					CCellValue *val;
+					wxGridCellCoords coords;
+					val = (CCellValue *)curAction->GetButton(button);
+					Cell_Locator.GetLocation(coords);
+					GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, val);
+					GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
+					Cell_Locator.MoveToNextButton();
 				}
-				break;	// No need to process other COMBOs
 			}
+			break;	// No need to process other COMBOs
 		}
-		GUI_Controls.virtualGrid->Scroll(0, 0);	// Prevent showing scroll bar moving from bottom to top
-		GUI_Controls.virtualGrid->Thaw();
 	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	GUI_Controls.virtualGrid->Scroll(0, 0);	// Prevent showing scroll bar moving from bottom to top
+	GUI_Controls.virtualGrid->Thaw();
 }
 
 // Handles click event on Rename Combo button
 void OnClickRenameCombo(wxCommandEvent &ev)
 {
-	try
+	if (GUI_Controls.cmbComboName->GetCount() == 0)
 	{
-		if (GUI_Controls.cmbComboName->GetCount() == 0)
-		{
-			wxMessageBox("You didn't select a COMBO to rename!", "Rename Failed", wxICON_EXCLAMATION);
-			return;
-		}
+		wxMessageBox("You didn't select a COMBO to rename!", "Rename Failed", wxICON_EXCLAMATION);
+		return;
+	}
 
-		wxString strResponse = wxGetTextFromUser("Enter a new name for the Combo:",
-			"New COMBO name", "I am a Combo!");
+	wxString strResponse = wxGetTextFromUser("Enter a new name for the Combo:",
+		"New COMBO name", "I am a Combo!");
 
-		if (strResponse != wxEmptyString)
+	if (strResponse != wxEmptyString)
+	{
+		wxString name = GUI_Controls.cmbComboName->GetStringSelection();
+		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
 		{
-			wxString name = GUI_Controls.cmbComboName->GetStringSelection();
-			for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+			if ((*it)->GetName() == name)
 			{
-				if ((*it)->GetName() == name)
-				{
-					(*it)->SetName(strResponse);
-					GUI_Controls.cmbComboName->SetString(GUI_Controls.cmbComboName->GetSelection(), strResponse);
-					GUI_Controls.strPreviousComboSelection = strResponse;
-					break;
-				}
+				(*it)->SetName(strResponse);
+				GUI_Controls.cmbComboName->SetString(GUI_Controls.cmbComboName->GetSelection(), strResponse);
+				GUI_Controls.strPreviousComboSelection = strResponse;
+				break;
 			}
-			
 		}
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+			
 	}
 }
 
 // Combo Key
 void OnClickComboKey(wxMouseEvent &ev)
 {
-	try
+	if (ev.RightUp())
 	{
-		if (ev.RightUp())
-		{
-			wxMessageBox("Button is cleared!");
-			return; // to suppress context menu
-		}
-		else if (ev.LeftUp())
-			wxMessageBox("Clicked 'Combo Key'");
+		wxMessageBox("Button is cleared!");
+		return; // to suppress context menu
 	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	else if (ev.LeftUp())
+		wxMessageBox("Clicked 'Combo Key'");
 }
 
 // Only called from OnClick_psComboButton()
@@ -1328,212 +1134,164 @@ bool Has(const unsigned int button, int row)
 void OnClick_psComboButtons(int winID)
 {
 	// winID is between 1024 and 1047 inclusive
-	try
+	if (GUI_Controls.virtualGrid->GetNumberRows() == 0) return;
+
+	int button = winID - 1024;
+	wxGridCellCoords coords;
+	Cell_Locator.GetLocation(coords);
+	int curRow = coords.GetRow();
+
+	// verify button does not conflict with other buttons in current action
+	// e.g UP and DOWN at the same time. So, 6 if-clauses get rid of 6 unneeded
+	// columns in grid from 24 to 18, unlike before.
+	wxString errorMSG = "";
+	if ((button == (int)PS2BUTTON::UP && Has((int)PS2BUTTON::DOWN, curRow)) || 
+		(button == (int)PS2BUTTON::DOWN && Has((int)PS2BUTTON::UP, curRow)))
+			errorMSG = "Can't have both UP and DOWN in the same Action.";
+	if ((button == (int)PS2BUTTON::RIGHT && Has((int)PS2BUTTON::LEFT, curRow)) || 
+		(button == (int)PS2BUTTON::LEFT && Has((int)PS2BUTTON::RIGHT, curRow)))
+			errorMSG = "Can't have both LEFT and RIGHT in the same Action.";
+	if ((button == (int)PS2BUTTON::LANALOG_UP && Has((int)PS2BUTTON::LANALOG_DOWN, curRow)) || 
+		(button == (int)PS2BUTTON::LANALOG_DOWN && Has((int)PS2BUTTON::LANALOG_UP, curRow)))
+			errorMSG = "Can't have both Left Analog's UP and DOWN in the same Action.";
+	if ((button == (int)PS2BUTTON::LANALOG_LEFT && Has((int)PS2BUTTON::LANALOG_RIGHT, curRow)) || 
+		(button == (int)PS2BUTTON::LANALOG_RIGHT && Has((int)PS2BUTTON::LANALOG_LEFT, curRow)))
+			errorMSG = "Can't have both Left Analog's LEFT and RIGHT in the same Action.";
+	if ((button == (int)PS2BUTTON::RANALOG_UP && Has((int)PS2BUTTON::RANALOG_DOWN, curRow)) || 
+		(button == (int)PS2BUTTON::RANALOG_DOWN && Has((int)PS2BUTTON::RANALOG_UP, curRow)))
+			errorMSG = "Can't have both Right Analog's UP and DOWN in the same Action.";
+	if ((button == (int)PS2BUTTON::RANALOG_LEFT && Has((int)PS2BUTTON::RANALOG_RIGHT, curRow)) || 
+		(button == (int)PS2BUTTON::RANALOG_RIGHT && Has((int)PS2BUTTON::RANALOG_LEFT, curRow)))
+			errorMSG = "Can't have both Right Analog's LEFT and RIGHT in the same Action.";
+	if (Has(button, curRow))
+		errorMSG = "The same button already exists in this Action.";
+		
+	if (errorMSG != "")
 	{
-		if (GUI_Controls.virtualGrid->GetNumberRows() == 0) return;
-
-		int button = winID - 1024;
-		wxGridCellCoords coords;
-		Cell_Locator.GetLocation(coords);
-		int curRow = coords.GetRow();
-
-		// verify button does not conflict with other buttons in current action
-		// e.g UP and DOWN at the same time. So, 6 if-clauses get rid of 6 unneeded
-		// columns in grid from 24 to 18, unlike before.
-		wxString errorMSG = "";
-		if ((button == (int)PS2BUTTON::UP && Has((int)PS2BUTTON::DOWN, curRow)) || 
-			(button == (int)PS2BUTTON::DOWN && Has((int)PS2BUTTON::UP, curRow)))
-				errorMSG = "Can't have both UP and DOWN in the same Action.";
-		if ((button == (int)PS2BUTTON::RIGHT && Has((int)PS2BUTTON::LEFT, curRow)) || 
-			(button == (int)PS2BUTTON::LEFT && Has((int)PS2BUTTON::RIGHT, curRow)))
-				errorMSG = "Can't have both LEFT and RIGHT in the same Action.";
-		if ((button == (int)PS2BUTTON::LANALOG_UP && Has((int)PS2BUTTON::LANALOG_DOWN, curRow)) || 
-			(button == (int)PS2BUTTON::LANALOG_DOWN && Has((int)PS2BUTTON::LANALOG_UP, curRow)))
-				errorMSG = "Can't have both Left Analog's UP and DOWN in the same Action.";
-		if ((button == (int)PS2BUTTON::LANALOG_LEFT && Has((int)PS2BUTTON::LANALOG_RIGHT, curRow)) || 
-			(button == (int)PS2BUTTON::LANALOG_RIGHT && Has((int)PS2BUTTON::LANALOG_LEFT, curRow)))
-				errorMSG = "Can't have both Left Analog's LEFT and RIGHT in the same Action.";
-		if ((button == (int)PS2BUTTON::RANALOG_UP && Has((int)PS2BUTTON::RANALOG_DOWN, curRow)) || 
-			(button == (int)PS2BUTTON::RANALOG_DOWN && Has((int)PS2BUTTON::RANALOG_UP, curRow)))
-				errorMSG = "Can't have both Right Analog's UP and DOWN in the same Action.";
-		if ((button == (int)PS2BUTTON::RANALOG_LEFT && Has((int)PS2BUTTON::RANALOG_RIGHT, curRow)) || 
-			(button == (int)PS2BUTTON::RANALOG_RIGHT && Has((int)PS2BUTTON::RANALOG_LEFT, curRow)))
-				errorMSG = "Can't have both Right Analog's LEFT and RIGHT in the same Action.";
-		if (Has(button, curRow))
-			errorMSG = "The same button already exists in this Action.";
+		wxMessageBox(errorMSG, "Not Allowed!", wxICON_INFORMATION);
+		GUI_Controls.virtualGrid->SetFocus();
+		return;
+	}
 		
-		if (errorMSG != "")
-		{
-			wxMessageBox(errorMSG, "Not Allowed!", wxICON_INFORMATION);
-			GUI_Controls.virtualGrid->SetFocus();
-			return;
-		}
-		
-		// Set default sensitivity for new buttons.Regular buttons max is 255.
-		// Analogs' Max is 255 for Down/Right. And Max is 0 for UP/LEFT
-		int sensitivity;
-		if (button >= (int)PS2BUTTON::LANALOG_UP)
-		{
-			if (button == (int)PS2BUTTON::LANALOG_DOWN || button == (int)PS2BUTTON::RANALOG_DOWN || 
-				button == (int)PS2BUTTON::LANALOG_RIGHT || button == (int)PS2BUTTON::RANALOG_RIGHT)
-				sensitivity = 255; // max DOWN/RIGHT
-			else
-				sensitivity = 0; // max UP/LEFT
-		}
+	// Set default sensitivity for new buttons.Regular buttons max is 255.
+	// Analogs' Max is 255 for Down/Right. And Max is 0 for UP/LEFT
+	int sensitivity;
+	if (button >= (int)PS2BUTTON::LANALOG_UP)
+	{
+		if (button == (int)PS2BUTTON::LANALOG_DOWN || button == (int)PS2BUTTON::RANALOG_DOWN || 
+			button == (int)PS2BUTTON::LANALOG_RIGHT || button == (int)PS2BUTTON::RANALOG_RIGHT)
+			sensitivity = 255; // max DOWN/RIGHT
 		else
-			sensitivity = 255; // max for regular buttons
+			sensitivity = 0; // max UP/LEFT
+	}
+	else
+		sensitivity = 255; // max for regular buttons
 		
-		CCellValue val;
-		val.buttonName = PS_LABEL[button].name;
-		val.buttonValue = button;
-		val.buttonSensitivity = sensitivity;
+	CCellValue val;
+	val.buttonName = PS_LABEL[button].name;
+	val.buttonValue = button;
+	val.buttonSensitivity = sensitivity;
 
-		Cell_Locator.GetLocation(coords);
-		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
-		GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
+	Cell_Locator.GetLocation(coords);
+	GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
+	GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
 		
-		Cell_Locator.MoveToNextButton();
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	Cell_Locator.MoveToNextButton();
 }
 
 // Grid mouse click
 void OnClickComboGrid(wxGridEvent &ev)
 {
-	try
-	{
-		unsigned int row, col;
-		row = ev.GetRow();
-		col = ev.GetCol();
-		// Clear any current highlights too
-		GUI_Controls.virtualGrid->ClearSelection();
-		GUI_Controls.virtualGrid->Refresh();
-		GUI_Controls.virtualGrid->SetGridCursor(row, col);	// to allow dragging and selection too
+	unsigned int row, col;
+	row = ev.GetRow();
+	col = ev.GetCol();
+	// Clear any current highlights too
+	GUI_Controls.virtualGrid->ClearSelection();
+	GUI_Controls.virtualGrid->Refresh();
+	GUI_Controls.virtualGrid->SetGridCursor(row, col);	// to allow dragging and selection too
 	
-		// Modify sensitivity inside the SpinControl
-		CCellValue *val = (CCellValue *) GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
-		GUI_Controls.spnSensitivity->SetValue(val->buttonSensitivity);
-		// Move cursor to the selected cell coordinates
-		Cell_Locator.SetLocation(row, col);
-		ev.Skip();
-	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	// Modify sensitivity inside the SpinControl
+	CCellValue *val = (CCellValue *) GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+	GUI_Controls.spnSensitivity->SetValue(val->buttonSensitivity);
+	// Move cursor to the selected cell coordinates
+	Cell_Locator.SetLocation(row, col);
+	ev.Skip();
 }
 
 // Show tooltip "Which button" underneath and its sensitivity value, when mouse hovering over grid cells
 void OnMouseMoveOverGrid(wxMouseEvent &ev)
 {
-	try
+	wxPoint mousePos, cellPos;
+
+	mousePos = GUI_Controls.virtualGrid->CalcUnscrolledPosition(ev.GetPosition());
+	cellPos.y = GUI_Controls.virtualGrid->YToRow(mousePos.y);	// row
+	cellPos.x = GUI_Controls.virtualGrid->XToCol(mousePos.x);	// column
+
+	if (cellPos.x == wxNOT_FOUND || cellPos.y == wxNOT_FOUND)
 	{
-		wxPoint mousePos, cellPos;
-
-		mousePos = GUI_Controls.virtualGrid->CalcUnscrolledPosition(ev.GetPosition());
-		cellPos.y = GUI_Controls.virtualGrid->YToRow(mousePos.y);	// row
-		cellPos.x = GUI_Controls.virtualGrid->XToCol(mousePos.x);	// column
-
-		if (cellPos.x == wxNOT_FOUND || cellPos.y == wxNOT_FOUND)
-		{
-			ev.Skip();
-			return;
-		}
-
-		CCellValue *val;
-		val = (CCellValue *) GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(cellPos.y, cellPos.x, "");
-		
-		wxString buttonInfo = val->buttonName;
-
-		if (cellPos.x == 0)
-		{
-			wxString strFrame;
-			long delay;
-			buttonInfo.ToLong(&delay);
-			if (delay == 1)
-				strFrame = " frame.\n";
-			else
-				strFrame = " frames.\n";
-			buttonInfo = "Delay: Repeat this Action for " + buttonInfo + strFrame + "Click here to modify its value.";
-		}
-		else if (val->buttonSensitivity >= 0 && val->buttonSensitivity <= 255)
-		{
-			// For SELECT, START, L3 and R3: they have fixed sensitivity of 255
-			if (val->buttonValue == (int)PS2BUTTON::SELECT || val->buttonValue == (int)PS2BUTTON::START ||
-				val->buttonValue == (int)PS2BUTTON::L3 || val->buttonValue == (int)PS2BUTTON::R3)
-				buttonInfo += wxString::Format("\nNot a pressure sensitive button.", val->buttonSensitivity, val->buttonValue);
-			else
-				buttonInfo += wxString::Format("\nSensitivity: %d", val->buttonSensitivity, val->buttonValue);
-		}
-
-		GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(buttonInfo);
 		ev.Skip();
+		return;
 	}
-	catch (exception &ex)
+
+	CCellValue *val;
+	val = (CCellValue *) GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(cellPos.y, cellPos.x, "");
+		
+	wxString buttonInfo = val->buttonName;
+
+	if (cellPos.x == 0)
 	{
-		wxMessageBox(ex.what());
+		wxString strFrame;
+		long delay;
+		buttonInfo.ToLong(&delay);
+		if (delay == 1)
+			strFrame = " frame.\n";
+		else
+			strFrame = " frames.\n";
+		buttonInfo = "Delay: Repeat this Action for " + buttonInfo + strFrame + "Click here to modify its value.";
 	}
-	catch (...)
+	else if (val->buttonSensitivity >= 0 && val->buttonSensitivity <= 255)
 	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+		// For SELECT, START, L3 and R3: they have fixed sensitivity of 255
+		if (val->buttonValue == (int)PS2BUTTON::SELECT || val->buttonValue == (int)PS2BUTTON::START ||
+			val->buttonValue == (int)PS2BUTTON::L3 || val->buttonValue == (int)PS2BUTTON::R3)
+			buttonInfo += wxString::Format("\nNot a pressure sensitive button.", val->buttonSensitivity, val->buttonValue);
+		else
+			buttonInfo += wxString::Format("\nSensitivity: %d", val->buttonSensitivity, val->buttonValue);
 	}
+
+	GUI_Controls.virtualGrid->GetGridWindow()->SetToolTip(buttonInfo);
+	ev.Skip();
 }
 
 // Modify sensitivity for buttons when we change the value
 void OnChangeSensitivity(wxSpinEvent &ev)
 {
-	try
+	CCellValue *val;
+	wxGridCellCoords coords;
+	int row, col;
+	Cell_Locator.GetLocation(coords);
+	row = coords.GetRow();
+	col = coords.GetCol();
+
+	// get current selected button structure
+	val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+
+	// avoid changing sensitivity to empty cells
+	if (val->buttonName == "")
+		return;
+
+	// avoid changing sensitivity fo SELECT, START, L3, R3 as they are not pressure sensitive
+	if (val->buttonValue == (int)PS2BUTTON::SELECT || val->buttonValue == (int)PS2BUTTON::START ||
+		val->buttonValue == (int)PS2BUTTON::L3 || val->buttonValue == (int)PS2BUTTON::R3)
 	{
-		CCellValue *val;
-		wxGridCellCoords coords;
-		int row, col;
-		Cell_Locator.GetLocation(coords);
-		row = coords.GetRow();
-		col = coords.GetCol();
-
-		// get current selected button structure
-		val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
-
-		// avoid changing sensitivity to empty cells
-		if (val->buttonName == "")
-			return;
-
-		// avoid changing sensitivity fo SELECT, START, L3, R3 as they are not pressure sensitive
-		if (val->buttonValue == (int)PS2BUTTON::SELECT || val->buttonValue == (int)PS2BUTTON::START ||
-			val->buttonValue == (int)PS2BUTTON::L3 || val->buttonValue == (int)PS2BUTTON::R3)
-		{
-			Cell_Locator.SetLocation(row, col);
-			return;
-		}
-
-		val->buttonSensitivity = ev.GetValue();		// modify sensitivity
-		// save it back to the table (button structure)
-		GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(row, col, "", val);
 		Cell_Locator.SetLocation(row, col);
+		return;
 	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+
+	val->buttonSensitivity = ev.GetValue();		// modify sensitivity
+	// save it back to the table (button structure)
+	GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(row, col, "", val);
+	Cell_Locator.SetLocation(row, col);
 }
 
 // As it says, I thought of making a function of this since it was repeated 3-4 times in the code.
@@ -1604,115 +1362,103 @@ void SaveGridToCombo(wxString &strUserInput)
 // Event handling ComboBox's name change
 void OnChangeComboName(wxCommandEvent &ev)
 {
-	try
+	wxString strCurrent, strPrevious;
+	strCurrent = GUI_Controls.cmbComboName->GetStringSelection();
+	strPrevious = GUI_Controls.strPreviousComboSelection;
+
+	GUI_Controls.strPreviousComboSelection = strCurrent;
+
+	// -------- SAVE COMBO ----------- // 
+	// Save Combo (before making a new one) from grid to Combos container if we have at least 1 Combo
+	// It is very important that we use the cmbComboName to get the name of current Combo. If the same Combo
+	// name found in the container, it will be overwritten with this one.
+	if (GUI_Controls.Combos.size() > 0)
 	{
-		wxString strCurrent, strPrevious;
-		strCurrent = GUI_Controls.cmbComboName->GetStringSelection();
-		strPrevious = GUI_Controls.strPreviousComboSelection;
+		wxString strKeyValue = GUI_Controls.txtComboKey->GetValue();
+		long keyValue;
+		if (strKeyValue == "NONE")
+			keyValue = 0;
+		else
+			strKeyValue.ToLong(&keyValue);
 
-		GUI_Controls.strPreviousComboSelection = strCurrent;
-
-		// -------- SAVE COMBO ----------- // 
-		// Save Combo (before making a new one) from grid to Combos container if we have at least 1 Combo
-		// It is very important that we use the cmbComboName to get the name of current Combo. If the same Combo
-		// name found in the container, it will be overwritten with this one.
-		if (GUI_Controls.Combos.size() > 0)
-		{
-			wxString strKeyValue = GUI_Controls.txtComboKey->GetValue();
-			long keyValue;
-			if (strKeyValue == "NONE")
-				keyValue = 0;
-			else
-				strKeyValue.ToLong(&keyValue);
-
-			for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
-			{
-				// If the COMBO already exists, erase it. I know the container should be list instead of vector
-				// erase operation is expensive, I might change it later
-				if ((*it)->GetName() == strPrevious)
-				{
-					GUI_Controls.Combos.erase(it);
-					// We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
-					// because ++it will be called and it will point to an empty container, so silently get out of the loop
-					break;
-				}
-			}
-
-			CCombo *curCombo = new CCombo;
-			curCombo->SetKey((int)keyValue);
-			curCombo->SetName(strPrevious);
-			for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
-			{
-				CAction *action = new CAction;
-				CCellValue *val;
-				// for column 0, CCellValue's buttonName = Action Delay, while all other members = -1
-				val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
-				long int delay;
-				val->buttonName.ToLong(&delay);
-				action->SetDelay(delay);
-
-				for (int col = 1; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
-				{
-					val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
-					// if button is not empty, add it
-					if (val->buttonName != "")
-						action->AddButton(val);
-				}
-				curCombo->AddAction(action);
-			}
-			GUI_Controls.Combos.push_back(curCombo);
-		}
-
-		// Clear grid - delete combo
-		// If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
-		if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
-			GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
-
-		// Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-		// Hide grid to prevent flickering while adding buttons, and it is much faster this way. Show grid when we are done
-		GUI_Controls.virtualGrid->Hide();
 		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
 		{
-			// GetValue() gets the new selected COMBO from the list
-			if ((*it)->GetName() == strCurrent)
+			// If the COMBO already exists, erase it. I know the container should be list instead of vector
+			// erase operation is expensive, I might change it later
+			if ((*it)->GetName() == strPrevious)
 			{
-				for (int row = 0; row < (*it)->GetNumberActions(); ++row)
-				{
-					CAction *curAction = (*it)->GetAction(row);
-					int delay = curAction->GetDelay();
-					// Add grid row, will populate it with buttons after that
-					AddRow(GUI_Controls.virtualGrid, delay, GUI_Controls.virtualGrid->GetNumberRows());
-					// Set Action Delay
-					GUI_Controls.virtualGrid->SetCellValue(row, 0, wxString::Format("%d", delay));
-					// Move to the first button and iterate to add them
-					Cell_Locator.SetLocation(row, 1, false);
-					for (int button = 0; button < curAction->GetNumberOfButtons(); ++button)
-					{
-						CCellValue *val;
-						wxGridCellCoords coords;
-						val = (CCellValue *)curAction->GetButton(button);
-						Cell_Locator.GetLocation(coords);
-						GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, val);
-						GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
-						Cell_Locator.MoveToNextButton(false);
-					}
-				}
-				break;	// No need to process other COMBOs
+				GUI_Controls.Combos.erase(it);
+				// We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
+				// because ++it will be called and it will point to an empty container, so silently get out of the loop
+				break;
 			}
 		}
-		GUI_Controls.virtualGrid->Show(true); // Added all buttons! Show the grid
 
-		Cell_Locator.SetLocation(0, 1, false);
+		CCombo *curCombo = new CCombo;
+		curCombo->SetKey((int)keyValue);
+		curCombo->SetName(strPrevious);
+		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+		{
+			CAction *action = new CAction;
+			CCellValue *val;
+			// for column 0, CCellValue's buttonName = Action Delay, while all other members = -1
+			val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
+			long int delay;
+			val->buttonName.ToLong(&delay);
+			action->SetDelay(delay);
+
+			for (int col = 1; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+			{
+				val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+				// if button is not empty, add it
+				if (val->buttonName != "")
+					action->AddButton(val);
+			}
+			curCombo->AddAction(action);
+		}
+		GUI_Controls.Combos.push_back(curCombo);
 	}
-	catch (exception &ex)
+
+	// Clear grid - delete combo
+	// If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
+	if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
+		GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
+
+	// Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
+	// Hide grid to prevent flickering while adding buttons, and it is much faster this way. Show grid when we are done
+	GUI_Controls.virtualGrid->Hide();
+	for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
 	{
-		wxMessageBox(ex.what());
+		// GetValue() gets the new selected COMBO from the list
+		if ((*it)->GetName() == strCurrent)
+		{
+			for (int row = 0; row < (*it)->GetNumberActions(); ++row)
+			{
+				CAction *curAction = (*it)->GetAction(row);
+				int delay = curAction->GetDelay();
+				// Add grid row, will populate it with buttons after that
+				AddRow(GUI_Controls.virtualGrid, delay, GUI_Controls.virtualGrid->GetNumberRows());
+				// Set Action Delay
+				GUI_Controls.virtualGrid->SetCellValue(row, 0, wxString::Format("%d", delay));
+				// Move to the first button and iterate to add them
+				Cell_Locator.SetLocation(row, 1, false);
+				for (int button = 0; button < curAction->GetNumberOfButtons(); ++button)
+				{
+					CCellValue *val;
+					wxGridCellCoords coords;
+					val = (CCellValue *)curAction->GetButton(button);
+					Cell_Locator.GetLocation(coords);
+					GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, val);
+					GUI_Controls.virtualGrid->SetCellRenderer(coords.GetRow(), coords.GetCol(), new CComboCellRenderer);
+					Cell_Locator.MoveToNextButton(false);
+				}
+			}
+			break;	// No need to process other COMBOs
+		}
 	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	GUI_Controls.virtualGrid->Show(true); // Added all buttons! Show the grid
+
+	Cell_Locator.SetLocation(0, 1, false);
 }
 
 /* This function handles keyboard UP and Down keys while navigating the ComboBox
@@ -1720,49 +1466,25 @@ and refresh the grid according to selection. Note: Grid will refresh once the po
 I could setfocus to grid, but that will disrupt the navigation using Up/Down keys to select Combo names. */
 void OnChangeComboNameKey(wxKeyEvent &ev)
 {
-	try
+	if (ev.GetKeyCode() == WXK_UP || ev.GetKeyCode() == WXK_DOWN)
 	{
-		if (ev.GetKeyCode() == WXK_UP || ev.GetKeyCode() == WXK_DOWN)
-		{
-			GUI_Controls.strPreviousComboSelection = GUI_Controls.cmbComboName->GetValue();
-			wxCommandEvent e;
-			e.SetEventType(wxEVT_COMBOBOX);
-			OnChangeComboName(e);
-			GUI_Controls.virtualGrid->Update();
-			GUI_Controls.virtualGrid->Refresh();
-			GUI_Controls.virtualGrid->ForceRefresh();
-			ev.Skip();
-		}
-	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+		GUI_Controls.strPreviousComboSelection = GUI_Controls.cmbComboName->GetValue();
+		wxCommandEvent e;
+		e.SetEventType(wxEVT_COMBOBOX);
+		OnChangeComboName(e);
+		GUI_Controls.virtualGrid->Update();
+		GUI_Controls.virtualGrid->Refresh();
+		GUI_Controls.virtualGrid->ForceRefresh();
+		ev.Skip();
 	}
 }
 
 // ReAnimate Analog Sticks timer event. Because after some time, the Animation will go out of sync
 void OnTimeReAnimateAnalogSticks()
 {
-	try
+	for (int i = (int)PS2BUTTON::LANALOG_UP; i <= (int)PS2BUTTON::RANALOG_LEFT; ++i)
 	{
-		for (int i = (int)PS2BUTTON::LANALOG_UP; i <= (int)PS2BUTTON::RANALOG_LEFT; ++i)
-		{
-			GUI_Controls.psComboButtons[i]->Stop();
-			GUI_Controls.psComboButtons[i]->Play();
-		}
-	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
+		GUI_Controls.psComboButtons[i]->Stop();
+		GUI_Controls.psComboButtons[i]->Play();
 	}
 }

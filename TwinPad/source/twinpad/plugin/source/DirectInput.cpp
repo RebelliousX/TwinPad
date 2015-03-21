@@ -10,11 +10,11 @@
 #include "wx/wxprec.h"
 #endif
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////Added DirectInput Functions//////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+// // // // // // // // // // // // // // // // // // // // /Added DirectInput Functions// // // // // // // // // // // // // 
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 
-//Initialise DirectInput contains: CreateDevice, SetDataFormat, Acuire the Device... :)
+// Initialise DirectInput contains: CreateDevice, SetDataFormat, Acuire the Device... :)
 bool InitDI()
 {
 	// Create the abstract DirectInput connection
@@ -34,7 +34,7 @@ bool InitDI()
 		return FALSE;
 	}
 	
-	////////////////////Keyboard Initialization///////////////////////
+	// // // // // // // // // // Keyboard Initialization// // // // // // // // // // // /
 
 	if (fDI != NULL)
 	{
@@ -54,7 +54,7 @@ bool InitDI()
 			return FALSE;
 		}
 
-		//////////////////Mouse Initializing//////////////////
+		// // // // // // // // // Mouse Initializing// // // // // // // // // 
 		
 		fDI->CreateDevice(GUID_SysMouse, &fDIMouse, NULL);
 		
@@ -79,32 +79,32 @@ bool InitDI()
 // --- End of DirectInput initialization ---
 }
 
-//Terminate DirectInput Objects, First Unacquire Keyboard & Mouse 
-//devices, Release them, then Release main DI Obj.
+// Terminate DirectInput Objects, First Unacquire Keyboard & Mouse 
+// devices, Release them, then Release main DI Obj.
 void TermDI()
 {
 	if (fDI != NULL)
 	{
-		//First Deal with Keyboard.
+		// First Deal with Keyboard.
 		fDIKeyboard->Unacquire();
 		fDIKeyboard->Release();
 		fDIKeyboard = NULL;
 		
-		//Second Deal with Mouse
+		// Second Deal with Mouse
 		fDIMouse->Unacquire();
 		fDIMouse->Release();
 		fDIMouse = NULL;
 
-		//Finally Deal with main DI Object.
+		// Finally Deal with main DI Object.
 		fDI->Release();
 		fDI = NULL;
 	}
 }
 
-//Get Keyboard buttons status, and save a snapshot in KeyState Character Array (1 Byte / Element)
+// Get Keyboard buttons status, and save a snapshot in KeyState Character Array (1 Byte / Element)
 void GetKeyboardStatus()
 {
-	//Test if Error occurred by another application that acquired the device
+	// Test if Error occurred by another application that acquired the device
 
 	while(FAILED(fDIKeyboard->GetDeviceState(256, (LPVOID)KeyState)))
      {
@@ -117,13 +117,13 @@ void GetKeyboardStatus()
 void GetMouseStatus()
 {
 	if (hObjWnd != GetForegroundWindow()) return;
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//Using Win32Api to get cursor pos, it's more convinient while playing
-	//in window mode, as the user may want to run other apps as will.
+	// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
+	// Using Win32Api to get cursor pos, it's more convinient while playing
+	// in window mode, as the user may want to run other apps as will.
 	GetCursorPos(&MousePt);
 
-	//Check to see if the cursor is inside GS window.
-	//if so, process Inputs, else skip them.
+	// Check to see if the cursor is inside GS window.
+	// if so, process Inputs, else skip them.
 	if (MousePt.x >= WndRect.left && MousePt.x <= WndRect.right &&
 		MousePt.y >= WndRect.top  && MousePt.y <= WndRect.bottom)
 		{
@@ -138,7 +138,7 @@ void GetMouseStatus()
 			return;
 		}
 
-	//Test if Error occurred by another application that acquired the device
+	// Test if Error occurred by another application that acquired the device
 	while(FAILED(fDIMouse->GetDeviceState(
 		sizeof(DIMOUSESTATE2), &MouseState)))
      {
@@ -149,4 +149,4 @@ void GetMouseStatus()
         }
      }
 }
-////////////////////////////////////////////////End of DirectInput Funtions/////////////////////////////////////////
+// // // // // // // // // // // // // // // // // // // // // // // // End of DirectInput Funtions// // // // // // // // // // // // // // // // // // // // /

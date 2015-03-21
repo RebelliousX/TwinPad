@@ -21,11 +21,11 @@
 #include "comboGrid.h"
 // -------------------------
 
-//// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// ///
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 // Don't define any IDs within these ranges...
 // ID_BTN { 1000 to 1023 }, ID_BTN2 { 1024 to 1047 }, ID_TXT { 2000 to 2023 }, ID_LBL { 3000 to 3007 }
 // ID_BTN: For Keyboard TAB, ID_BTN2: For Combos TAB
-//// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// // 
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
 enum ID {	ID_BTN = 1000,
 			ID_BTN2 = 1024,
 			ID_BTN_OK = 1500, ID_BTN_CANCEL, ID_BTN_AUTO, ID_BTN_NULL,
@@ -183,7 +183,7 @@ public:
 	// TAB Sizes (stores minimum window size for each tab)
 	wxSize minWinSize[5];
 
-	//Files header names, Files names and Settings directory
+	// Files header names, Files names and Settings directory
 	void SetSettingsPath(wxString dir) { PATH_DIR = dir; }
 	wxString GetTwinPad_Header() { return HEADER_TWINPAD; }
 	wxString GetTwinPad_ComboHeader() { return HEADER_TWINPAD_COMBO; }
@@ -191,7 +191,7 @@ public:
 	wxString GetTwinPad_ComboFileName() { return TWIN_PAD_COMBOS; }
 	wxString GetSettingsPath() { return PATH_DIR; }
 private:
-	//Some strings
+	// Some strings
 	wxString HEADER_TWINPAD;
 	wxString HEADER_TWINPAD_COMBO;
 	wxString TWIN_PAD;

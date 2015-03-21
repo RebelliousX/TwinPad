@@ -21,7 +21,7 @@
 
 namespace
 {
-	// Thanks to https://stackoverflow.com/questions/1888863/how-to-get-main-window-handle-from-process-id
+	// Thanks to https:// stackoverflow.com/questions/1888863/how-to-get-main-window-handle-from-process-id
 	struct handle_data 
 	{
 		unsigned long process_id;

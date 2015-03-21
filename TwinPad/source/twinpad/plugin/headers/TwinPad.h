@@ -22,9 +22,9 @@
 #include <windows.h>
 #include "DirectInput.h"
 
-#pragma warning(disable : 4996)  //Disable deprecated warnings.
+#pragma warning(disable : 4996)  // Disable deprecated warnings.
 
-//The following data types will be used as global externs.
+// The following data types will be used as global externs.
 Analog lanalog[2], ranalog[2];
 
 static keyEvent curEvent, oldEvent;
@@ -36,7 +36,7 @@ u16 status[2];
 int pressure;
 
 unsigned long confKeys[2][25];
-char MouseButtonMap[8]; //Deal with Mouse Buttons.
+char MouseButtonMap[8]; // Deal with Mouse Buttons.
 
 void _EmuKeys();
 void _PADEvent(int PAD);
@@ -48,7 +48,7 @@ extern void LoadCombos();
 extern void LoadConfig();
 extern void InitRects(void);
 extern bool ExecCombo();
-//extern void ComboAnalog(int analogKey, int pad);
+// extern void ComboAnalog(int analogKey, int pad);
 
 void AllInOne(int pad);
 

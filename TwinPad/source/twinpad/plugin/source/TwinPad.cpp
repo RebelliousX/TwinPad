@@ -15,8 +15,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-//#include <windows.h>
-//#include <windowsx.h>
+// #include <windows.h>
+// #include <windowsx.h>
 
 #include "fastCompile.h"
 
@@ -35,7 +35,7 @@
 
 unsigned int pads=0;
 
-int ScreenWidth = 0, ScreenHeight = 0;		//To handle Analog Coords correctly.
+int ScreenWidth = 0, ScreenHeight = 0;		// To handle Analog Coords correctly.
 
 u8 *buf;
 int padID[2];
@@ -48,7 +48,7 @@ int curCmd = NULL;
 int padOpened = 0;
 unsigned char minXY[2] = { 0, 0 };
 unsigned char maxXY[2] = { 255, 255 };
-unsigned char states[2][10]; //To check if it was pressed before..
+unsigned char states[2][10]; // To check if it was pressed before..
 
 
 unsigned char KeyState[256], BufferKeyState[256];
@@ -85,7 +85,7 @@ void PADsetMode(int pad, int mode) {
 	}
 }
 
-//int padOpened = 0;
+// int padOpened = 0;
 s32  _PADopen(HWND hDsp) {
 
 	/*if (++padOpened == 2) 
@@ -110,7 +110,7 @@ s32  _PADopen(HWND hDsp) {
 	LoadConfig();
 	//LoadCombos();
 
-	//If DirectInput Fails, return error..
+	// If DirectInput Fails, return error..
 	if (fDI == NULL)
 	{
 		
@@ -136,7 +136,7 @@ s32  _PADopen(HWND hDsp) {
 // These are the commands' set for PSX/PS2 DualShock1 or 2.. 
 // Playstation 2 (Dual Shock) controller protocol notes
 // for more information. Please visit those awesome reference: 
-// https://gist.github.com/scanlime/5042071 and http://store.curiousinventor.com/guides/PS2/#mappings
+// https:// gist.github.com/scanlime/5042071 and http:// store.curiousinventor.com/guides/PS2/#mappings
 u8 stdpar[2][20] = { {0xff, 0x5a, 0xff, 0xff, 0x80, 0x80, 0x80, 0x80,
 				      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 					  0x00, 0x00, 0x00, 0x00},
@@ -151,16 +151,16 @@ u8 cmd41[2][8]    = { {0xff, 0x5a, 0xff, 0xff, 0x03, 0x00, 0x00, 0x5a},
 					  {0xff, 0x5a, 0xff, 0xff, 0x03, 0x00, 0x00, 0x5a}};
 
 // Command 0x42 Controller poll (Read buttons/axes, write actuators)
-//		....missing....
+// 		....missing....
 
 // Command 0x43 Controller Read and Escape
-//		....missing....
+// 		....missing....
 
 // Command 0x44 Set major mode (DualShock/Digital)
-//		....missing....
+// 		....missing....
 
 // Command 0x45 Read extended status 1
-//		....missing....
+// 		....missing....
 
 // Command 0x46 Read constant 1
 u8 unk46[2][8]    = { {0xFF, 0x5A, 0x00, 0x00, 0x01, 0x02, 0x00, 0x0A},
@@ -182,7 +182,7 @@ u8 stdcfg[2][8]   = { {0xff, 0x5a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 					  {0xff, 0x5a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}}; // 2 & 3 = 0
 u8 stdmode[2][8]  = { {0xff, 0x5a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 					  {0xff, 0x5a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
-//return values for cmd45:
+// return values for cmd45:
 u8 stdmodel[2][8] = { {0xff, 0x5a, 
 					   0x03, // 03 - dualshock2, 01 - dualshock (Guitar Hero!?)
 					   0x02, // number of modes
@@ -216,7 +216,7 @@ u8  _PADpoll(u8 value) {
 				return 0xf3;
 
 			case 0x42: // READ_DATA
-				//Read PAD status.
+				// Read PAD status.
 				AllInOne(curPad);
 
 				if(lanalog[curPad].button) status[curPad] &= ~(1<<9);
@@ -234,13 +234,13 @@ u8  _PADpoll(u8 value) {
 				stdpar[curPad][6] = lanalog[curPad].x;
 				stdpar[curPad][7] = lanalog[curPad].y;
 
-				if (padID[curPad] == 0x79) //DualShock 2: Analog
+				if (padID[curPad] == 0x79) // DualShock 2: Analog
 					cmdLen[curPad] = 20;
                 else 
-					if (padID[curPad] == 0x73) //DualShock 1: Analog
+					if (padID[curPad] == 0x73) // DualShock 1: Analog
 						cmdLen[curPad] = 8;
 					else
-						if (padID[curPad] == 0x41) //DualShock 1 or 2: Digital
+						if (padID[curPad] == 0x41) // DualShock 1 or 2: Digital
 							cmdLen[curPad] = 4;
 
 				button_check2 = stdpar[curPad][2] >> 4;
@@ -420,51 +420,51 @@ u8  _PADpoll(u8 value) {
 
 void AllInOne(int pad)
 {
-	//KeyRelease everything.. 
+	// KeyRelease everything.. 
 	status[pad] = 0xffff;
 	lanalog[pad].x = lanalog[pad].y = 0x80;
 
-	//Get Current Keyboard status, and save the old status.
+	// Get Current Keyboard status, and save the old status.
 	GetKeyboardStatus();
 	
-	//Process KeyPresses
+	// Process KeyPresses
 	if (ExtendedOptions.IsEnabled_PAD1 && pad == 0)
 		_PADEvent(0);
 
 	if (ExtendedOptions.IsEnabled_PAD2 && pad == 1)
 		_PADEvent(1);
 
-	//Mouse
+	// Mouse
 	if (ExtendedOptions.IsEnabled_MOUSE)
 	{
 		if (pad == mousePAD)
 		{
-			//Initializing Rects.
+			// Initializing Rects.
 			InitRects();
-			//Get Current Mouse status.
+			// Get Current Mouse status.
 			GetMouseStatus();
-			//Process Mouse Input
+			// Process Mouse Input
 			ProcMouseInput(pad);
 		}
 	}
 
-	//Process COMBO Buttons
+	// Process COMBO Buttons
 	if (ExtendedOptions.IsEnabled_COMBOS)
 	{
 		if (ExtendedOptions.IsEnabled_FasterCombo)
 		{
-			ExecCombo();  //will take g_comboPAD anyways, if I pass it "pad" it will ruin everything
-						  //That's why I use this hack "FASTER COMBO", it gets executed everytime if enabled.. 2X
+			ExecCombo();  // will take g_comboPAD anyways, if I pass it "pad" it will ruin everything
+						  // That's why I use this hack "FASTER COMBO", it gets executed everytime if enabled.. 2X
 		}
 		
 		if (!ExtendedOptions.IsEnabled_FasterCombo && g_comboPAD == pad)
 		{
-			ExecCombo(); //will take g_comboPAD anyways, but the difference is this one gets executed once every
-						//two iterations, because pad toggles 0 and 1..
+			ExecCombo(); // will take g_comboPAD anyways, but the difference is this one gets executed once every
+						// two iterations, because pad toggles 0 and 1..
 		}
 	}
 
-	//HotKey for Loading COMBOs on the fly :), usefull when testing/editing COMBOs while playing.
+	// HotKey for Loading COMBOs on the fly :), usefull when testing/editing COMBOs while playing.
 	if (ExtendedOptions.IsEnabled_ComboHotKey)
 	{
 		if ( DIKEYDOWN(BufferKeyState, DIK_SPACE) && 
@@ -472,11 +472,11 @@ void AllInOne(int pad)
 				LoadCombos();
 	}
 
-	////Process Special EmuKeys and Map DirectInput to VirtualKey
+	// // Process Special EmuKeys and Map DirectInput to VirtualKey
 	if (ExtendedOptions.IsEnabled_KeyEvents)
 		_EmuKeys();
 	
-	//Make a copy of old Keyboard state..
+	// Make a copy of old Keyboard state..
 	memcpy(BufferKeyState, KeyState, sizeof(KeyState));
 }
 
@@ -488,25 +488,25 @@ void _PADEvent(int pad) {
 		for (i=0; i<16; i++)
 			if ( DIKEYDOWN(KeyState, confKeys[pad][i]) )
 				status[pad]&=~(1<<i);
-			//else /*release code became obsolete*/
-			//	status[pad]|= (1<<i);
+			// else /*release code became obsolete*/
+			// 	status[pad]|= (1<<i);
 	}
 	if (pad == 1) {
 		_PADEventExtra(pad);
 		for (i=0; i<16; i++)
 			if ( DIKEYDOWN(KeyState, confKeys[pad][i]) )
 				status[pad]&=~(1<<i);
-			//else /*release code became obsolete*/
-			//	status[pad]|= (1<<i);
+			// else /*release code became obsolete*/
+			// 	status[pad]|= (1<<i);
 
 	}
 }
 
-//////////////////////////////////////Added Functions////////////////////////////////////////////////
+// // // // // // // // // // // // // // // // // // // Added Functions// // // // // // // // // // // // // // // // // // // // // // // // 
 void _PADEventExtra( int pad )
 {
-	//Left Analog stick as Keyboard..
-	if ( DIKEYDOWN(KeyState, confKeys[pad][16]) ) //up (forward)
+	// Left Analog stick as Keyboard..
+	if ( DIKEYDOWN(KeyState, confKeys[pad][16]) ) // up (forward)
 	{
 		states[pad][0] = 1;
 		lanalog[pad].y = minXY[pad];
@@ -516,7 +516,7 @@ void _PADEventExtra( int pad )
 				states[pad][0] = 0;
 				lanalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][18])) //down (backward)
+	if (DIKEYDOWN(KeyState, confKeys[pad][18])) // down (backward)
 	{
 		states[pad][1] = 1;
 		lanalog[pad].y = maxXY[pad];
@@ -526,7 +526,7 @@ void _PADEventExtra( int pad )
 				states[pad][1] = 0;
 				lanalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][17])) //right
+	if (DIKEYDOWN(KeyState, confKeys[pad][17])) // right
 	{
 		states[pad][2] = 1;
 		lanalog[pad].x = maxXY[pad];
@@ -536,7 +536,7 @@ void _PADEventExtra( int pad )
 				states[pad][2] = 0;
 				lanalog[pad].x = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][19])) //left
+	if (DIKEYDOWN(KeyState, confKeys[pad][19])) // left
 	{
 		states[pad][3] = 1;
 		lanalog[pad].x = minXY[pad];
@@ -546,8 +546,8 @@ void _PADEventExtra( int pad )
 				states[pad][3] = 0;
 				lanalog[pad].x = 0x80;
 			}
-	//Right Analog stick as Keyboard..
-	if (DIKEYDOWN(KeyState, confKeys[pad][20])) //up (forward)
+	// Right Analog stick as Keyboard..
+	if (DIKEYDOWN(KeyState, confKeys[pad][20])) // up (forward)
 	{
 		states[pad][4] = 1;
 		ranalog[pad].y = minXY[pad];
@@ -557,7 +557,7 @@ void _PADEventExtra( int pad )
 				states[pad][4] = 0;
 				ranalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][22])) //down (backward)
+	if (DIKEYDOWN(KeyState, confKeys[pad][22])) // down (backward)
 	{
 		states[pad][5] = 1;
 		ranalog[pad].y = maxXY[pad];
@@ -567,7 +567,7 @@ void _PADEventExtra( int pad )
 				states[pad][5] = 0;
 				ranalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][21])) //right
+	if (DIKEYDOWN(KeyState, confKeys[pad][21])) // right
 	{
 		states[pad][6] = 1;
 		ranalog[pad].x = maxXY[pad];
@@ -577,7 +577,7 @@ void _PADEventExtra( int pad )
 				states[pad][6] = 0;
 				ranalog[pad].x = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][23])) //left
+	if (DIKEYDOWN(KeyState, confKeys[pad][23])) // left
 	{
 		states[pad][7] = 1;
 		ranalog[pad].x = minXY[pad];
@@ -587,7 +587,7 @@ void _PADEventExtra( int pad )
 				states[pad][7] = 0;
 				ranalog[pad].x = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][9]))	 //L3
+	if (DIKEYDOWN(KeyState, confKeys[pad][9]))	 // L3
 	{
 		states[pad][8] = 1;
 		lanalog[pad].button = 1;
@@ -597,7 +597,7 @@ void _PADEventExtra( int pad )
 				states[pad][8] = 0;
 				lanalog[pad].button = 0;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][10])) //R3
+	if (DIKEYDOWN(KeyState, confKeys[pad][10])) // R3
 	{
 		states[pad][9] = 1;
 		ranalog[pad].button = 1;
@@ -608,22 +608,22 @@ void _PADEventExtra( int pad )
 				ranalog[pad].button = 0;
 			}
 
-	//////////////////////////////////////////////////////////////////////////
-	//Special Keys to TOGGLE between Sensitivity of Analog controls, (Walk/Run)
-	if ( DIKEYDOWN(BufferKeyState, confKeys[pad][24]) && //was pressed before
-		 !DIKEYDOWN(KeyState, confKeys[pad][24]))        //but it's NOT pressed now, there is KEYRELEASE
+	// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
+	// Special Keys to TOGGLE between Sensitivity of Analog controls, (Walk/Run)
+	if ( DIKEYDOWN(BufferKeyState, confKeys[pad][24]) && // was pressed before
+		 !DIKEYDOWN(KeyState, confKeys[pad][24]))        // but it's NOT pressed now, there is KEYRELEASE
 		{
 			if (minXY[pad] == 0)
 			{
-				//Walk
-				minXY[pad] = 64;   //Average between Center and the Edges. for UP and LEFT
-				maxXY[pad] = 192;  //Average between Center and the Edges. for DOWN and RIGHT			
+				// Walk
+				minXY[pad] = 64;   // Average between Center and the Edges. for UP and LEFT
+				maxXY[pad] = 192;  // Average between Center and the Edges. for DOWN and RIGHT			
 			}
 			else
 				{
-					//Run
-					minXY[pad] = 0;   //The Most value for UP and LEFT
-					maxXY[pad] = 255;  //The Most value for DOWN and RIGHT	
+					// Run
+					minXY[pad] = 0;   // The Most value for UP and LEFT
+					maxXY[pad] = 255;  // The Most value for DOWN and RIGHT	
 				}
 		}
 }
@@ -633,8 +633,8 @@ static int SHIFTFLAG = 0;
 
 void _EmuKeys()
 {
-	//First handle some DIK_* that can't be mapped to VK_* through MapVirtualKey()
-	//The list has more, but these what matters, maybe GSdx?? but Pete's GPUs uses them.. to record or show FPS..etc!
+	// First handle some DIK_* that can't be mapped to VK_* through MapVirtualKey()
+	// The list has more, but these what matters, maybe GSdx?? but Pete's GPUs uses them.. to record or show FPS..etc!
 	if (DIKEYDOWN(KeyState, DIK_DELETE)) {
 		curEvent.evt = KEYPRESS;
 		curEvent.key = VK_DELETE;
@@ -670,14 +670,14 @@ void _EmuKeys()
 							curEvent.key = VK_NEXT;
 							return;
 						}
-	//Compare between current status (KeyState) and old status (BufferKeyState)
-	//And to Determine the Event Occurred using MapVirtualKey function..
-	//Also this will handle EmuKeys like ESCAPE, F1,...F12, ..etc!
+	// Compare between current status (KeyState) and old status (BufferKeyState)
+	// And to Determine the Event Occurred using MapVirtualKey function..
+	// Also this will handle EmuKeys like ESCAPE, F1,...F12, ..etc!
 	int i = 0;
 	while( i++ < 256)
 	{
-		//if it's not pressed now, but was before, there is KeyRelease..
-		if (DIKEYDOWN(KeyState, i)) //KeyPress
+		// if it's not pressed now, but was before, there is KeyRelease..
+		if (DIKEYDOWN(KeyState, i)) // KeyPress
 		{	
 			if (VK_SHIFT == MapVirtualKey(i,1))
 				if (SHIFTKEY != KEYPRESS)
@@ -694,7 +694,7 @@ void _EmuKeys()
 			return;
 		}
 		else 
-			if (DIKEYDOWN(BufferKeyState,i)) //KeyRelease
+			if (DIKEYDOWN(BufferKeyState,i)) // KeyRelease
 			{	
 				if (VK_SHIFT == MapVirtualKey(i,1))
 					if (SHIFTKEY != KEYRELEASE)
@@ -719,7 +719,7 @@ keyEvent* CALLBACK PADkeyEvent() {
 	if (!ExtendedOptions.IsEnabled_KeyEvents)
 		return NULL;
 
-	//Shift Key test..
+	// Shift Key test..
 	if (SHIFTFLAG == 1)
 	{
 		SHIFTFLAG = 0;
@@ -737,7 +737,7 @@ keyEvent* CALLBACK PADkeyEvent() {
 		oldEvent = curEvent;
 		return &curEvent;
 	}
-	//If no events occured, return null..
+	// If no events occured, return null..
 	if (oldEvent.evt == curEvent.evt &&
 		oldEvent.key == curEvent.key )
 		return NULL;

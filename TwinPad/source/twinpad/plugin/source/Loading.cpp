@@ -16,8 +16,8 @@
 
 using std::vector;
 
-vector<vector<vector<int>>> COMBO; //3D Array.. COMBO[Action][Button][COMBO]
-vector<vector<int>> ActionDelay;   //2D Array.. ActionDelay[Action][COMBO]
+vector<vector<vector<int>>> COMBO; // 3D Array.. COMBO[Action][Button][COMBO]
+vector<vector<int>> ActionDelay;   // 2D Array.. ActionDelay[Action][COMBO]
 vector<int> ActionCount;
 vector<int> ComboKey;
 
@@ -39,26 +39,26 @@ void LoadCombos()
 
 	if (comboFile.is_open())
 	{
-		getline (comboFile, strLine); //The header..
+		getline (comboFile, strLine); // The header..
 		
-		getline (comboFile, strLine); //ComboCounter
+		getline (comboFile, strLine); // ComboCounter
 		cstrTemp = _strdup(strLine.c_str());
-		cstrToken = strtok(cstrTemp, " ="); //First skips "ComboCount   = "
-		cstrToken = strtok(NULL, " =");  //now strToken has the value of ComboCounter
+		cstrToken = strtok(cstrTemp, " ="); // First skips "ComboCount   = "
+		cstrToken = strtok(NULL, " =");  // now strToken has the value of ComboCounter
 		
 		value = atoi(cstrToken);
 		g_comboCounter = value;
 		
-		getline (comboFile, strLine); //ComboPAD
+		getline (comboFile, strLine); // ComboPAD
 		cstrTemp = _strdup(strLine.c_str());
-		cstrToken = strtok(cstrTemp, " ="); //First skips "ComboPAD     = "
-		cstrToken = strtok(NULL, " =");  //now strToken has the value of ComboPAD
+		cstrToken = strtok(cstrTemp, " ="); // First skips "ComboPAD     = "
+		cstrToken = strtok(NULL, " =");  // now strToken has the value of ComboPAD
 		
 		value = atoi(cstrToken);
 		g_comboPAD = value - 1;
 
-		//To prevent the infamous *CRASH* from v0.8.0 to v0.8.1
-		//We can't resize vector array with 0 elements X_X duh!!
+		// To prevent the infamous *CRASH* from v0.8.0 to v0.8.1
+		// We can't resize vector array with 0 elements X_X duh!!
 		if (g_comboCounter == 0) return;
 
 		/*
@@ -78,7 +78,7 @@ void LoadCombos()
 				COMBO[i][j].resize(g_comboCounter);
 		}
 
-		//Initialize COMBO 3DArray with -1 as default 'NULL' value..
+		// Initialize COMBO 3DArray with -1 as default 'NULL' value..
 		for (int i = 0; i < 334; i++)
 			for (int j = 0; j < 24; j++)
 				for (int k = 0; k < g_comboCounter; k++)
@@ -88,41 +88,41 @@ void LoadCombos()
 		ComboKey.resize(g_comboCounter);
 		
 		maxCount = g_comboCounter;
-		//Now reading each combo's information..
+		// Now reading each combo's information..
 		for (int comboCount = 0; comboCount < maxCount; comboCount++)
 		{
-			getline(comboFile, strLine); //skip the header 'The name of the Combo'
-			//Test if strLine == NULL or reached EOF then return.. if it was empty file.. (user didn't configure anything)
+			getline(comboFile, strLine); // skip the header 'The name of the Combo'
+			// Test if strLine == NULL or reached EOF then return.. if it was empty file.. (user didn't configure anything)
 
-			getline(comboFile, strLine); //ActionCounter
+			getline(comboFile, strLine); // ActionCounter
 			cstrTemp = _strdup(strLine.c_str());
-			cstrToken = strtok(cstrTemp, " ="); //Skip "ActionCount  = "
-			cstrToken = strtok(NULL, " ="); //read ActionCount value..
+			cstrToken = strtok(cstrTemp, " ="); // Skip "ActionCount  = "
+			cstrToken = strtok(NULL, " ="); // read ActionCount value..
 			value = atoi(cstrToken);
 			ActionCount[comboCount] = value;
 
-			getline(comboFile, strLine); //Skips TotalButtons, we don't need it here, only for COMBO editor in GUI..
+			getline(comboFile, strLine); // Skips TotalButtons, we don't need it here, only for COMBO editor in GUI..
 
-			getline(comboFile, strLine); //ComboKey
+			getline(comboFile, strLine); // ComboKey
 			cstrTemp = _strdup(strLine.c_str());
-			cstrToken = strtok(cstrTemp, " ="); //Skip "ComboKey     = "
-			cstrToken = strtok(NULL, " ="); //Skip 0x
+			cstrToken = strtok(cstrTemp, " ="); // Skip "ComboKey     = "
+			cstrToken = strtok(NULL, " ="); // Skip 0x
 			value = strtol(cstrToken, NULL, 16);
 			ComboKey[comboCount] = value;
 
-			getline(comboFile, strLine); //Skips "===============" <=- I put it here to make INI file more readable
+			getline(comboFile, strLine); // Skips "===============" <=- I put it here to make INI file more readable
 
-			//Now reading COMBOs buttons.
+			// Now reading COMBOs buttons.
 			for (int i = 0; i < ActionCount[comboCount]; i++)
 			{
-				getline(comboFile, strLine); //ActionDelay
+				getline(comboFile, strLine); // ActionDelay
 				cstrTemp = _strdup(strLine.c_str());
-				strtok(cstrTemp, " ="); //Skip "ActionDelay  = "
-				cstrToken = strtok(NULL, " ="); //read ActionDelay value..
+				strtok(cstrTemp, " ="); // Skip "ActionDelay  = "
+				cstrToken = strtok(NULL, " ="); // read ActionDelay value..
 				value = atoi(cstrToken);
 				ActionDelay[i][comboCount] = value;
 
-				getline(comboFile, strLine); //read a whole Action which is multiple buttons at the same time..
+				getline(comboFile, strLine); // read a whole Action which is multiple buttons at the same time..
 				cstrTemp = _strdup(strLine.c_str());
 				
 				int curButton = 0; 
@@ -144,9 +144,9 @@ void LoadCombos()
 
 }
 
-/////////////////////////////Load Configurations///////////////////////////////////
+// // // // // // // // // // // // // // /Load Configurations// // // // // // // // // // // // // // // // // /
 
-//We only need to load the KEYS, because TwinPad.exe handle the job of Saving them,
+// We only need to load the KEYS, because TwinPad.exe handle the job of Saving them,
 void LoadConfig() {
 	static bool LoadOnce = false;
 
@@ -163,10 +163,10 @@ void LoadConfig() {
 
     f = fopen(cfg,"r");
     if (f == NULL) return;
-	//Skip Header.
-	fseek(f, 31, SEEK_SET); //Header is 29 character + '\n' + carriage return.
+	// Skip Header.
+	fseek(f, 31, SEEK_SET); // Header is 29 character + '\n' + carriage return.
 
-	//Read data
+	// Read data
 	for (j=0; j<2; j++) {
 		for (i=0; i<25; i++) {
 			sprintf(str, "[%d][%d] = 0x%%x\n", j, i);
@@ -196,16 +196,16 @@ void LoadConfig() {
 	fscanf(f, "%d", &ExtendedOptions.IsEnabled_FasterCombo);
     fclose(f);
 
-	//I have to invert every data member of ExtendedOptions, in the INI
+	// I have to invert every data member of ExtendedOptions, in the INI
 	// 0 = Enabled, 1 = Disabled, which is the state of the CheckBoxes..
-	//these from 1 to 0..
+	// these from 1 to 0..
 	ExtendedOptions.IsEnabled_PAD1		  = !ExtendedOptions.IsEnabled_PAD1;
 	ExtendedOptions.IsEnabled_PAD2		  = !ExtendedOptions.IsEnabled_PAD2;
 	ExtendedOptions.IsEnabled_MOUSE		  = !ExtendedOptions.IsEnabled_MOUSE;
 	ExtendedOptions.IsEnabled_KeyEvents   = !ExtendedOptions.IsEnabled_KeyEvents;
 	ExtendedOptions.IsEnabled_COMBOS      = !ExtendedOptions.IsEnabled_COMBOS;
 	ExtendedOptions.IsEnabled_ComboHotKey = !ExtendedOptions.IsEnabled_ComboHotKey;
-	//The last option we leave it intact, it's the only one means ENABLE, all the other are DISABLEd, lol..
-	//ExtendedOptions.IsEnabled_FasterCombo = ExtendedOptions.IsEnabled_FasterCombo;
+	// The last option we leave it intact, it's the only one means ENABLE, all the other are DISABLEd, lol..
+	// ExtendedOptions.IsEnabled_FasterCombo = ExtendedOptions.IsEnabled_FasterCombo;
 }
 

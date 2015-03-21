@@ -1,7 +1,7 @@
 #ifndef _EXTERNALS_H_
 #define _EXTERNALS_H_
 
-#define DIKEYDOWN(data,n) (data[n] & 0x80) //Macro to Simplify KeyPress..
+#define DIKEYDOWN(data,n) (data[n] & 0x80) // Macro to Simplify KeyPress..
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include "PS2Etypes.h"
@@ -29,7 +29,7 @@ extern unsigned short mouseSensitivity;
 extern unsigned short mouseScrollUp;
 extern unsigned short mouseScrollDown;
 extern char MouseButtonMap[8];
-extern bool inside;  //if mouse inside the window..
+extern bool inside;  // if mouse inside the window..
 extern Analog lanalog[2];
 extern Analog ranalog[2];
 extern POINT MousePt;

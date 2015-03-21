@@ -16,66 +16,52 @@ GUI_Configurations GUI_Config;
 
 void OnNotebookChange(wxCommandEvent &evt)
 {
-	try
+	if (evt.GetEventType() == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED)
 	{
-		if (evt.GetEventType() == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED)
-		{
-			wxSize curTabSize;
-			wxString label = GUI_Controls.noteBook->GetPageText(GUI_Controls.noteBook->GetSelection());
+		wxSize curTabSize;
+		wxString label = GUI_Controls.noteBook->GetPageText(GUI_Controls.noteBook->GetSelection());
 
-			if ("Keyboard" == label)
-				curTabSize = GUI_Controls.minWinSize[KEYBOARD_TAB];
-			else if ("Mouse" == label)
-				curTabSize = GUI_Controls.minWinSize[MOUSE_TAB];
-			else if ("COMBOs" == label)
-				curTabSize = GUI_Controls.minWinSize[COMBOS_TAB];
-			else if ("Misc" == label)
-				curTabSize = GUI_Controls.minWinSize[MISC_TAB];
-			else if ("GamePad" == label)
-				curTabSize = GUI_Controls.minWinSize[GAMEPAD_TAB];
+		if ("Keyboard" == label)
+			curTabSize = GUI_Controls.minWinSize[KEYBOARD_TAB];
+		else if ("Mouse" == label)
+			curTabSize = GUI_Controls.minWinSize[MOUSE_TAB];
+		else if ("COMBOs" == label)
+			curTabSize = GUI_Controls.minWinSize[COMBOS_TAB];
+		else if ("Misc" == label)
+			curTabSize = GUI_Controls.minWinSize[MISC_TAB];
+		else if ("GamePad" == label)
+			curTabSize = GUI_Controls.minWinSize[GAMEPAD_TAB];
 
-			GUI_Controls.noteBook->GetParent()->SetMinClientSize(curTabSize);
-			GUI_Controls.noteBook->GetParent()->SetClientSize(curTabSize);
-			GUI_Controls.noteBook->GetParent()->ClientToWindowSize(curTabSize);
-			GUI_Controls.noteBook->GetParent()->UpdateWindowUI();
-		}
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
+		GUI_Controls.noteBook->GetParent()->SetMinClientSize(curTabSize);
+		GUI_Controls.noteBook->GetParent()->SetClientSize(curTabSize);
+		GUI_Controls.noteBook->GetParent()->ClientToWindowSize(curTabSize);
+		GUI_Controls.noteBook->GetParent()->UpdateWindowUI();
 	}
 }
 
 void CreateControls(TwinPad_Frame *window)
 {
-	try
-	{
-		// Save the pointer of the main frame to make access easier
-		GUI_Controls.mainFrame = window;
+	// Save the pointer of the main frame to make access easier
+	GUI_Controls.mainFrame = window;
 
-		// Check to see if configuration files are present, otherwise create null ones
-		wxString file1, file2;
-		file1 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
-		IsFileOkAndFix(file1.ToStdString(), GUI_Controls.GetTwinPad_Header().ToStdString());
-		file2 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
-		IsFileOkAndFix(file2.ToStdString(), GUI_Controls.GetTwinPad_ComboHeader().ToStdString());
+	// Check to see if configuration files are present, otherwise create null ones
+	wxString file1, file2;
+	file1 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
+	IsFileOkAndFix(file1.ToStdString(), GUI_Controls.GetTwinPad_Header().ToStdString());
+	file2 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
+	IsFileOkAndFix(file2.ToStdString(), GUI_Controls.GetTwinPad_ComboHeader().ToStdString());
 
-		Loading_TwinPad_Main_Config();
+	Loading_TwinPad_Main_Config();
 
-		GUI_Controls.noteBook = new wxNotebook(window, ID_NOTEBOOK, wxPoint(-1, -1), wxSize(-1, -1));
-		GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
+	GUI_Controls.noteBook = new wxNotebook(window, ID_NOTEBOOK, wxPoint(-1, -1), wxSize(-1, -1));
+	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
 		
-		AddKeyboardTab(GUI_Controls);
-		AddMouseTab(GUI_Controls);
-		AddCombosTab(GUI_Controls);
-		AddMiscTab(GUI_Controls);
+	AddKeyboardTab(GUI_Controls);
+	AddMouseTab(GUI_Controls);
+	AddCombosTab(GUI_Controls);
+	AddMiscTab(GUI_Controls);
 
-		// AddGamePadTab(GUI_Controls);	// TODO: Maybe..
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
+	// AddGamePadTab(GUI_Controls);	// TODO: Maybe..
 }
 
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
@@ -195,8 +181,8 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 
 	GUI_Controls.btnAutoNavigate = new wxButton(panel, ID_BTN_AUTO, "Auto Navigate");
 	GUI_Controls.btnNullifiesAll = new wxButton(panel, ID_BTN_NULL, "Nullifies All");
-	GUI_Controls.btnOK = new wxButton(panel, wxID_OK, "Ok");				//wxID_OK for the dialog return value
-	GUI_Controls.btnCancel = new wxButton(panel, wxID_CANCEL, "Cancel");	//wxID_CANCEL for the dialog return value
+	GUI_Controls.btnOK = new wxButton(panel, wxID_OK, "Ok");				// wxID_OK for the dialog return value
+	GUI_Controls.btnCancel = new wxButton(panel, wxID_CANCEL, "Cancel");	// wxID_CANCEL for the dialog return value
 
 	GUI_Controls.btnCancel->Bind(wxEVT_BUTTON, OnClickCancel);
 	GUI_Controls.btnOK->Bind(wxEVT_BUTTON, OnClickOk);
@@ -410,191 +396,88 @@ void AddGamePadTab(CTwinPad_Gui &GUI_Controls)
 // This function handles the click event for both keyboard tab and combo tab
 void CPS_Anim::OnClick(wxCommandEvent &event)
 {
-	try
-	{
-		// int winID = (int) event.GetEventUserData();
-		int winID = event.GetId();
+	// int winID = (int) event.GetEventUserData();
+	int winID = event.GetId();
 		
-		if (winID >= 1000 && winID < 1024)	// Keyboard tab
-		{
-			// Implement reading DirectInput keypress
-			GUI_Controls.txtCtrl[this->GetIndex()]->SetValue(this->GetName());
-			GUI_Controls.lblEdit->SetLabel(wxString::Format("Edit Button: %s", PS_LABEL[this->GetIndex()].name));
-			this->Play();
-		}
-		else if (winID >= 1024 && winID <= 1047)	// Combo tab
-			OnClick_psComboButtons(winID);
-		else
-			throw "Unknown AnimationCtrl ID, #" + winID;
-	}
-	catch (exception &e)
+	if (winID >= 1000 && winID < 1024)	// Keyboard tab
 	{
-		wxMessageBox(e.what());
+		// Implement reading DirectInput keypress
+		GUI_Controls.txtCtrl[this->GetIndex()]->SetValue(this->GetName());
+		GUI_Controls.lblEdit->SetLabel(wxString::Format("Edit Button: %s", PS_LABEL[this->GetIndex()].name));
+		this->Play();
 	}
-	catch (char *msg)
-	{
-		wxMessageBox(msg);
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	else if (winID >= 1024 && winID <= 1047)	// Combo tab
+		OnClick_psComboButtons(winID);
 }
 
 // This function handles the click event for Mouse help button
 void OnClickMouseHelpButton(wxCommandEvent &ev)
 {
-	try
-	{
-		wxMessageBox(strMOUSE_HELP_MSG, "Help", wxICON_INFORMATION);
-		ev.Skip();
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	wxMessageBox(strMOUSE_HELP_MSG, "Help", wxICON_INFORMATION);
+	ev.Skip();
 }
 
 // This function handles the click event for Mouse Nullifies All
 void OnClickMouseNullifiesAll(wxCommandEvent &ev)
 {
-	try
-	{
-		for (int i = 0; i < intMOUSE_BUTTONS; ++i)
-			GUI_Controls.cmbMouseComboBox[i]->Select(0);
+	for (int i = 0; i < intMOUSE_BUTTONS; ++i)
+		GUI_Controls.cmbMouseComboBox[i]->Select(0);
 
-		GUI_Controls.cmbMouseSensitivity->Select(0);
-		GUI_Controls.mousePad1radioButton->SetValue(true);
-		// Another bug in wxWidgets! without the skip event, the window freezes, 
-		// until it loses focus by another app (hides behind it) then set focused again.
-		ev.Skip();
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	GUI_Controls.cmbMouseSensitivity->Select(0);
+	GUI_Controls.mousePad1radioButton->SetValue(true);
+	// Another bug in wxWidgets! without the skip event, the window freezes, 
+	// until it loses focus by another app (hides behind it) then set focused again.
+	ev.Skip();
 }
 
 // This function handles right click event on the txtCrls/animCtrl and delete configuration for a button
 // Also, prevent the context menu (right-click menu) from showing up
 void OnTxtCtrlRightClick(wxMouseEvent &ev)
 {
-	try
-	{
-		int id = ev.GetId();
-		// Which id? txtCtrl or animCtrl?
-		if (ev.GetId() >= ID_TXT && ev.GetId() <= 2023)
-			id -= ID_TXT;
-		else if (ev.GetId() >= ID_BTN && ev.GetId() <= 1023)
-			id -= ID_BTN;
-		GUI_Controls.txtCtrl[id]->SetValue("Null");
-		GUI_Controls.lblEdit->SetLabel("Edit Button: ");
-		GUI_Controls.animCtrl[id]->Stop();	// Stop animation
-		return;	// a return will disable the context menu if the event was on txtCtrl
-	}
-	catch (exception &ex)
-	{
-		wxMessageBox(ex.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	int id = ev.GetId();
+	// Which id? txtCtrl or animCtrl?
+	if (ev.GetId() >= ID_TXT && ev.GetId() <= 2023)
+		id -= ID_TXT;
+	else if (ev.GetId() >= ID_BTN && ev.GetId() <= 1023)
+		id -= ID_BTN;
+	GUI_Controls.txtCtrl[id]->SetValue("Null");
+	GUI_Controls.lblEdit->SetLabel("Edit Button: ");
+	GUI_Controls.animCtrl[id]->Stop();
+	return;	// a return will disable the context menu if the event was on txtCtrl
 }
 
 // This function handles the click event for Keyboard Nullifies All
 void OnClickKeyboardNullifiesAll(wxCommandEvent &ev)
 {
-	try
-	{
-		
-		// Another bug in wxWidgets! without the skip event, the window freezes, 
-		// until it loses focus by another app (hides behind it) then set focused again.
-		ev.Skip();
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	// Another bug in wxWidgets! without the skip event, the window freezes, 
+	// until it loses focus by another app (hides behind it) then set focused again.
+	ev.Skip();
 }
 
 // This function handles the click event for Cancel button
 void OnClickCancel(wxCommandEvent &ev)
 {
-	try
-	{
-		// Stop all Timers
-		GUI_Controls.mainFrame->tmrAnimate->Stop();
+	// Stop all Timers
+	GUI_Controls.mainFrame->tmrAnimate->Stop();
 
-		GUI_Controls.mainFrame->Hide();
-		GUI_Controls.mainFrame->Close(true);
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	GUI_Controls.mainFrame->Hide();
+	GUI_Controls.mainFrame->Close(true);
 }
 
 // This function handles the click event for 'Auto Navigate' button
 void OnClickAutoNavigate(wxCommandEvent &ev)
 {
-	try
-	{
-		// TODO: Implement auto navigation feature
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	// TODO: Implement auto navigation feature
 }
 
 // This function handles the click event for Cancel button
 void OnClickOk(wxCommandEvent &ev)
 {
-	try
-	{
-		// TODO: Implement Ok button to save Configurations from all tabs
+	// TODO: Implement Ok button to save Configurations from all tabs
 		
-		// Stop all Timers
-		GUI_Controls.mainFrame->tmrAnimate->Stop();
+	// Stop all Timers
+	GUI_Controls.mainFrame->tmrAnimate->Stop();
 
-		GUI_Controls.mainFrame->Hide();
-		GUI_Controls.mainFrame->Close(true);
-	}
-	catch (exception &e)
-	{
-		wxMessageBox(e.what());
-	}
-	catch (...)
-	{
-		wxMessageBox(wxString::Format("Unknown exception occured in %s function and line number: %d"
-			" in file: %s", __FUNCTION__, __LINE__, __FILE__));
-	}
+	GUI_Controls.mainFrame->Hide();
+	GUI_Controls.mainFrame->Close(true);
 }
