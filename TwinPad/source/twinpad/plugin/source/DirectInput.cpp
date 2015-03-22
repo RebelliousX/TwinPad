@@ -44,7 +44,7 @@ bool InitDI()
 		{
 			fDIKeyboard->SetDataFormat(&c_dfDIKeyboard);
 			
-			fDIKeyboard->SetCooperativeLevel(hObjWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY); 
+			fDIKeyboard->SetCooperativeLevel(hGFXwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY); 
 
 			fDIKeyboard->Acquire();
 		}
@@ -60,7 +60,7 @@ bool InitDI()
 		
 		if (fDIMouse)
 		{
-			fDIMouse->SetCooperativeLevel(hObjWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+			fDIMouse->SetCooperativeLevel(hGFXwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
 			fDIMouse->SetDataFormat(&c_dfDIMouse2);
 
@@ -116,7 +116,7 @@ void GetKeyboardStatus()
 
 void GetMouseStatus()
 {
-	if (hObjWnd != GetForegroundWindow()) return;
+	if (hGFXwnd != GetForegroundWindow()) return;
 	// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
 	// Using Win32Api to get cursor pos, it's more convinient while playing
 	// in window mode, as the user may want to run other apps as will.

@@ -138,8 +138,7 @@ private:
 class TwinPad_Frame : public wxDialog
 {
 public:
-	TwinPad_Frame();
-	TwinPad_Frame(wxString title, wxSize size);
+	TwinPad_Frame(wxString title);
 	void OnClose(wxCloseEvent &event);
 	void TwinPad_Configuration();
 

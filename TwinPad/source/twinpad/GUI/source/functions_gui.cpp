@@ -216,8 +216,8 @@ void Loading_TwinPad_Main_Config()
 		{
 			line = file.GetNextLine();
 			token.SetString(line, " ", wxTOKEN_STRTOK);
-			subStr = token.GetNextToken();				// Skips first token [n][n]
-			subStr = token.GetNextToken();				// Skips second token =
+			token.GetNextToken();				// Skips first token [n][n]
+			token.GetNextToken();				// Skips second token =
 			subStr = token.GetNextToken();				// we are interested in this token 0xNN
 			subStr.ToLong(&val, 16);					// Convert string to hex
 			GUI_Config.m_pad[pad][key] = int(val);		
@@ -228,8 +228,8 @@ void Loading_TwinPad_Main_Config()
 	{
 		line = file.GetNextLine();
 		token.SetString(line, " ", wxTOKEN_STRTOK);
-		subStr = token.GetNextToken();	// skips first token [n]
-		subStr = token.GetNextToken();	// skips second token =
+		token.GetNextToken();	// skips first token [n]
+		token.GetNextToken();	// skips second token =
 		subStr = token.GetNextToken();	// we are interested in this token N (DECIMAL)
 		subStr.ToLong(&val, 10);		// Convert string to dec
 		GUI_Config.m_mouse[i] = val;
@@ -1116,13 +1116,12 @@ void OnClickComboKey(wxMouseEvent &ev)
 // Only called from OnClick_psComboButton()
 bool Has(const unsigned int button, int row)
 {
-	// Check if 'button' exists in current action 'row' and return true. Otherwise return false.
-	int buttonValue;
 	wxGridCellCoords coords;
 	Cell_Locator.GetLocation(coords);
 	for (int i = 1; i < GUI_Controls.virtualGrid->GetNumberCols(); ++i)
 	{
-		buttonValue = ((CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, i, "Cell Value"))->buttonValue;
+		// Check if 'button' exists in current action 'row' and return true. Otherwise return false.
+		int buttonValue = ((CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, i, "Cell Value"))->buttonValue;
 		// If button exists in same row, and not the same one 'cell' selected by user to overwrite, return true
 		if (buttonValue == button && i != coords.GetCol())
 			return true;

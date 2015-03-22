@@ -117,7 +117,7 @@ void _PADclose() {
 
 	TermDI();
 	
-	GShwnd = hObjWnd = NULL;
+	hGSPUwnd = hGFXwnd = NULL;
 	curByte[0] = curByte[1] = 0;
 	cmdLen[0]  = cmdLen[1]  = 0;
 }

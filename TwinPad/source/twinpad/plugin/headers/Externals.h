@@ -7,8 +7,8 @@
 #include "PS2Etypes.h"
 
 extern HMODULE hDI;
-extern HWND hObjWnd;
-extern HWND GShwnd;
+extern HWND hGFXwnd;
+extern HWND hGSPUwnd;
 
 extern unsigned char KeyState[256], BufferKeyState[256];
 

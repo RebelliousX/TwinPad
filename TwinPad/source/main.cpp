@@ -19,6 +19,8 @@
 
 #ifdef _WINDOWS
 
+#include "DirectInput.h"
+
 namespace
 {
 	// Thanks to https:// stackoverflow.com/questions/1888863/how-to-get-main-window-handle-from-process-id
@@ -60,15 +62,14 @@ namespace
 // Very important handles, used everywhere, even for DirectInput   |
 // ----------------------------------------------------------------
 
-HMODULE hDI = NULL;						// DLL handle, passed to DirectInput
-HWND hObjWnd = NULL, GShwnd = NULL;		// Both for getting HWND from GPU/GS window
-HWND hEmuWnd;							// Hackish, get handle to emulator, since wxDialog can't have win32 parent
+HMODULE hDI = NULL;							// DLL handle, passed to DirectInput
+HWND hGFXwnd = NULL, hGSPUwnd = NULL;		// Both for getting HWND from GPU/GS window
+HWND hEmuWnd;								// Hackish, get handle to emulator, since wxDialog can't have win32 parent
 
 // processID for the emulator, used to find its main Window, to deal with wxDialog shortcomings.
 int processId = NULL;
 
-TwinPad_Frame::TwinPad_Frame() : TwinPad_Frame("TwinPad Configuration Utility", wxDefaultSize) { }
-TwinPad_Frame::TwinPad_Frame(wxString title, wxSize size) : wxDialog(0, wxID_ANY, title, wxDefaultPosition, size,
+TwinPad_Frame::TwinPad_Frame(wxString title) : wxDialog(0, wxID_ANY, title, wxDefaultPosition, wxDefaultSize,
 	wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxSTAY_ON_TOP)
 {
 	hEmuWnd = find_main_window(processId);
@@ -105,9 +106,32 @@ public:
 // This is called from PADconfigure which in turn called from the emu
 void ConfigureTwinPad()
 {
-	TwinPad_Frame *twinPad_Frame;
-	twinPad_Frame = new TwinPad_Frame("TwinPad Configuration Utility", wxDefaultSize);
+	// Switch between GS/GPU handle window and TwinPap Config handle window
+	// to be used for DirectInput which uses only hGFXwnd. This is just a precaution, because
+	// user might want to summon TwinPad Config window using the HOT key and InitDI() would be called again.
+	// the only needed things to do are to assign a new hGFXwnd from TwinPad_Frame before calling InitDI()
+	// and make sure if DI is initialized, terminated it then reinitialize it. When done with the TwinPad window
+	// again terminate DI and reinitialize it for GS/GPU window. NOTE: the emu will assign a new handle when 
+	// PADopen is called and GS/GPU window is running.
+	HWND hGFXwnd_temp = hGFXwnd;
+	TwinPad_Frame *twinPad_Frame = new TwinPad_Frame("TwinPad Configuration Utility");
+	hGFXwnd = (HWND) twinPad_Frame->GetHWND();
+#ifdef _WINDOWS
+	if (!InitDI())
+	{
+		wxMessageBox("Can't Initialize DirectInput!", "Failure...", wxICON_ERROR);
+		return;
+	}
+#endif
+
 	twinPad_Frame->ShowModal();
+
+#ifdef _WINDOWS
+	TermDI();
+#endif
+	// Restore original hGFXwnd
+	hGFXwnd = hGFXwnd_temp;
+	
 	delete twinPad_Frame;
 	twinPad_Frame = 0;
 }

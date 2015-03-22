@@ -115,16 +115,16 @@ s32  _PADopen(HWND hDsp) {
 	{
 		
 		if (!IsWindow (hDsp) && !IsBadReadPtr ((u32*)hDsp, 4))
-                GShwnd = *(HWND*)hDsp;
-        if (!IsWindow (GShwnd))
-                GShwnd = NULL;
+                hGSPUwnd = *(HWND*)hDsp;
+        if (!IsWindow (hGSPUwnd))
+                hGSPUwnd = NULL;
         else
         {
-                while (GetWindowLong (GShwnd, GWL_STYLE) & WS_CHILD)
-                        GShwnd = GetParent (GShwnd);
+                while (GetWindowLong (hGSPUwnd, GWL_STYLE) & WS_CHILD)
+                        hGSPUwnd = GetParent (hGSPUwnd);
         }
 		
-		hObjWnd = GShwnd;
+		hGFXwnd = hGSPUwnd;
 
 		if( !InitDI())
 			return 1;

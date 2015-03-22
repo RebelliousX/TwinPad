@@ -277,7 +277,7 @@ void InitRects()
 
 	if (counter++  == 60) // update every (second or half)..
 	{
-		GetWindowRect(hObjWnd, &testRect);
+		GetWindowRect(hGFXwnd, &testRect);
 
 		rectMouseArea = testRect;
 
