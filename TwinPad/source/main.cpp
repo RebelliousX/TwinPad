@@ -74,7 +74,6 @@ TwinPad_Frame::TwinPad_Frame(wxString title, wxSize size) : wxDialog(0, wxID_ANY
 	hEmuWnd = find_main_window(processId);
 
 	tmrAnimate = new CReAnimate(this);
-
 	tmrAutoNavigate = new CAutoNav(this);
 	tmrGetKey = new CGetKey(this);
 	tmrGetComboKey = new CGetComboKey(this);
@@ -95,12 +94,6 @@ void TwinPad_Frame::OnClose(wxCloseEvent &event)
 	event.Skip();
 }
 
-void TwinPad_Frame::TwinPad_Configuration()
-{
-	ShowModal();
-	Destroy();
-}
-
 class TwinPad_DLL : public wxApp
 {
 public:
@@ -108,13 +101,13 @@ public:
 	bool OnInit() { return true; }
 };
 
-TwinPad_Frame *twinPad_Frame;
 
 // This is called from PADconfigure which in turn called from the emu
 void ConfigureTwinPad()
 {
+	TwinPad_Frame *twinPad_Frame;
 	twinPad_Frame = new TwinPad_Frame("TwinPad Configuration Utility", wxDefaultSize);
-	twinPad_Frame->TwinPad_Configuration();
+	twinPad_Frame->ShowModal();
 	delete twinPad_Frame;
 	twinPad_Frame = 0;
 }
@@ -139,7 +132,6 @@ IMPLEMENT_APP_NO_MAIN(TwinPad_DLL)
 			break;
 		case DLL_PROCESS_DETACH:
 			wxEntryCleanup();
-			wxTheApp->ExitMainLoop();
 			break;
 		}
 		return TRUE;

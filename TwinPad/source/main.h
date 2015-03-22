@@ -11,8 +11,6 @@
 
 // Called from PADconfigure() callback function
 void ConfigureTwinPad();
-// Called from PADshutdown() callback function
-void ShutdownTwinPad();
 
 // -----Timer classes
 // Timer to re-animate Analog sticks to fix out of sync animation
@@ -142,10 +140,7 @@ class TwinPad_Frame : public wxDialog
 public:
 	TwinPad_Frame();
 	TwinPad_Frame(wxString title, wxSize size);
-
-
 	void OnClose(wxCloseEvent &event);
-
 	void TwinPad_Configuration();
 
 	CReAnimate *tmrAnimate;			// To reAnimate analog-sticks in Combo tab

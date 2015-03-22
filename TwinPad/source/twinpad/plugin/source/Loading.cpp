@@ -24,7 +24,7 @@ vector<int> ComboKey;
 unsigned short g_comboCounter = 0;
 unsigned short g_comboPAD = 0;   
 
-unsigned short mouseScrollUp = 36, mouseScrollDown = 36;
+unsigned int mouseScrollUp = 36, mouseScrollDown = 36;
 
 using namespace std;
 

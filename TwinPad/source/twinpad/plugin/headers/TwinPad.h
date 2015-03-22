@@ -28,8 +28,8 @@
 Analog lanalog[2], ranalog[2];
 
 static keyEvent curEvent, oldEvent;
-unsigned short mousePAD;
-unsigned short mouseSensitivity;
+unsigned int mousePAD;
+unsigned int mouseSensitivity;
 RECT WndRect, testRect, rectMouseArea;
 POINT MousePt;
 u16 status[2];

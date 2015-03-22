@@ -24,10 +24,10 @@ typedef struct {
 	u8 button;
 } Analog;
 
-extern unsigned short mousePAD;
-extern unsigned short mouseSensitivity;
-extern unsigned short mouseScrollUp;
-extern unsigned short mouseScrollDown;
+extern unsigned int mousePAD;
+extern unsigned int mouseSensitivity;
+extern unsigned int mouseScrollUp;
+extern unsigned int mouseScrollDown;
 extern char MouseButtonMap[8];
 extern bool inside;  // if mouse inside the window..
 extern Analog lanalog[2];

@@ -1,4 +1,4 @@
-#include <exception>
+
 #include "main.h"
 #include "twinpad_gui.h"
 #include "labels.h"

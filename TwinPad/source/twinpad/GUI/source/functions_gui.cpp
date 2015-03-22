@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <exception>
+
 
 #include "twinpad_gui.h"
 
