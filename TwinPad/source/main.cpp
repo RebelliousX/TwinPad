@@ -88,6 +88,20 @@ TwinPad_Frame::TwinPad_Frame(wxString title) : wxDialog(0, wxID_ANY, title, wxDe
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(TwinPad_Frame::OnClose));
 }
 
+TwinPad_Frame::~TwinPad_Frame()
+{
+	delete tmrAnimate;
+	tmrAnimate = 0;
+	delete tmrAutoNavigate;
+	tmrAutoNavigate = 0;
+	delete tmrGetKey;
+	tmrGetKey = 0;
+	delete tmrGetComboKey;
+	tmrGetComboKey = 0;
+	delete tmrGetLoadComboKey;
+	tmrGetLoadComboKey = 0;
+}
+
 void TwinPad_Frame::OnClose(wxCloseEvent &event)
 {
 	SetForegroundWindow(hEmuWnd);
@@ -117,6 +131,9 @@ void ConfigureTwinPad()
 	TwinPad_Frame *twinPad_Frame = new TwinPad_Frame("TwinPad Configuration Utility");
 	hGFXwnd = (HWND) twinPad_Frame->GetHWND();
 #ifdef _WINDOWS
+	// Terminate DI, if successfully terminated, then it was running before and user called TwinPad
+	// Config using the Hot key
+	bool wasDI_Running = TermDI();
 	if (!InitDI())
 	{
 		wxMessageBox("Can't Initialize DirectInput!", "Failure...", wxICON_ERROR);
@@ -127,7 +144,18 @@ void ConfigureTwinPad()
 	twinPad_Frame->ShowModal();
 
 #ifdef _WINDOWS
+	// Terminate DirectInput for TwinPad Config window
 	TermDI();
+	// If DI was running before, reinitialize it again but with hGFXwnd handle, if it was running
+	// and interrupted using the Hot key
+	if (wasDI_Running)
+	{
+		hGFXwnd = hGFXwnd_temp;
+		if (!InitDI())
+		{
+			wxMessageBox("Failed to reinitialize DirectInput", "Oops!", wxICON_ERROR);
+		}
+	}
 #endif
 	// Restore original hGFXwnd
 	hGFXwnd = hGFXwnd_temp;

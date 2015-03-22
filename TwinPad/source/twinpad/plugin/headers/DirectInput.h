@@ -4,7 +4,7 @@
 #include "Externals.h"
 
 bool InitDI();
-void TermDI();
+bool TermDI();
 void GetKeyboardStatus();
 void GetMouseStatus();
 

@@ -139,6 +139,7 @@ class TwinPad_Frame : public wxDialog
 {
 public:
 	TwinPad_Frame(wxString title);
+	~TwinPad_Frame();
 	void OnClose(wxCloseEvent &event);
 	void TwinPad_Configuration();
 

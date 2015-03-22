@@ -81,7 +81,7 @@ bool InitDI()
 
 // Terminate DirectInput Objects, First Unacquire Keyboard & Mouse 
 // devices, Release them, then Release main DI Obj.
-void TermDI()
+bool TermDI()
 {
 	if (fDI != NULL)
 	{
@@ -98,7 +98,11 @@ void TermDI()
 		// Finally Deal with main DI Object.
 		fDI->Release();
 		fDI = NULL;
+
+		return true;
 	}
+
+	return false;
 }
 
 // Get Keyboard buttons status, and save a snapshot in KeyState Character Array (1 Byte / Element)

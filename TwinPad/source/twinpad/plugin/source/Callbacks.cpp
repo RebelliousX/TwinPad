@@ -122,7 +122,7 @@ void _PADclose() {
 	cmdLen[0]  = cmdLen[1]  = 0;
 }
 
-// // // // // // // // // // // // // // // // // // // // // // // // /PSX related functions// // // // // // // // // // // // // // /
+// // // // // // // // // // // // // // // //PSX related functions// // // // // // // // // // // // // // /
 typedef struct {
 	unsigned char controllerType;
 	unsigned short buttonStatus;
@@ -130,10 +130,6 @@ typedef struct {
 	unsigned char moveX, moveY;
 	unsigned char reserved[91];
 } PadDataS;
-
-typedef struct {
-	unsigned long int dummy;
-} PadInitS;
 
 // Newer PSX EMUs wont use these 2 functions, instead they'll use PADstartPoll() padPoll()
 // they are here for compatibility with PSEmu Pro specifications..
