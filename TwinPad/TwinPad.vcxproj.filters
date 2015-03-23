@@ -78,6 +78,9 @@
     <ClInclude Include="source\fastCompile.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="source\twinpad\GUI\headers\timers_functions.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp">

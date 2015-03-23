@@ -58,8 +58,8 @@ public:
 		: wxAnimationCtrl(parent, id, wxNullAnimation, wxDefaultPosition)
 		{ }
 
-	void OnClick(wxCommandEvent &event);		// Keyboard tab
-	void OnComboClick(wxCommandEvent &event);	// Combo tab
+	void OnClickAnimInKeyboardTab(wxCommandEvent &event);		// Keyboard tab
+	void OnComboClick(wxCommandEvent &event);					// Combo tab
 
 	void SetIndex(int i) { index = i; }
 	int GetIndex() { return index; }
@@ -72,11 +72,11 @@ private:
 	wxString name;
 };
 
-class CPS_Txt : public wxTextCtrl
+class CPS_LBL : public wxStaticText
 {
 public:
-	CPS_Txt(wxWindow *parent, wxWindowID id, const wxString &value, const wxSize &size = wxDefaultSize)
-		: wxTextCtrl(parent, id, value, wxDefaultPosition, size) { }
+	CPS_LBL(wxWindow *parent, wxWindowID id, const wxString &value, const wxSize &size = wxDefaultSize)
+		: wxStaticText(parent, id, value, wxDefaultPosition, size) { }
 
 	// void OnClick(wxCommandEvent &event);
 
@@ -86,9 +86,11 @@ public:
 	void SetName(const wxString &str) { name = str; }
 	wxString GetName() { return name; } // Not the value in text box
 
+	void SetKeyCode(unsigned char key) { keyCode = key; }
 private:
 	int index;
 	wxString name;
+	unsigned char keyCode;		// Keyboard key value, Used for saving contents to file
 };
 
 // define controls
@@ -104,6 +106,7 @@ public:
 		TWIN_PAD = "TwinPad.ini";
 		TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
 		PATH_DIR = "inis/";		// Will be replaced with a proper directory if supported by the emu using PADsettingsDir()
+		indexOfButton = -1;	// invalid value
 	}
 
 	~CTwinPad_Gui()
@@ -124,11 +127,14 @@ public:
 
 	TwinPad_Frame *mainFrame;
 	wxNotebook *noteBook;
+
+	int indexOfButton;	
+	
 	// TAB 1: Keyboard
-	CPS_Txt *txtCtrl[intPS_BUTTONS];					// Defined alias key
+	CPS_LBL *lblCtrl[intPS_BUTTONS];					// Defined alias key
 	CPS_Anim *animCtrl[intPS_BUTTONS];
 	wxStaticText *lblLabel[intANALOG_DIRECTIONS];		// Left or Right (for analog stick)
-	CPS_Txt *txtWalkRun;
+	CPS_LBL *lblWalkRun;
 	wxRadioButton *pad1RadioBtn;
 	wxRadioButton *pad2RadioBtn;
 	wxStaticText *lblEdit;
@@ -216,6 +222,7 @@ void AddMiscTab(CTwinPad_Gui &GUI_Controls);
 void SetupComboTab(wxPanel *panel);
 
 // To handle right click on configured button's Name (delete configuration)
-void OnTxtCtrlRightClick(wxMouseEvent &ev);
-
+void OnLblCtrlRightClick(wxMouseEvent &ev);
+// To handle Left-Click assign a key, Right-Click remove assigned key
+void OnClickWalkRun(wxMouseEvent &ev);
 #endif

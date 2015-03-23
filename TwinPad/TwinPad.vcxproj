@@ -21,6 +21,7 @@
     <ClInclude Include="source\twinpad\GUI\headers\functions_gui.h" />
     <ClInclude Include="source\twinpad\GUI\headers\labels.h" />
     <ClInclude Include="source\twinpad\GUI\headers\resources.h" />
+    <ClInclude Include="source\twinpad\GUI\headers\timers_functions.h" />
     <ClInclude Include="source\twinpad\GUI\headers\twinpad_gui.h" />
     <ClInclude Include="source\twinpad\Plugin\headers\Callbacks.h" />
     <ClInclude Include="source\twinpad\Plugin\headers\COMBOs.h" />

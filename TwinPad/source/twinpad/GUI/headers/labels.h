@@ -10,7 +10,7 @@
 class CPS_Label
 {
 public:
-	int index;
+	int keyValue;
 	wxString name;
 };
 

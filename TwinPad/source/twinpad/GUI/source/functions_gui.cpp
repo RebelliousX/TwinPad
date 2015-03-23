@@ -5,6 +5,9 @@
 
 
 #include "twinpad_gui.h"
+#include "timers_functions.h"
+#include "DirectInput.h"
+#include "labels.h"
 
 #ifndef WX_PRECOM
 	#include "wx/wx.h"
@@ -374,7 +377,7 @@ void SetupComboTab(wxPanel *panel)
 		GUI_Controls.psComboButtons[i]->SetAnimation(GUI_Controls.animCtrl[i]->GetAnimation());
 		GUI_Controls.psComboButtons[i]->SetIndex(i);
 		GUI_Controls.psComboButtons[i]->SetName(PS_LABEL[i].name);
-		GUI_Controls.psComboButtons[i]->Connect((ID_BTN2 + i), wxEVT_LEFT_UP, wxCommandEventHandler(CPS_Anim::OnClick));
+		GUI_Controls.psComboButtons[i]->Connect((ID_BTN2 + i), wxEVT_LEFT_UP, wxCommandEventHandler(CPS_Anim::OnClickAnimInKeyboardTab));
 		if(i >= 16)		// Play Analog Stick animation by default
 			GUI_Controls.psComboButtons[i]->Play();
 		GUI_Controls.psComboButtons[i]->SetToolTip(PS_LABEL[i].name);
@@ -1478,6 +1481,29 @@ void OnChangeComboNameKey(wxKeyEvent &ev)
 	}
 }
 
+// // // // // // // // // // // Timer Related Functions // // // // // // // // // // //
+
+bool IsValidKey(unsigned char key)
+{
+	switch (key)
+	{
+	case 0x1:	// ESCAPE
+	case 0x3B:	// F1
+	case 0x3C:	// F2
+	case 0x3D:	// F3
+	case 0x3E:	// F4
+	case 0x3F:	// F5
+	case 0x40:	// F6
+	case 0x41:	// F7
+	case 0x42:	// F8
+	case 0x43:	// F9
+	case 0x44:	// F10
+		return false;
+	default:
+		return true;
+	}
+}
+
 // ReAnimate Analog Sticks timer event. Because after some time, the Animation will go out of sync
 void OnTimeReAnimateAnalogSticks()
 {
@@ -1485,5 +1511,60 @@ void OnTimeReAnimateAnalogSticks()
 	{
 		GUI_Controls.psComboButtons[i]->Stop();
 		GUI_Controls.psComboButtons[i]->Play();
+	}
+}
+
+// Get one Key for the Keyboard tab when user 
+void OnTimeGetKeyForKeyboard()
+{
+	static bool gotKey = false;
+
+	if (!gotKey)
+	{
+		static bool keyIsDown = false;
+		static unsigned char key = 0;
+		GetKeyboardStatus();
+		if (!keyIsDown)
+		{
+			for (unsigned char i = 0; i < 255; ++i)
+				if (DIKEYDOWN(KeyState, i))	// Key pressed
+				{
+					if (!IsValidKey(i))
+						return;
+					keyIsDown = true;
+					key = i;
+					break;
+				}
+		} 
+		else
+		{
+			if (!DIKEYDOWN(KeyState, key))	// Key released
+			{
+				wxString keyName = "";
+				for (int i = 0; i < sizeof(DIK_KEYCODES)/sizeof(*DIK_KEYCODES); ++i)	// Size of array 144
+					if (key == DIK_KEYCODES[i].keyValue)
+						keyName = DIK_KEYCODES[i].name;
+				keyName = keyName.substr(4, keyName.length());		// Skip "DIK_"
+				if (GUI_Controls.indexOfButton < 24)				// 0 to 23 are PSX/PS2 buttons
+				{
+					GUI_Controls.lblCtrl[GUI_Controls.indexOfButton]->SetLabel(keyName);
+					GUI_Controls.lblCtrl[GUI_Controls.indexOfButton]->SetKeyCode(key);
+					GUI_Controls.animCtrl[GUI_Controls.indexOfButton]->Stop();
+				}
+				else if (GUI_Controls.indexOfButton == 24)
+				{
+					GUI_Controls.lblWalkRun->SetLabel(keyName);
+					GUI_Controls.lblWalkRun->SetKeyCode(key);
+				}
+				GUI_Controls.lblEdit->SetBackgroundColour(wxColor("#100075"));	// Dark Blue
+				GUI_Controls.lblEdit->SetLabel("Current button to edit: NONE");
+				// reset timer for the next time
+				GUI_Controls.indexOfButton = -1;
+				key = 0;
+				keyIsDown = false;
+				gotKey = false;
+				GUI_Controls.mainFrame->tmrGetKey->Stop();
+			}
+		}
 	}
 }

@@ -7,7 +7,7 @@
 	#include "wx/wxprec.h"
 #endif
 
-#include "functions_gui.h"
+#include "timers_functions.h"
 
 // Called from PADconfigure() callback function
 void ConfigureTwinPad();
@@ -70,6 +70,7 @@ public:
 	virtual void Notify()
 	{
 		// POLL Device for Key
+		OnTimeGetKeyForKeyboard();
 	}
 
 	virtual bool Start(int milliseconds)

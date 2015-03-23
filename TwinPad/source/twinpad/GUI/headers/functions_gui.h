@@ -175,9 +175,6 @@ void OnClickMouseNullifiesAll(wxCommandEvent &ev);
 void ModifySensitivity();
 // Save the Grid to the Combos container
 void SaveGridToCombo(wxString &strUserInput);
-// Timer event to reAnimate analog sticks
-void OnTimeReAnimateAnalogSticks();
-// Keyboard tab Events
 // Buttons (Cancel, Ok, 'Nullifies All' for Keyboard and Auto Navigate) Events
 void OnClickKeyboardNullifiesAll(wxCommandEvent &ev);
 void OnClickAutoNavigate(wxCommandEvent &ev);
