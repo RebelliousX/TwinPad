@@ -87,10 +87,10 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.noteBook->AddPage(panel, "Keyboard", false);
 	GUI_Controls.noteBook->SetPageText(KEYBOARD_TAB, "Keyboard");
 
-	int animIndex = 0, lbl_Index = 0, lblIndex = 0;
+	int animIndex = 0, psb_Index = 0, lblIndex = 0;
 	for (int r = 0; r < 8; r++)		// rows
 	{
-		animIndex = lbl_Index = r;
+		animIndex = psb_Index = r;
 		for (int c = 0; c < 7; c++)	// columns
 		{
 			switch(c)
@@ -106,7 +106,7 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 				GUI_Controls.animCtrl[animIndex]->SetName(PS_LABEL[animIndex].name);
 				GUI_Controls.animCtrl[animIndex]->Connect((ID_BTN + animIndex), wxEVT_LEFT_UP, wxCommandEventHandler(CPS_Anim::OnClickAnimInKeyboardTab));
 				GUI_Controls.animCtrl[animIndex]->Bind(wxEVT_RIGHT_UP, ::OnLblCtrlRightClick);
-				GUI_Controls.animCtrl[animIndex]->SetToolTip(wxString::Format("%s:\n%s%s", PS_LABEL[lbl_Index].name,
+				GUI_Controls.animCtrl[animIndex]->SetToolTip(wxString::Format("%s:\n%s%s", PS_LABEL[psb_Index].name,
 					"Left-Click: And then 'press any key' to assign it to the current Button.\n",
 					"Right-Click: To erase the configured Key."));
 				animIndex += 8;
@@ -114,18 +114,18 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 			case 1:
 			case 3:
 			case 6:
-				GUI_Controls.lblCtrl[lbl_Index] = new CPS_LBL(panel, ID_TXT + lbl_Index, "Null", wxSize(120,20));
-				flexSizer->Add(GUI_Controls.lblCtrl[lbl_Index], 1, wxALIGN_CENTER);
-				GUI_Controls.lblCtrl[lbl_Index]->SetWindowStyle(wxTE_CENTER);
-				GUI_Controls.lblCtrl[lbl_Index]->SetBackgroundColour(wxColor(66,66,66));		// Dark Grey
-				GUI_Controls.lblCtrl[lbl_Index]->SetForegroundColour(wxColor("White"));
-				GUI_Controls.lblCtrl[lbl_Index]->SetIndex(lbl_Index); // Same index as the animation control
-				GUI_Controls.lblCtrl[lbl_Index]->Bind(wxEVT_RIGHT_UP, ::OnLblCtrlRightClick);
-				GUI_Controls.lblCtrl[lbl_Index]->SetToolTip(wxString::Format(
-					"This shows the current Key assigned to \"%s\" button on the left.\n\n%s%s", PS_LABEL[lbl_Index].name,
+				GUI_Controls.lblCtrl[psb_Index] = new CPS_LBL(panel, ID_TXT + psb_Index, "Null", wxSize(120,20));
+				flexSizer->Add(GUI_Controls.lblCtrl[psb_Index], 1, wxALIGN_CENTER);
+				GUI_Controls.lblCtrl[psb_Index]->SetWindowStyle(wxTE_CENTER);
+				GUI_Controls.lblCtrl[psb_Index]->SetBackgroundColour(wxColor(66,66,66));		// Dark Grey
+				GUI_Controls.lblCtrl[psb_Index]->SetForegroundColour(wxColor("White"));
+				GUI_Controls.lblCtrl[psb_Index]->SetIndex(psb_Index); // Same index as the animation control
+				GUI_Controls.lblCtrl[psb_Index]->Bind(wxEVT_RIGHT_UP, ::OnLblCtrlRightClick);
+				GUI_Controls.lblCtrl[psb_Index]->SetToolTip(wxString::Format(
+					"This shows the current Key assigned to \"%s\" button on the left.\n\n%s%s", PS_LABEL[psb_Index].name,
 					"Left-Click The icon on the left and then 'press any key' to assign it to the current Button.\n\n",
 					"Right-Click here to erase the assigned Key."));
-				lbl_Index += 8;
+				psb_Index += 8;
 				break;
 			case 4:
 				// label "L" or "R" for left or right
@@ -142,7 +142,6 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 			}
 		}
 	}
-	animIndex = lblIndex = lblIndex = 0;		// in case I need them again
 
 	// Sizer that contains "Choose Pad 1 or 2, and WALK or Run" sizers
 	wxBoxSizer *middleSizer = new wxBoxSizer(wxHORIZONTAL);
