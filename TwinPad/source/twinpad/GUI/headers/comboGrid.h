@@ -1,14 +1,8 @@
-#ifndef __COMBO_GRID_H_
-#define __COMBO_GRID_H_
+#pragma once
 
+#include "fastCompile.h"
 #include "wx/grid.h"
 #include "wx/mstream.h"		// for wxMemoryInputStream
-
-#ifndef WX_PRECOM
-	#include "wx/wx.h"
-#else
-	#include "wx/wxprec.h"
-#endif
 
 #include <vector>
 
@@ -316,5 +310,3 @@ private:
 		grid->SetCellBackgroundColour(color, curRow, curCol);
 	}
 };
-
-#endif

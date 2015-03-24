@@ -1,12 +1,11 @@
-#ifndef _DI_GLOBALS_H_
-#define _DI_GLOBALS_H_
+#pragma once
 
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
-// DirectInput Variables
-LPDIRECTINPUT8 fDI               = NULL; // Root DirectInput Interface
-LPDIRECTINPUTDEVICE8 fDIKeyboard = NULL; // The keyboard device
-LPDIRECTINPUTDEVICE8 fDIMouse    = NULL; // The mouse device
-DIMOUSESTATE2 MouseState; // this holds the mouse data
+extern LPDIRECTINPUT8 g_DI;
+extern LPDIRECTINPUTDEVICE8 g_DIKeyboard;
+extern LPDIRECTINPUTDEVICE8 g_DIMouse;
+extern DIMOUSESTATE2 MouseState;;
 
-#endif
+#define DIKEYDOWN(data,n) (data[n] & 0x80) // Macro to Simplify KeyPress..

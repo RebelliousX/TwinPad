@@ -1,5 +1,4 @@
-#ifndef _DIRECT_INPUT_H_
-#define _DIRECT_INPUT_H_
+#pragma once
 
 #include "Externals.h"
 
@@ -7,5 +6,3 @@ bool InitDI();
 bool TermDI();
 void GetKeyboardStatus();
 void GetMouseStatus();
-
-#endif

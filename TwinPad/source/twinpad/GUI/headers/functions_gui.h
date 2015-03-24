@@ -1,13 +1,8 @@
 #pragma once
 
+#include "fastCompile.h"
 #include <string>
 #include <vector>
-
-#ifndef WX_PRECOM
-	#include "wx/wx.h"
-#else
-	#include "wx/wxprec.h"
-#endif
 
 #include "wx/grid.h"
 

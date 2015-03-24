@@ -1,8 +1,5 @@
-#ifndef _COMBOS_H_
-#define _COMBOS_H_
+#pragma once
 
 #include "Externals.h"
 
 void ComboAnalog(int analogKey, int pad);
-
-#endif

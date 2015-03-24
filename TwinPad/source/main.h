@@ -1,12 +1,6 @@
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#pragma once
 
-#ifndef WX_PRECOM
-	#include "wx/wx.h"
-#else
-	#include "wx/wxprec.h"
-#endif
-
+#include "fastCompile.h"
 #include "timers_functions.h"
 
 // Called from PADconfigure() callback function
@@ -150,6 +144,3 @@ public:
 	CGetComboKey *tmrGetComboKey;		// To get a key value in Combo tab
 	wxTimer *tmrGetLoadComboKey;	// To get a key value in Misc tab (Combo Load on the fly)
 };
-
-
-#endif

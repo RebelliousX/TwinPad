@@ -1,14 +1,6 @@
 // Test wxWidgets, TwinPad
 #include "fastCompile.h"
-
-#ifndef WX_PRECOM
-	#include "wx/wx.h"
-#else
-	#include "wx/wxprec.h"
-#endif
-
 #include "wx/app.h"
-#include "Externals.h"
 
 #include "main.h"
 #include "twinpad_gui.h"
@@ -17,7 +9,7 @@
 	#error "Currently TwinPad is Windows-only"
 #endif
 
-#ifdef _WINDOWS
+#ifdef __WINDOWS__
 
 #include "DirectInput.h"
 
@@ -130,7 +122,7 @@ void ConfigureTwinPad()
 	HWND hGFXwnd_temp = hGFXwnd;
 	TwinPad_Frame *twinPad_Frame = new TwinPad_Frame("TwinPad Configuration Utility");
 	hGFXwnd = (HWND) twinPad_Frame->GetHWND();
-#ifdef _WINDOWS
+#ifdef __WINDOWS__
 	// Terminate DI, if successfully terminated, then it was running before and user called TwinPad
 	// Config using the Hot key
 	bool wasDI_Running = TermDI();
@@ -143,7 +135,7 @@ void ConfigureTwinPad()
 
 	twinPad_Frame->ShowModal();
 
-#ifdef _WINDOWS
+#ifdef __WINDOWS__
 	// Terminate DirectInput for TwinPad Config window
 	TermDI();
 	// If DI was running before, reinitialize it again but with hGFXwnd handle, if it was running
@@ -166,7 +158,7 @@ void ConfigureTwinPad()
 
 IMPLEMENT_APP_NO_MAIN(TwinPad_DLL)
 
-#ifdef _WINDOWS
+#ifdef __WINDOWS__
 	BOOL APIENTRY DllMain(HANDLE hModule, DWORD  dwReason, LPVOID lpReserved)
 	{
 		hDI = (HMODULE)hModule;

@@ -1,6 +1,3 @@
-#ifndef _MOUSE_MAPPING_H_
-#define _MOUSE_MAPPING_H_
+#pragma once
 
 #include "Externals.h"
-
-#endif

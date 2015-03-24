@@ -1,9 +1,7 @@
-#ifndef _EXTERNALS_H_
-#define _EXTERNALS_H_
+#ifndef __EXTERNALS_H_
+#define __EXTERNALS_H_
 
-#define DIKEYDOWN(data,n) (data[n] & 0x80) // Macro to Simplify KeyPress..
-#define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
+#include "DI_Globals.h"
 #include "PS2Etypes.h"
 
 extern HMODULE hDI;
@@ -44,11 +42,6 @@ extern unsigned int pads;
 extern int curPad;
 extern int curByte[2];
 extern int padOpened;
-
-extern LPDIRECTINPUT8 fDI;
-extern LPDIRECTINPUTDEVICE8 fDIKeyboard;
-extern LPDIRECTINPUTDEVICE8 fDIMouse;
-extern DIMOUSESTATE2 MouseState;
 
 extern unsigned char minXY[2], maxXY[2];
 extern unsigned char states[2][10];

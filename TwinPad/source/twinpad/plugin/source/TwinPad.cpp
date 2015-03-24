@@ -1,33 +1,4 @@
-/*  PADwin
- *  Copyright (C) 2002-2004  PADwin Team
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-// #include <windows.h>
-// #include <windowsx.h>
-
 #include "fastCompile.h"
-
-#ifndef WX_PRECOM
-	#include "wx/wx.h"
-#else
-	#include "wx/wxprec.h"
-#endif
-
-#include "wx/msw/wrapwin.h"
-#include "wx/msw/private.h"
 
 #include "TwinPad.h"
 #include "main.h"
@@ -111,7 +82,7 @@ s32  _PADopen(HWND hDsp) {
 	//LoadCombos();
 
 	// If DirectInput Fails, return error..
-	if (fDI == NULL)
+	if (g_DI == NULL)
 	{
 		
 		if (!IsWindow (hDsp) && !IsBadReadPtr ((u32*)hDsp, 4))

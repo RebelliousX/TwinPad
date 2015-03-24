@@ -1,11 +1,6 @@
-#ifndef __LABELS_H__
-#define __LABELS_H__
+#pragma once
 
-#ifndef WX_PRECOM
-	#include "wx/wx.h"
-#else
-	#include "wx/wxprec.h"
-#endif
+#include "fastCompile.h"
 
 class CPS_Label
 {
@@ -234,5 +229,3 @@ const wxString strEXTRA_HACK  = "Tick this one. If the game has only one player 
 								"you play FFX, then Lulu's Fury overdrive spells will drop\n" \
 								"to half. And Tekken 3 COMBOs timing will be correct..\n" \
 								"And vice versa.";
-
-#endif

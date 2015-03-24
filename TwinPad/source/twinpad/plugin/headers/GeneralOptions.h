@@ -1,5 +1,4 @@
-#ifndef _GENERAL_OPTIONS_H_
-#define _GENERAL_OPTIONS_H_
+#pragma once
 
 class GeneralOptions {
 	public:
@@ -11,5 +10,3 @@ class GeneralOptions {
 		unsigned int IsEnabled_KeyEvents;		// Is KeyEvents Enabled
 		unsigned int IsEnabled_FasterCombo;		// Is Combo being executed 2X faster!
 };
-
-#endif

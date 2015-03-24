@@ -1,13 +1,6 @@
-#ifndef _TWINPAD_GUI_H_
-#define _TWINPAD_GUI_H_
+#pragma once
 
 #include "fastCompile.h"
-
-#ifndef WX_PRECOM
-	#include "wx/wx.h"
-#else
-	#include "wx/wxprec.h"
-#endif
 
 #include "wx/notebook.h"
 #include "wx/animate.h"
@@ -225,4 +218,3 @@ void SetupComboTab(wxPanel *panel);
 void OnLblCtrlRightClick(wxMouseEvent &ev);
 // To handle Left-Click assign a key, Right-Click remove assigned key
 void OnClickWalkRun(wxMouseEvent &ev);
-#endif

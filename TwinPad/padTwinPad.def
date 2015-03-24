@@ -1,4 +1,4 @@
-LIBRARY	"TwinPad"
+LIBRARY	"padTwinPad"
 
 EXPORTS
     ; Explicit exports can go here

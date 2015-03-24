@@ -1,14 +1,15 @@
-#include <windows.h>
 #include "DirectInput.h"
-#include "DI_Globals.h"
 
 #include "twinpad_gui.h"
 
-#ifndef WX_PRECOM
-#include "wx/wx.h"
-#else
-#include "wx/wxprec.h"
-#endif
+
+#include <dinput.h>
+
+// DirectInput Variables
+LPDIRECTINPUT8 g_DI = NULL;	// Root DirectInput Interface
+LPDIRECTINPUTDEVICE8 g_DIKeyboard = NULL;	// The keyboard device
+LPDIRECTINPUTDEVICE8 g_DIMouse = NULL;	// The mouse device
+DIMOUSESTATE2 MouseState;					// this holds the mouse data
 
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
 // // // // // // // // // // // // // // // // // // // // /Added DirectInput Functions// // // // // // // // // // // // // 
@@ -18,17 +19,17 @@
 bool InitDI()
 {
 	// Create the abstract DirectInput connection
-	if (fDI == NULL)
+	if (g_DI == NULL)
 	{
 		DirectInput8Create(
 			hDI,
 			DIRECTINPUT_VERSION,
 			IID_IDirectInput8,
-			(void**)&fDI,
+			(void**)&g_DI,
 			NULL);
 	}
 
-	if (fDI == NULL)
+	if (g_DI == NULL)
 	{
 		wxMessageBox("DirectInput Connection Creation Failed!", "TwinPad", wxICON_EXCLAMATION);
 		return FALSE;
@@ -36,17 +37,17 @@ bool InitDI()
 	
 	// // // // // // // // // // Keyboard Initialization// // // // // // // // // // // /
 
-	if (fDI != NULL)
+	if (g_DI != NULL)
 	{
 		// Create the connection to the keyboard device
-		fDI->CreateDevice(GUID_SysKeyboard, &fDIKeyboard, NULL);
-		if (fDIKeyboard)
+		g_DI->CreateDevice(GUID_SysKeyboard, &g_DIKeyboard, NULL);
+		if (g_DIKeyboard)
 		{
-			fDIKeyboard->SetDataFormat(&c_dfDIKeyboard);
+			g_DIKeyboard->SetDataFormat(&c_dfDIKeyboard);
 			
-			fDIKeyboard->SetCooperativeLevel(hGFXwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY); 
+			g_DIKeyboard->SetCooperativeLevel(hGFXwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY); 
 
-			fDIKeyboard->Acquire();
+			g_DIKeyboard->Acquire();
 		}
 		else
 		{
@@ -56,15 +57,15 @@ bool InitDI()
 
 		// // // // // // // // // Mouse Initializing// // // // // // // // // 
 		
-		fDI->CreateDevice(GUID_SysMouse, &fDIMouse, NULL);
+		g_DI->CreateDevice(GUID_SysMouse, &g_DIMouse, NULL);
 		
-		if (fDIMouse)
+		if (g_DIMouse)
 		{
-			fDIMouse->SetCooperativeLevel(hGFXwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+			g_DIMouse->SetCooperativeLevel(hGFXwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
-			fDIMouse->SetDataFormat(&c_dfDIMouse2);
+			g_DIMouse->SetDataFormat(&c_dfDIMouse2);
 
-			fDIMouse->Acquire();		
+			g_DIMouse->Acquire();		
 		}
 		else
 		{
@@ -83,21 +84,21 @@ bool InitDI()
 // devices, Release them, then Release main DI Obj.
 bool TermDI()
 {
-	if (fDI != NULL)
+	if (g_DI != NULL)
 	{
 		// First Deal with Keyboard.
-		fDIKeyboard->Unacquire();
-		fDIKeyboard->Release();
-		fDIKeyboard = NULL;
+		g_DIKeyboard->Unacquire();
+		g_DIKeyboard->Release();
+		g_DIKeyboard = NULL;
 		
 		// Second Deal with Mouse
-		fDIMouse->Unacquire();
-		fDIMouse->Release();
-		fDIMouse = NULL;
+		g_DIMouse->Unacquire();
+		g_DIMouse->Release();
+		g_DIMouse = NULL;
 
 		// Finally Deal with main DI Object.
-		fDI->Release();
-		fDI = NULL;
+		g_DI->Release();
+		g_DI = NULL;
 
 		return true;
 	}
@@ -110,10 +111,10 @@ void GetKeyboardStatus()
 {
 	// Test if Error occurred by another application that acquired the device
 
-	while(FAILED(fDIKeyboard->GetDeviceState(256, (LPVOID)KeyState)))
+	while(FAILED(g_DIKeyboard->GetDeviceState(256, (LPVOID)KeyState)))
      {
 		// try an re-acquire the device
-		if (FAILED(fDIKeyboard->Acquire()))
+		if (FAILED(g_DIKeyboard->Acquire()))
 			break; // serious error
      }
 }
@@ -143,11 +144,11 @@ void GetMouseStatus()
 		}
 
 	// Test if Error occurred by another application that acquired the device
-	while(FAILED(fDIMouse->GetDeviceState(
+	while(FAILED(g_DIMouse->GetDeviceState(
 		sizeof(DIMOUSESTATE2), &MouseState)))
      {
 		// try an re-acquire the device
-		if (FAILED(fDIMouse->Acquire()))
+		if (FAILED(g_DIMouse->Acquire()))
         {
         return; // serious error
         }

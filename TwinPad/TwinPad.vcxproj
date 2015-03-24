@@ -60,7 +60,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test Run with PCSX2|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -89,7 +89,7 @@
     <LibraryPath>$(WXWIN)\lib\vc_lib;$(DXSDK_DIR)\lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
     <TargetName>padTwinPad</TargetName>
-    <OutDir>F:\PCSX2\plugins\</OutDir>
+    <OutDir>$(SolutionDir)\Debug\</OutDir>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test Run with PCSX2|Win32'">
@@ -98,7 +98,7 @@
     <LibraryPath>$(WXWIN)\lib\vc_lib;$(DXSDK_DIR)\lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
     <TargetName>padTwinPad</TargetName>
-    <OutDir>F:\Pcsx2_Project\bin\Plugins\</OutDir>
+    <OutDir>F:\Pcsx2_Project\pcsx2\bin\Plugins\</OutDir>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -107,7 +107,7 @@
     <LibraryPath>$(WXWIN)\lib\vc_lib;$(DXSDK_DIR)\lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)\intermediateFiles\$(Configuration)\</IntDir>
     <TargetName>padTwinPad</TargetName>
-    <OutDir>F:\PCSX2\plugins\</OutDir>
+    <OutDir>$(SolutionDir)\Release\</OutDir>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
