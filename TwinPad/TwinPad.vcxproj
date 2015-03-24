@@ -37,6 +37,7 @@
   <ItemGroup>
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp" />
+    <ClCompile Include="source\twinpad\GUI\source\timers_functions.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\twinpad_gui.cpp" />
     <ClCompile Include="source\twinpad\Plugin\source\Callbacks.cpp" />
     <ClCompile Include="source\twinpad\Plugin\source\COMBOs.cpp" />

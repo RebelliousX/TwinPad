@@ -1,19 +1,8 @@
-// #include <windows.h>
-#include "wx/msw/wrapwin.h"
-#include "wx/msw/private.h"
-
+#include "fastCompile.h"
 #include "CALLBACKS.h"
 #include "DirectInput.h"
-
 #include "twinpad_gui.h"
-#include "main.h"	// for ConfigureTwinPad_Plugin()
-
-#ifndef WX_PRECOM
-	#include "wx/wx.h"
-#else
-	#include "wx/wxprec.h"
-#endif
-
+#include "main.h"			// for ConfigureTwinPad_Plugin()
 #include "Externals.h"
 
 // Name of this plugin and the version number

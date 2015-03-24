@@ -106,8 +106,19 @@ class TwinPad_DLL : public wxApp
 public:
 	TwinPad_DLL() { }
 	bool OnInit() { return true; }
+	int FilterEvent(wxEvent& event)
+	{
+		if (((wxKeyEvent&)event).GetKeyCode() == WXK_RETURN)
+			return true;
+		// To prevent navigation of controls using arrow keys and tab, ignore all key down events
+		if (event.GetEventType() == wxEVT_KEY_DOWN ||
+			event.GetEventType() == wxEVT_KEY_UP)
+			if (GUI_Controls.curTab == 0)	// Keyboard tab
+				return true;
+		// Accept all other events (it will crash otherwise)
+		return -1;
+	}
 };
-
 
 // This is called from PADconfigure which in turn called from the emu
 void ConfigureTwinPad()

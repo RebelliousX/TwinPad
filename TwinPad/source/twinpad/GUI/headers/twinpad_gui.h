@@ -14,24 +14,6 @@
 #include "comboGrid.h"
 // -------------------------
 
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
-// Don't define any IDs within these ranges...
-// ID_BTN { 1000 to 1023 }, ID_BTN2 { 1024 to 1047 }, ID_TXT { 2000 to 2023 }, ID_LBL { 3000 to 3007 }
-// ID_BTN: For Keyboard TAB, ID_BTN2: For Combos TAB
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
-enum ID {	ID_BTN = 1000,
-			ID_BTN2 = 1024,
-			ID_BTN_OK = 1500, ID_BTN_CANCEL, ID_BTN_AUTO, ID_BTN_NULL,
-			ID_BTN_NULL_MOUSE, ID_BTN_HELP_MOUSE, 
-			ID_TXT = 2000, ID_TXT_WALKRUN = 2024, 
-			ID_LBL = 3000, ID_LBL_WALKRUN = 3008, 
-			ID_NOTEBOOK = 4000, 
-			ID_PAD1_RADIOBTN = 5000, ID_PAD2_RADIOBTN, ID_PAD1_TAB2_RADIOBTN, ID_PAD2_TAB2_RADIOBTN,
-			ID_CHK_PAD1 = 6000, ID_CHK_PAD2, ID_CHK_MOUSE, ID_CHK_COMBOS, ID_CHK_ON_FLY, ID_CHK_KEY_EVENTS,
-			ID_CHK_HACK,
-			ID_TIMER1 = 7000, ID_TIMER2, ID_TIMER3,
-		};
-
 // Purpose: to prevent TABs
 class CPS_BTN : public wxBitmapButton
 {
@@ -86,6 +68,12 @@ private:
 	unsigned char keyCode;		// Keyboard key value, Used for saving contents to file
 };
 
+class CNotebook : public wxNotebook
+{
+public:
+	CNotebook(wxWindow *parent, wxWindowID id) : wxNotebook(parent, id) { }
+};
+
 // define controls
 const int intMOUSE_BUTTONS = 10, intPS_BUTTONS = 24, intANALOG_DIRECTIONS = 8;
 
@@ -99,7 +87,8 @@ public:
 		TWIN_PAD = "TwinPad.ini";
 		TWIN_PAD_COMBOS = "TwinPad_COMBOs.ini";
 		PATH_DIR = "inis/";		// Will be replaced with a proper directory if supported by the emu using PADsettingsDir()
-		indexOfButton = -1;	// invalid value
+		indexOfButton = -1;		// invalid value
+		curTab = 0;
 	}
 
 	~CTwinPad_Gui()
@@ -119,10 +108,11 @@ public:
 	}
 
 	TwinPad_Frame *mainFrame;
-	wxNotebook *noteBook;
+	CNotebook *noteBook;
 
 	int indexOfButton;	
-	
+	int curTab;
+
 	// TAB 1: Keyboard
 	CPS_LBL *lblCtrl[intPS_BUTTONS];					// Defined alias key
 	CPS_Anim *animCtrl[intPS_BUTTONS];
@@ -199,11 +189,6 @@ private:
 };
 
 extern CTwinPad_Gui GUI_Controls;
-
-enum TAB_INDEX { KEYBOARD_TAB, MOUSE_TAB, COMBOS_TAB, MISC_TAB, GAMEPAD_TAB };
-enum class PS2BUTTON { L2, R2, L1, R1, TRIANGLE, CIRCLE, CROSS, SQUARE, SELECT, L3, R3,
-				START, UP, RIGHT, DOWN, LEFT, LANALOG_UP, LANALOG_RIGHT, LANALOG_DOWN,
-				LANALOG_LEFT, RANALOG_UP, RANALOG_RIGHT, RANALOG_DOWN, RANALOG_LEFT };
 
 void CreateControls(TwinPad_Frame * window);
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls);

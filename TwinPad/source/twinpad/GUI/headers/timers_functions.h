@@ -5,3 +5,4 @@ bool IsValidKey(unsigned char key);
 
 void OnTimeGetKeyForKeyboard();
 void OnTimeReAnimateAnalogSticks();
+void OnTimeAutoNavigateAndAssign();

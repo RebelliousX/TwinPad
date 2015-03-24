@@ -229,3 +229,29 @@ const wxString strEXTRA_HACK  = "Tick this one. If the game has only one player 
 								"you play FFX, then Lulu's Fury overdrive spells will drop\n" \
 								"to half. And Tekken 3 COMBOs timing will be correct..\n" \
 								"And vice versa.";
+
+enum TAB_INDEX { KEYBOARD_TAB, MOUSE_TAB, COMBOS_TAB, MISC_TAB, GAMEPAD_TAB };
+enum class PS2BUTTON {
+	L2, R2, L1, R1, TRIANGLE, CIRCLE, CROSS, SQUARE, SELECT, L3, R3,
+	START, UP, RIGHT, DOWN, LEFT, LANALOG_UP, LANALOG_RIGHT, LANALOG_DOWN,
+	LANALOG_LEFT, RANALOG_UP, RANALOG_RIGHT, RANALOG_DOWN, RANALOG_LEFT
+};
+
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /
+// Don't define any IDs within these ranges...
+// ID_BTN { 1000 to 1023 }, ID_BTN2 { 1024 to 1047 }, ID_TXT { 2000 to 2023 }, ID_LBL { 3000 to 3007 }
+// ID_BTN: For Keyboard TAB, ID_BTN2: For Combos TAB
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
+enum ID {
+	ID_BTN = 1000,
+	ID_BTN2 = 1024,
+	ID_BTN_OK = 1500, ID_BTN_CANCEL, ID_BTN_AUTO, ID_BTN_NULL,
+	ID_BTN_NULL_MOUSE, ID_BTN_HELP_MOUSE,
+	ID_TXT = 2000, ID_TXT_WALKRUN = 2024,
+	ID_LBL = 3000, ID_LBL_WALKRUN = 3008,
+	ID_NOTEBOOK = 4000,
+	ID_PAD1_RADIOBTN = 5000, ID_PAD2_RADIOBTN, ID_PAD1_TAB2_RADIOBTN, ID_PAD2_TAB2_RADIOBTN,
+	ID_CHK_PAD1 = 6000, ID_CHK_PAD2, ID_CHK_MOUSE, ID_CHK_COMBOS, ID_CHK_ON_FLY, ID_CHK_KEY_EVENTS,
+	ID_CHK_HACK,
+	ID_TIMER1 = 7000, ID_TIMER2, ID_TIMER3,
+};

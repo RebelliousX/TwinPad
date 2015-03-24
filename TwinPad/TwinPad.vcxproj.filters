@@ -110,5 +110,8 @@
     <ClCompile Include="source\twinpad\Plugin\source\TwinPad.cpp">
       <Filter>Source Files\Plugin</Filter>
     </ClCompile>
+    <ClCompile Include="source\twinpad\GUI\source\timers_functions.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

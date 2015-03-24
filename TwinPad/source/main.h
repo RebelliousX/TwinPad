@@ -63,7 +63,6 @@ public:
 
 	virtual void Notify()
 	{
-		// POLL Device for Key
 		OnTimeGetKeyForKeyboard();
 	}
 
@@ -89,6 +88,7 @@ public:
 	{
 		// Auto navigation between Keyboard buttons to configure them
 		// Note: It is best to use something similar to a state machine when calling the function
+		OnTimeAutoNavigateAndAssign();
 	}
 
 	virtual bool Start(int milliseconds)

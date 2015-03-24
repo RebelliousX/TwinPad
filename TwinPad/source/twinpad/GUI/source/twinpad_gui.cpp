@@ -22,15 +22,30 @@ void OnNotebookChange(wxCommandEvent &evt)
 		wxString label = GUI_Controls.noteBook->GetPageText(GUI_Controls.noteBook->GetSelection());
 
 		if ("Keyboard" == label)
+		{
 			curTabSize = GUI_Controls.minWinSize[KEYBOARD_TAB];
+			GUI_Controls.curTab = KEYBOARD_TAB;
+		}
 		else if ("Mouse" == label)
+		{
 			curTabSize = GUI_Controls.minWinSize[MOUSE_TAB];
+			GUI_Controls.curTab = MOUSE_TAB;
+		}
 		else if ("COMBOs" == label)
+		{
 			curTabSize = GUI_Controls.minWinSize[COMBOS_TAB];
+			GUI_Controls.curTab = COMBOS_TAB;
+		}
 		else if ("Misc" == label)
+		{
 			curTabSize = GUI_Controls.minWinSize[MISC_TAB];
+			GUI_Controls.curTab = MISC_TAB;
+		}
 		else if ("GamePad" == label)
+		{
 			curTabSize = GUI_Controls.minWinSize[GAMEPAD_TAB];
+			GUI_Controls.curTab = GAMEPAD_TAB;
+		}
 
 		GUI_Controls.noteBook->GetParent()->SetMinClientSize(curTabSize);
 		GUI_Controls.noteBook->GetParent()->SetClientSize(curTabSize);
@@ -53,7 +68,7 @@ void CreateControls(TwinPad_Frame *window)
 
 	Loading_TwinPad_Main_Config();
 
-	GUI_Controls.noteBook = new wxNotebook(window, ID_NOTEBOOK, wxPoint(-1, -1), wxSize(-1, -1));
+	GUI_Controls.noteBook = new CNotebook(window, ID_NOTEBOOK);
 	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
 		
 	AddKeyboardTab(GUI_Controls);
@@ -150,7 +165,6 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	wxStaticBoxSizer *choosePadSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Which PAD?");
 	GUI_Controls.pad1RadioBtn = new wxRadioButton(panel, ID_PAD1_RADIOBTN, "PAD 1");
 	GUI_Controls.pad2RadioBtn = new wxRadioButton(panel, ID_PAD2_RADIOBTN, "PAD 2");
-	
 	choosePadSizer->Add(GUI_Controls.pad1RadioBtn, 0, wxALIGN_CENTER);
 	choosePadSizer->AddSpacer(20);
 	choosePadSizer->Add(GUI_Controls.pad2RadioBtn, 0, wxALIGN_CENTER);
@@ -442,6 +456,7 @@ void OnLblCtrlRightClick(wxMouseEvent &ev)
 	else if (ev.GetId() >= ID_BTN && ev.GetId() <= 1023)
 		id -= ID_BTN;
 	GUI_Controls.lblCtrl[id]->SetLabel("Null");
+	GUI_Controls.lblCtrl[id]->SetKeyCode(0);
 	GUI_Controls.lblEdit->SetLabel("Current button to edit: NONE");
 	GUI_Controls.animCtrl[id]->Stop();
 	return;	// a return will disable the context menu if the event was on lblCtrl
@@ -461,6 +476,7 @@ void OnClickWalkRun(wxMouseEvent &ev)
 	else if (ev.RightUp())
 	{
 		GUI_Controls.lblWalkRun->SetLabel("NONE");
+		GUI_Controls.lblWalkRun->SetKeyCode(0);
 		return;
 	}
 }
@@ -468,17 +484,18 @@ void OnClickWalkRun(wxMouseEvent &ev)
 // This function handles the click event for Keyboard Nullifies All
 void OnClickKeyboardNullifiesAll(wxCommandEvent &ev)
 {
-	// Another bug in wxWidgets! without the skip event, the window freezes, 
-	// until it loses focus by another app (hides behind it) then set focused again.
-	ev.Skip();
+	for (int i = 0; i < 24; ++i)
+	{
+		GUI_Controls.lblCtrl[i]->SetLabel("Null");
+		GUI_Controls.lblCtrl[i]->SetKeyCode(0);
+	}
+	GUI_Controls.lblWalkRun->SetLabel("NONE");
+	GUI_Controls.lblWalkRun->SetKeyCode(0);
 }
 
 // This function handles the click event for Cancel button
 void OnClickCancel(wxCommandEvent &ev)
 {
-	// Stop all Timers
-	GUI_Controls.mainFrame->tmrAnimate->Stop();
-
 	GUI_Controls.mainFrame->Hide();
 	GUI_Controls.mainFrame->Close(true);
 }
@@ -486,17 +503,26 @@ void OnClickCancel(wxCommandEvent &ev)
 // This function handles the click event for 'Auto Navigate' button
 void OnClickAutoNavigate(wxCommandEvent &ev)
 {
-	// TODO: Implement auto navigation feature
+	GUI_Controls.indexOfButton = 0;
+	// Don't allow user to change pad until done
+	GUI_Controls.pad1RadioBtn->Enable(false);
+	GUI_Controls.pad2RadioBtn->Enable(false);
+
+	// It is very weird that the main app class catch all key events (to ignore them)
+	// and still, it somehow pass events to some controls like radio buttons or push buttons.
+	GUI_Controls.btnAutoNavigate->Enable(false);
+	GUI_Controls.btnNullifiesAll->Enable(false);
+	GUI_Controls.btnOK->Enable(false);
+	GUI_Controls.btnCancel->Enable(false);
+
+	GUI_Controls.mainFrame->tmrAutoNavigate->Start(50);		// 50 millisecond
 }
 
 // This function handles the click event for Cancel button
 void OnClickOk(wxCommandEvent &ev)
 {
 	// TODO: Implement Ok button to save Configurations from all tabs
-		
-	// Stop all Timers
-	GUI_Controls.mainFrame->tmrAnimate->Stop();
-
+	
 	GUI_Controls.mainFrame->Hide();
 	GUI_Controls.mainFrame->Close(true);
 }
