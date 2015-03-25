@@ -170,6 +170,8 @@ void OnClickMouseNullifiesAll(wxCommandEvent &ev);
 void ModifySensitivity();
 // Save the Grid to the Combos container
 void SaveGridToCombo(wxString &strUserInput);
+// Change between PAD 1 and 2, save and reload configured buttons
+void OnRadBtnPadChange(wxCommandEvent &ev);
 // Buttons (Cancel, Ok, 'Nullifies All' for Keyboard and Auto Navigate) Events
 void OnClickKeyboardNullifiesAll(wxCommandEvent &ev);
 void OnClickAutoNavigate(wxCommandEvent &ev);

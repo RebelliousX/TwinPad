@@ -62,6 +62,7 @@ public:
 	wxString GetName() { return name; } // Not the value in text box
 
 	void SetKeyCode(unsigned char key) { keyCode = key; }
+	unsigned char GetKeyCode() { return keyCode; }
 private:
 	int index;
 	wxString name;
@@ -189,6 +190,7 @@ private:
 };
 
 extern CTwinPad_Gui GUI_Controls;
+extern GUI_Configurations GUI_Config;
 
 void CreateControls(TwinPad_Frame * window);
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls);

@@ -130,6 +130,7 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 			case 3:
 			case 6:
 				GUI_Controls.lblCtrl[psb_Index] = new CPS_LBL(panel, ID_TXT + psb_Index, "Null", wxSize(120,20));
+				GUI_Controls.lblCtrl[psb_Index]->SetKeyCode(0);
 				flexSizer->Add(GUI_Controls.lblCtrl[psb_Index], 1, wxALIGN_CENTER);
 				GUI_Controls.lblCtrl[psb_Index]->SetWindowStyle(wxTE_CENTER);
 				GUI_Controls.lblCtrl[psb_Index]->SetBackgroundColour(wxColor(66,66,66));		// Dark Grey
@@ -165,6 +166,8 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	wxStaticBoxSizer *choosePadSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Which PAD?");
 	GUI_Controls.pad1RadioBtn = new wxRadioButton(panel, ID_PAD1_RADIOBTN, "PAD 1");
 	GUI_Controls.pad2RadioBtn = new wxRadioButton(panel, ID_PAD2_RADIOBTN, "PAD 2");
+	GUI_Controls.pad1RadioBtn->Bind(wxEVT_RADIOBUTTON, ::OnRadBtnPadChange);
+	GUI_Controls.pad2RadioBtn->Bind(wxEVT_RADIOBUTTON, ::OnRadBtnPadChange);
 	choosePadSizer->Add(GUI_Controls.pad1RadioBtn, 0, wxALIGN_CENTER);
 	choosePadSizer->AddSpacer(20);
 	choosePadSizer->Add(GUI_Controls.pad2RadioBtn, 0, wxALIGN_CENTER);
@@ -423,6 +426,81 @@ void CPS_Anim::OnClickAnimInKeyboardTab(wxCommandEvent &event)
 	}
 	else if (winID >= 1024 && winID <= 1047)	// Combo tab
 		OnClick_psComboButtons(winID);
+}
+
+// Change between pad 1 and 2 for keyboard tab, save and reload configured keys
+void OnRadBtnPadChange(wxCommandEvent &ev)
+{
+	int switchToPad = 0, curPad = ev.GetId();
+	if (curPad == ID_PAD1_RADIOBTN)
+	{
+		curPad = 0;
+		switchToPad = 1;
+	}
+	else if (curPad == ID_PAD2_RADIOBTN)
+	{
+		curPad = 1;
+		switchToPad = 0;
+	}
+
+	// prevent flicker and faster saving/loading, thaw when done
+	GUI_Controls.mainFrame->Freeze();
+
+	// Save current config for the current pad
+	for (int i = 0; i < 25; ++i)
+	{
+		unsigned char key = 0;
+		if (i < 24)
+		{
+			key = GUI_Controls.lblCtrl[i]->GetKeyCode();
+			GUI_Controls.lblCtrl[i]->SetLabel("Null");
+			GUI_Controls.lblCtrl[i]->SetKeyCode(0);
+		}
+		else if (i == 24)
+		{
+			key = GUI_Controls.lblWalkRun->GetKeyCode();
+			GUI_Controls.lblWalkRun->SetLabel("Null");
+			GUI_Controls.lblWalkRun->SetKeyCode(0);
+		}
+		GUI_Config.m_pad[curPad][i] = key;
+	}
+
+	// Load config for pad we are switching to
+	for (int i = 0; i < 25; ++i)
+	{
+		unsigned char key = GUI_Config.m_pad[switchToPad][i];
+		wxString name;
+		for (int j = 0; j < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++j)
+		{
+			if (key == DIK_KEYCODES[j].keyValue)
+			{
+				name = DIK_KEYCODES[j].name;
+				break;
+			}
+			else if (key == 0)
+			{
+				name = "Null";
+				break;
+			}
+		}
+		
+		if (name != "Null")
+			name = name.substr(4, name.length());	// Skip "DIK_"
+		
+		if (i < 24)
+		{
+			GUI_Controls.lblCtrl[i]->SetLabel(name);
+			GUI_Controls.lblCtrl[i]->SetKeyCode(key);
+		}
+		else if (i == 24)
+		{
+			GUI_Controls.lblWalkRun->SetLabel(name);
+			GUI_Controls.lblWalkRun->SetKeyCode(key);
+		}
+	}
+
+	// refresh the user interface
+	GUI_Controls.mainFrame->Thaw();
 }
 
 // This function handles the click event for Mouse help button
