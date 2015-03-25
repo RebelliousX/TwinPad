@@ -431,13 +431,13 @@ void CPS_Anim::OnClickAnimInKeyboardTab(wxCommandEvent &event)
 // Change between pad 1 and 2 for keyboard tab, save and reload configured keys
 void OnRadBtnPadChange(wxCommandEvent &ev)
 {
-	int switchToPad = 0, curPad = ev.GetId();
-	if (curPad == ID_PAD1_RADIOBTN)
+	int switchToPad = 0, curPad = 0;
+	if (ev.GetId() == ID_PAD1_RADIOBTN)
 	{
 		curPad = 0;
 		switchToPad = 1;
 	}
-	else if (curPad == ID_PAD2_RADIOBTN)
+	else if (ev.GetId() == ID_PAD2_RADIOBTN)
 	{
 		curPad = 1;
 		switchToPad = 0;
@@ -453,7 +453,6 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 		if (i < 24)
 		{
 			key = GUI_Controls.lblCtrl[i]->GetKeyCode();
-			GUI_Controls.lblCtrl[i]->SetLabel("Null");
 			GUI_Controls.lblCtrl[i]->SetKeyCode(0);
 		}
 		else if (i == 24)
