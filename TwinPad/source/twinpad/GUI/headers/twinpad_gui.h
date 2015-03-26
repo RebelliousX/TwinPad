@@ -200,8 +200,3 @@ void AddCombosTab(CTwinPad_Gui &GUI_Controls);
 void AddMiscTab(CTwinPad_Gui &GUI_Controls);
 
 void SetupComboTab(wxPanel *panel);
-
-// To handle right click on configured button's Name (delete configuration)
-void OnLblCtrlRightClick(wxMouseEvent &ev);
-// To handle Left-Click assign a key, Right-Click remove assigned key
-void OnClickWalkRun(wxMouseEvent &ev);

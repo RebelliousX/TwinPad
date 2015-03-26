@@ -81,6 +81,9 @@
     <ClInclude Include="source\twinpad\GUI\headers\timers_functions.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="source\twinpad\GUI\headers\events_functions.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp">
@@ -111,6 +114,12 @@
       <Filter>Source Files\Plugin</Filter>
     </ClCompile>
     <ClCompile Include="source\twinpad\GUI\source\timers_functions.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\GUI\source\events_functions.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\GUI\source\combo_gui.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>

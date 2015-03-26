@@ -18,6 +18,7 @@
     <ClInclude Include="source\fastCompile.h" />
     <ClInclude Include="source\main.h" />
     <ClInclude Include="source\twinpad\GUI\headers\comboGrid.h" />
+    <ClInclude Include="source\twinpad\GUI\headers\events_functions.h" />
     <ClInclude Include="source\twinpad\GUI\headers\functions_gui.h" />
     <ClInclude Include="source\twinpad\GUI\headers\labels.h" />
     <ClInclude Include="source\twinpad\GUI\headers\resources.h" />
@@ -36,6 +37,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\twinpad\GUI\source\combo_gui.cpp" />
+    <ClCompile Include="source\twinpad\GUI\source\events_functions.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\timers_functions.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\twinpad_gui.cpp" />

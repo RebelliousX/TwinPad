@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "wx/grid.h"
 
 class CCellValue
 {
@@ -138,42 +137,7 @@ void LoadResources(CPS_Anim *animCtrl, const unsigned int index);
 // used by LoadResources() and SetCustomCellRenderer()
 // iData: Image data, length: size of image in bytes, index: image index
 void GetImageData(void* &iData, unsigned int *length, const unsigned int index);
-
-// Action Events
-void OnClickNewAction(wxCommandEvent &ev);
-void OnClickDeleteLastAction(wxCommandEvent &ev);
-void OnClickInsertInbetweenAction(wxCommandEvent &ev);
-void OnClickInsertAction(wxCommandEvent &ev);
-void OnClickDeleteSelectedActions(wxCommandEvent &ev);
-void OnClickDeleteButton(wxCommandEvent &ev);
-// Combo Events
-void OnClickNewCombo(wxCommandEvent &ev);
-void OnClickDeleteCombo(wxCommandEvent &ev);
-void OnClickRenameCombo(wxCommandEvent &ev);
-// ComboBox Events
-void OnChangeComboName(wxCommandEvent &ev);
-void OnChangeComboNameKey(wxKeyEvent &ev);
-// Combo Key
-bool Has(const unsigned int button, int row);
-void OnClickComboKey(wxMouseEvent &ev);
-// psButtons
-void OnClick_psComboButtons(int winID);
-// Grid Events
-void OnClickComboGrid(wxGridEvent &ev);
-void OnMouseMoveOverGrid(wxMouseEvent &ev);
-// SpinCtrl Events
-void OnChangeSensitivity(wxSpinEvent &ev);
-// Mouse Events
-void OnClickMouseHelpButton(wxCommandEvent &ev);
-void OnClickMouseNullifiesAll(wxCommandEvent &ev);
 // Modify sensitivity inside spin control
 void ModifySensitivity();
 // Save the Grid to the Combos container
 void SaveGridToCombo(wxString &strUserInput);
-// Change between PAD 1 and 2, save and reload configured buttons
-void OnRadBtnPadChange(wxCommandEvent &ev);
-// Buttons (Cancel, Ok, 'Nullifies All' for Keyboard and Auto Navigate) Events
-void OnClickKeyboardNullifiesAll(wxCommandEvent &ev);
-void OnClickAutoNavigate(wxCommandEvent &ev);
-void OnClickCancel(wxCommandEvent &ev);
-void OnClickOk(wxCommandEvent &ev);
