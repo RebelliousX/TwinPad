@@ -322,7 +322,7 @@ void OnClickInsertAction(wxCommandEvent &ev)
 			"You have to specify where to insert the new Action first, so select an Action "
 			"by clicking on the Action number to make sure the whole action is selected. "
 			"You have to select at least ONE whole Action before you insert another. "
-			"You can select more than one by holding CTRL or SHIFT keys, and new Actions\nwill be inserted there.\n\n"
+			"You can select more than one by holding CTRL or SHIFT keys, and new Actions will be inserted there.\n\n"
 			"Lastly, selected Actions have to be next to each other unlike 'INSERT INBETWEEN ACTIONS'. "
 			"The new inserted Action will have the same 'ABSOLUTE' position (same Action number) as the one "
 			"you selected. Thus, the remaining Actions will be pushed further down the list. "

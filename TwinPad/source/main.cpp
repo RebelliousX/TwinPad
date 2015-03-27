@@ -109,19 +109,9 @@ public:
 	{
 		// Without this, Grid custom cell renderer will fail to load the GIF as a BMP
 		wxImage::AddHandler(new wxGIFHandler);
-
-		// To initialize all image handlers (will increase binary size of app/dll) use this:
-		//wxInitAllImageHandlers();
-
-		// ... or one or more image handlers of the following individually,
-		// I listed three here but there are more....
-
-		//wxImage::AddHandler(new wxBMPHandler);
-		//wxImage::AddHandler(new wxPNGHandler);
-		//wxImage::AddHandler(new wxICOHandler); //use only when needed, otherwise big.exe's
-
 		return true; 
 	}
+
 	int FilterEvent(wxEvent& event)
 	{
 		// Disable return key everywhere

@@ -193,42 +193,40 @@ const wxString strMouseSensitivity[] = { "1", "2", "3", "4", "5", "6" };
 
 // These strings for the Misc tab, quite lengthy.. :/
 const wxString strMOUSE_HELP_MSG = "Note: Don't repeat the selection of an option twice!\n" \
-							"e.g. Cross for the Left AND Right mouse buttons at the same time.\n\n" \
-							"And there is no checking for Mouse capabilities, please configure the\n" \
+							"e.g. Cross for the Left and Right mouse buttons at the same time.\n\n\n" \
+							"There is no checking for mouse capabilities, please configure the\n" \
 							"buttons you have, and select \"NONE\" for those you don't.\n\n" \
 							"Mouse sensitivity #1 is the old and the most accurate one.\n" \
 							"#2 to #6 tries to shrink the dead zone, in the center of the GS\\GPU\n" \
 							"window, where analog movements are not accepted.\nOr to be more precise, " \
 							"are not noticeable by some games..\n\n" \
-							"If Mouse' Wheel UP and/or DOWN are not defined (i.e., \"NONE\"), they'll\n" \
+							"If mouse wheel UP and/or DOWN are not defined (i.e., \"NONE\"), they'll\n" \
 							"behave as increasing (UP) or decreasing (DOWN) the pressure sensitivity\n" \
 							"buttons. That some games depend on this! (DualShock 2 mode only.)\n\n"\
 							"Finally.. Configurations will be saved automatically! When you click\n" \
-							"[ OK ] button inside Keyboard TAB. ";
+							"[ OK ] button inside keyboard tab. ";
 
-const wxString strEXTRA_INFO =	"Due to the massive changes, it might be necessary to suppress\n" \
-								"some features of the plugin. Although recent changes have no\n"  \
-								"impact on speed (At least for me, running the plugin through\n"  \
-								"profiler, results were decent.) Or maybe the user is not using\n" \
-								"the Mouse, COMBOs... etc!!! So I give the chance to \"Disable\"\n" \
-								"some features..";
+const wxString strEXTRA_INFO =	"It might be necessary to suppress some features of the plugin.\n" \
+								"The user may not be using the mouse, combos, or pad 2...etc!\n" \
+								"Or if wanted to handled by different pad plugin (e.g., 2nd one).\n" \
+								"So I give the chance to disable some features.\n";
 
-const wxString strEXTRA_ONFLY = "Disable the Hot Key to Load COMBOs & PAD Configs\n" \
-								"on the fly, the hot key is usefull only when running\n" \
-								"COMBOs Editor while Playing, testing and editing the\n" \
-								"Combo without exiting the Emu. The hot key is \"SPACE\"";
+const wxString strEXTRA_ONFLY = "Disable the Hot Key defined below to Load TwinPad Config Utility\n" \
+								"on the fly, the hot key is usefull when running COMBOs Editor for\n" \
+								"example while playing, testing and editing the Combo without\n" \
+								"exiting the Emu. Or simply changing your controls.";
 
-const wxString strEXTRA_KEY   = "Disable the Plugin from sending KeyEvents to the Emu,\n" \
-								"when running 2 different PAD plugins. To prevent\n" \
-								"double Key strokes when hitting F1 to save for example.";
+const wxString strEXTRA_KEY   = "Disable the plugin from sending key events to the emu,\n" \
+								"when running 2 different pad plugins. To prevent\n" \
+								"double key strokes when hitting F1 to save for example.";
 
-const wxString strEXTRA_HACK  = "Tick this one. If the game has only one player like FFX.\n" \
+const wxString strEXTRA_HACK  = "Tick this one if the game has only one player like FFX.\n" \
 								"If the game supports two players, leave it empty.\n" \
 								"Techincally selecting this one, will double the rate\n" \
-								"COMBOs being executed, if you DON'T select this and\n" \
+								"COMBOs being executed. For example, if you don't select this and\n" \
 								"you play FFX, then Lulu's Fury overdrive spells will drop\n" \
-								"to half. And Tekken 3 COMBOs timing will be correct..\n" \
-								"And vice versa.";
+								"to half. If you play Tekken 3, in a PSX emu, the Combo timing\n" \
+								"will be correct, and vice versa. YMMV :)";
 
 enum TAB_INDEX { KEYBOARD_TAB, MOUSE_TAB, COMBOS_TAB, MISC_TAB, GAMEPAD_TAB };
 enum class PS2BUTTON {
