@@ -54,12 +54,13 @@ void SetupComboTab(wxPanel *panel)
 	GUI_Controls.cmbComboName->Bind(wxEVT_KEY_UP, ::OnChangeComboNameKey);
 	stcComboNameSizer->Add(GUI_Controls.cmbComboName, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 	wxStaticBoxSizer *stcComboKeySizer = new wxStaticBoxSizer(wxVERTICAL, panel, "KEY");
-	GUI_Controls.txtComboKey = new wxTextCtrl(panel, wxID_ANY, "NONE", wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-	GUI_Controls.txtComboKey->SetBackgroundColour(wxColor(66, 66, 66));
-	GUI_Controls.txtComboKey->SetForegroundColour(wxColor("White"));
-	GUI_Controls.txtComboKey->Bind(wxEVT_LEFT_UP, OnClickComboKey);	// Get a key
-	GUI_Controls.txtComboKey->Bind(wxEVT_RIGHT_UP, OnClickComboKey);	// Delete the key
-	stcComboKeySizer->Add(GUI_Controls.txtComboKey, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
+	GUI_Controls.lblComboKey = new wxStaticText(panel, wxID_ANY, "NONE", wxDefaultPosition, wxSize(120,20), wxTE_READONLY);
+	GUI_Controls.lblComboKey->SetWindowStyle(wxTE_CENTER);
+	GUI_Controls.lblComboKey->SetBackgroundColour(wxColor(66, 66, 66));
+	GUI_Controls.lblComboKey->SetForegroundColour(wxColor("White"));
+	GUI_Controls.lblComboKey->Bind(wxEVT_LEFT_UP, OnClickComboKey);	// Get a key
+	GUI_Controls.lblComboKey->Bind(wxEVT_RIGHT_UP, OnClickComboKey);	// Delete the key
+	stcComboKeySizer->Add(GUI_Controls.lblComboKey, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
 	wxStaticBoxSizer *stcDefaultDelaySizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Delay");
 	GUI_Controls.spnDefaultDelay = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition,
 		wxSize(65, 25), 16896L, 1, 99999, 3); /* Min 1, Max 99999, Default 3 */
@@ -267,13 +268,13 @@ void SetupComboTab(wxPanel *panel)
 	wxToolTip *ttpSpnDefaultDelay = new wxToolTip("Number of frames the current Action will be repeated (executed).");
 	ttpSpnDefaultDelay->SetDelay(500);		// 0.5 second
 	ttpSpnDefaultDelay->SetAutoPop(30000);	// 30 seconds
-	wxToolTip *ttpTxtComboKey = new wxToolTip("Left-Click: And then 'press any key' to assign it to the current Combo.\n"
+	wxToolTip *ttpLblComboKey = new wxToolTip("Left-Click: And then 'press any key' to assign it to the current Combo.\n"
 		"Right-Click: To erase the configured Key.");
-	ttpTxtComboKey->SetDelay(500);			// 0.5 second
-	ttpTxtComboKey->SetAutoPop(30000);		// 30 seconds
+	ttpLblComboKey->SetDelay(500);			// 0.5 second
+	ttpLblComboKey->SetAutoPop(30000);		// 30 seconds
 	GUI_Controls.spnSensitivity->SetToolTip(ttpSpnSensitivity);
 	GUI_Controls.spnDefaultDelay->SetToolTip(ttpSpnDefaultDelay);
-	GUI_Controls.txtComboKey->SetToolTip(ttpTxtComboKey);
+	GUI_Controls.lblComboKey->SetToolTip(ttpLblComboKey);
 
 
 	comboGrid->DisableDragColSize();			// Prevent mouse from resizing rows and columns
@@ -317,12 +318,23 @@ void SaveGridToCombo(wxString &strUserInput)
 {
 	// Save Current Combo (if not already saved)
 	// when saving, Check to see if the combo exist, if it does, use the same combo otherwise add a new one
-	wxString strKeyValue = GUI_Controls.txtComboKey->GetValue();
-	long keyValue;
-	if (strKeyValue == "NONE")
+	wxString keyName = GUI_Controls.lblComboKey->GetLabel();
+	unsigned char keyValue;
+	if (keyName == "NONE")
 		keyValue = 0;
 	else
-		strKeyValue.ToLong(&keyValue);
+	{
+		for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
+		{
+			wxString name = DIK_KEYCODES[i].name;
+			name = name.substr(4, name.length());
+			if (name == keyName)
+			{
+				keyValue = DIK_KEYCODES[i].keyValue;
+				break;
+			}
+		}
+	}
 
 	// Check to see if we are modifying the same COMBO, if yes, erase it so we can overwrite it or start a new one
 	for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)

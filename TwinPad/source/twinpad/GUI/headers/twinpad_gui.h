@@ -154,7 +154,7 @@ public:
 	wxSpinCtrl *spnSensitivity;
 	wxComboBox *cmbComboName;
 	wxComboBox *cmbWhichPad;
-	wxTextCtrl *txtComboKey;
+	wxStaticText *lblComboKey;
 
 	// for use when changing ComboBox selection
 	wxString strPreviousComboSelection;

@@ -39,7 +39,7 @@ public:
 
 	virtual void Notify()
 	{
-		// POLL Device for Key
+		OnTimeGetKeyForCombo();
 	}
 
 	virtual bool Start(int milliseconds)

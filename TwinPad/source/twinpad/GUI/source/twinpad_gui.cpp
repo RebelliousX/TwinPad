@@ -130,7 +130,7 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 			case 1:
 			case 3:
 			case 6:
-				GUI_Controls.lblCtrl[psb_Index] = new CPS_LBL(panel, ID_TXT + psb_Index, "Null", wxSize(120,20));
+				GUI_Controls.lblCtrl[psb_Index] = new CPS_LBL(panel, ID_TXT + psb_Index, "NONE", wxSize(120,20));
 				GUI_Controls.lblCtrl[psb_Index]->SetKeyCode(0);
 				flexSizer->Add(GUI_Controls.lblCtrl[psb_Index], 1, wxALIGN_CENTER);
 				GUI_Controls.lblCtrl[psb_Index]->SetWindowStyle(wxTE_CENTER);

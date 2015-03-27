@@ -39,10 +39,14 @@ void OnTimeReAnimateAnalogSticks()
 	}
 }
 
-// Get one Key for the Keyboard tab when user 
-void OnTimeGetKeyForKeyboard()
+// Helper function called from OnTimeGetKeyForKeyboard(), OnTimeGetKeyForCombo() and OnTimeGetKeyForMisc()
+keyInformation GetKey()
 {
 	static bool gotKey = false;
+
+	keyInformation keyInfo;
+	keyInfo.keyName = "";
+	keyInfo.keyValue = 0;
 
 	if (!gotKey)
 	{
@@ -55,7 +59,7 @@ void OnTimeGetKeyForKeyboard()
 				if (DIKEYDOWN(KeyState, i))	// Key pressed
 				{
 					if (!IsValidKey(i))
-						return;
+						return keyInfo;		// empty key info
 					keyIsDown = true;
 					key = i;
 					break;
@@ -70,27 +74,40 @@ void OnTimeGetKeyForKeyboard()
 					if (key == DIK_KEYCODES[i].keyValue)
 						keyName = DIK_KEYCODES[i].name;
 				keyName = keyName.substr(4, keyName.length());		// Skip "DIK_"
-				if (GUI_Controls.indexOfButton < 24)				// 0 to 23 are PSX/PS2 buttons
-				{
-					GUI_Controls.lblCtrl[GUI_Controls.indexOfButton]->SetLabel(keyName);
-					GUI_Controls.lblCtrl[GUI_Controls.indexOfButton]->SetKeyCode(key);
-					GUI_Controls.animCtrl[GUI_Controls.indexOfButton]->Stop();
-				}
-				else if (GUI_Controls.indexOfButton == 24)
-				{
-					GUI_Controls.lblWalkRun->SetLabel(keyName);
-					GUI_Controls.lblWalkRun->SetKeyCode(key);
-				}
-				GUI_Controls.lblEdit->SetBackgroundColour(wxColor("#100075"));	// Dark Blue
-				GUI_Controls.lblEdit->SetLabel("Current button to edit: NONE");
-				// reset timer for the next time
-				GUI_Controls.indexOfButton = -1;
+				keyInfo.keyName = keyName;
+				keyInfo.keyValue = key;
 				key = 0;
 				keyIsDown = false;
 				gotKey = false;
-				GUI_Controls.mainFrame->tmrGetKey->Stop();
+				return keyInfo;				// key info contains pressed key
 			}
 		}
+	}
+	return keyInfo;		// empty key info
+}
+
+// Get one Key for the Keyboard tab when user 
+void OnTimeGetKeyForKeyboard()
+{
+	keyInformation keyInfo = GetKey();
+	if (keyInfo.keyName != "")
+	{
+		if (GUI_Controls.indexOfButton < 24)				// 0 to 23 are PSX/PS2 buttons
+		{
+			GUI_Controls.lblCtrl[GUI_Controls.indexOfButton]->SetLabel(keyInfo.keyName);
+			GUI_Controls.lblCtrl[GUI_Controls.indexOfButton]->SetKeyCode(keyInfo.keyValue);
+			GUI_Controls.animCtrl[GUI_Controls.indexOfButton]->Stop();
+		}
+		else if (GUI_Controls.indexOfButton == 24)
+		{
+			GUI_Controls.lblWalkRun->SetLabel(keyInfo.keyName);
+			GUI_Controls.lblWalkRun->SetKeyCode(keyInfo.keyValue);
+		}
+		GUI_Controls.lblEdit->SetBackgroundColour(wxColor("#100075"));	// Dark Blue
+		GUI_Controls.lblEdit->SetLabel("Current button to edit: NONE");
+		// reset timer for the next time
+		GUI_Controls.indexOfButton = -1;
+		GUI_Controls.mainFrame->tmrGetKey->Stop();
 	}
 }
 
@@ -139,5 +156,36 @@ void OnTimeAutoNavigateAndAssign()
 
 			GUI_Controls.indexOfButton = curIndex;
 		}
+	}
+}
+
+void OnTimeGetKeyForCombo()
+{
+	keyInformation keyInfo;
+	keyInfo = GetKey();
+	if (keyInfo.keyName != "")
+	{
+		GUI_Controls.lblComboKey->SetLabel(keyInfo.keyName);
+		GUI_Controls.lblComboKey->SetBackgroundColour(wxColor(66,66,66));			// Dark Grey
+		GUI_Controls.lblComboKey->SetForegroundColour(wxColor("White"));
+		GUI_Controls.lblComboKey->Refresh();
+		GUI_Controls.mainFrame->tmrGetComboKey->Stop();
+	}
+	
+	static int counter = 21;
+	if (++counter > 20)		// Toggle background color every 1 second (50 milliseconds x 20)
+	{
+		counter = 0;
+		if (GUI_Controls.lblComboKey->GetBackgroundColour() == wxColor("#990000"))	// Crimson bloody red :)
+		{
+			GUI_Controls.lblComboKey->SetBackgroundColour(wxColor("#100075"));		// Dark Blue
+			GUI_Controls.lblComboKey->SetForegroundColour(wxColor("White"));
+		}
+		else
+		{
+			GUI_Controls.lblComboKey->SetBackgroundColour(wxColor("#990000"));
+			GUI_Controls.lblComboKey->SetForegroundColour(wxColor("White"));
+		}
+		GUI_Controls.lblComboKey->Refresh();
 	}
 }

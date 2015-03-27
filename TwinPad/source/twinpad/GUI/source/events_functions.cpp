@@ -4,6 +4,7 @@
 #include "functions_gui.h"
 #include "labels.h"
 
+// Global defined in combo_gui.cpp
 extern CCellLocator Cell_Locator;
 
 // This function handles the click event for both keyboard tab and combo tab
@@ -51,7 +52,7 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 		else if (i == 24)
 		{
 			key = GUI_Controls.lblWalkRun->GetKeyCode();
-			GUI_Controls.lblWalkRun->SetLabel("Null");
+			GUI_Controls.lblWalkRun->SetLabel("NONE");
 			GUI_Controls.lblWalkRun->SetKeyCode(0);
 		}
 		GUI_Config.m_pad[curPad][i] = key;
@@ -63,7 +64,7 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 		unsigned char key = GUI_Config.m_pad[switchToPad][i];
 		wxString name;
 		if (key == 0)
-			name = "Null";
+			name = "NONE";
 		else
 			for (int j = 0; j < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++j)
 				if (key == DIK_KEYCODES[j].keyValue)
@@ -72,7 +73,7 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 					break;
 				}
 
-		if (name != "Null")
+		if (name != "NONE")
 			name = name.substr(4, name.length());	// Skip "DIK_"
 
 		if (i < 24)
@@ -118,7 +119,7 @@ void OnLblCtrlRightClick(wxMouseEvent &ev)
 		id -= ID_TXT;
 	else if (ev.GetId() >= ID_BTN && ev.GetId() <= 1023)
 		id -= ID_BTN;
-	GUI_Controls.lblCtrl[id]->SetLabel("Null");
+	GUI_Controls.lblCtrl[id]->SetLabel("NONE");
 	GUI_Controls.lblCtrl[id]->SetKeyCode(0);
 	GUI_Controls.lblEdit->SetLabel("Current button to edit: NONE");
 	GUI_Controls.animCtrl[id]->Stop();
@@ -149,7 +150,7 @@ void OnClickKeyboardNullifiesAll(wxCommandEvent &ev)
 {
 	for (int i = 0; i < 24; ++i)
 	{
-		GUI_Controls.lblCtrl[i]->SetLabel("Null");
+		GUI_Controls.lblCtrl[i]->SetLabel("NONE");
 		GUI_Controls.lblCtrl[i]->SetKeyCode(0);
 	}
 	GUI_Controls.lblWalkRun->SetLabel("NONE");
@@ -522,6 +523,7 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		GUI_Controls.virtualGrid->Refresh();
 		GUI_Controls.virtualGrid->ForceRefresh();
 		GUI_Controls.virtualGrid->SetFocus();
+		GUI_Controls.lblComboKey->SetLabel("NONE");
 	}
 
 	// Add name for combo box
@@ -645,13 +647,17 @@ void OnClickRenameCombo(wxCommandEvent &ev)
 // Combo Key
 void OnClickComboKey(wxMouseEvent &ev)
 {
+	if (GUI_Controls.Combos.size() == 0)
+		return;
+
 	if (ev.RightUp())
 	{
-		wxMessageBox("Button is cleared!");
-		return; // to suppress context menu
+		GUI_Controls.lblComboKey->SetLabel("NONE");
 	}
 	else if (ev.LeftUp())
-		wxMessageBox("Clicked 'Combo Key'");
+	{
+		GUI_Controls.mainFrame->tmrGetComboKey->Start(50);	// 50 millisecond
+	}
 }
 
 // Only called from OnClick_psComboButton()
@@ -850,12 +856,22 @@ void OnChangeComboName(wxCommandEvent &ev)
 	// name found in the container, it will be overwritten with this one.
 	if (GUI_Controls.Combos.size() > 0)
 	{
-		wxString strKeyValue = GUI_Controls.txtComboKey->GetValue();
+		wxString keyName = GUI_Controls.lblComboKey->GetLabel();
 		long keyValue;
-		if (strKeyValue == "NONE")
+		if (keyName == "NONE")
 			keyValue = 0;
 		else
-			strKeyValue.ToLong(&keyValue);
+		{
+			for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
+			{
+				wxString name = DIK_KEYCODES[i].name;
+				name = name.substr(4, name.length());		// Skip "DIK_"
+				if (name == keyName)
+				{
+					keyValue = DIK_KEYCODES[i].keyValue;
+				}
+			}
+		}
 
 		for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
 		{
@@ -908,6 +924,18 @@ void OnChangeComboName(wxCommandEvent &ev)
 		// GetValue() gets the new selected COMBO from the list
 		if ((*it)->GetName() == strCurrent)
 		{
+			unsigned char keyValue = (*it)->GetKey();
+			for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
+			{
+				if (DIK_KEYCODES[i].keyValue == keyValue)
+				{
+					wxString keyName = DIK_KEYCODES[i].name;
+					keyName = keyName.substr(4, keyName.length());		// Skip "DIK_"
+					GUI_Controls.lblComboKey->SetLabel(keyName);
+					break;
+				}
+			}
+
 			for (int row = 0; row < (*it)->GetNumberActions(); ++row)
 			{
 				CAction *curAction = (*it)->GetAction(row);

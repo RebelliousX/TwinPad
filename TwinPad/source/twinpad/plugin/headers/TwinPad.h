@@ -1,9 +1,6 @@
 #pragma once
 
-#include <windows.h>
 #include "DirectInput.h"
-
-#pragma warning(disable : 4996)  // Disable deprecated warnings.
 
 // The following data types will be used as global externs.
 Analog lanalog[2], ranalog[2];

@@ -17,7 +17,7 @@
 
 #include "wx/mstream.h"		// for wxMemoryInputStream
 
-// global externs: Defined in TwinPad_Gui.cpp
+// Globals defined in TwinPad_Gui.cpp
 extern CTwinPad_Gui GUI_Controls;
 extern GUI_Configurations GUI_Config;
 
