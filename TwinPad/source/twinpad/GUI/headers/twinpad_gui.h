@@ -167,8 +167,9 @@ public:
 	wxCheckBox *chkDisableOnFlyKey;
 	wxCheckBox *chkDisableKeyEvents;
 	wxCheckBox *chkEnableHack;
+	wxStaticText *lblHotKey;
 
-	// TAB 3: GamePad (nothing here yet)
+	// TAB #?: GamePad (nothing here yet)
 
 	// TAB Sizes (stores minimum window size for each tab)
 	wxSize minWinSize[5];

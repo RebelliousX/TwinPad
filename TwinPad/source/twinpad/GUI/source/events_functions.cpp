@@ -191,6 +191,19 @@ void OnClickOk(wxCommandEvent &ev)
 	GUI_Controls.mainFrame->Close(true);
 }
 
+// This function handles the click event for Hot Key in Misc tab
+void OnClickHotKeyForMisc(wxMouseEvent &ev)
+{
+	if (ev.RightUp())
+	{
+		GUI_Controls.lblHotKey->SetLabel("NONE");
+	}
+	else if (ev.LeftUp())
+	{
+		GUI_Controls.mainFrame->tmrGetHotKey->Start(50);	// 50 millisecond
+	}
+}
+
 // // // // // // // // // // COMBO tab event handling functions // // // // // // // // // //
 // -----------------------------------------------------------------------------------------/
 

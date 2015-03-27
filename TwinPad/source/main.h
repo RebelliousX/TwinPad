@@ -111,8 +111,7 @@ public:
 
 	virtual void Notify()
 	{
-		// Get a key for Loading Combo on the fly in Misc tab
-		// Note: It is best to use something similar to a state machine when calling the function
+		OnTimeGetHotKey();
 	}
 
 	virtual bool Start(int milliseconds)
@@ -138,9 +137,9 @@ public:
 	void OnClose(wxCloseEvent &event);
 	void TwinPad_Configuration();
 
-	CReAnimate *tmrAnimate;			// To reAnimate analog-sticks in Combo tab
-	CAutoNav *tmrAutoNavigate;		// For Auto Navigation in Keyboard tab
-	CGetKey *tmrGetKey;				// To get a key value in keyboard tab
-	CGetComboKey *tmrGetComboKey;		// To get a key value in Combo tab
-	wxTimer *tmrGetLoadComboKey;	// To get a key value in Misc tab (Combo Load on the fly)
+	CReAnimate *tmrAnimate;					// To reAnimate analog-sticks in Combo tab
+	CAutoNav *tmrAutoNavigate;				// For Auto Navigation in Keyboard tab
+	CGetKey *tmrGetKey;						// To get a key value in keyboard tab
+	CGetComboKey *tmrGetComboKey;			// To get a key value in Combo tab
+	CGetLoadComboKey *tmrGetHotKey;	// To get a key value in Misc tab (Combo Load on the fly)
 };

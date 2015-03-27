@@ -44,3 +44,5 @@ void OnChangeSensitivity(wxSpinEvent &ev);
 // Mouse Events
 void OnClickMouseHelpButton(wxCommandEvent &ev);
 void OnClickMouseNullifiesAll(wxCommandEvent &ev);
+// Misc tab hot key even
+void OnClickHotKeyForMisc(wxMouseEvent &ev);

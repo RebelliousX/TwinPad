@@ -66,11 +66,11 @@ TwinPad_Frame::TwinPad_Frame(wxString title) : wxDialog(0, wxID_ANY, title, wxDe
 {
 	hEmuWnd = find_main_window(processId);
 
-	tmrAnimate = new CReAnimate(this);
+	tmrAnimate		= new CReAnimate(this);
 	tmrAutoNavigate = new CAutoNav(this);
-	tmrGetKey = new CGetKey(this);
-	tmrGetComboKey = new CGetComboKey(this);
-	tmrGetLoadComboKey = new CGetLoadComboKey(this);
+	tmrGetKey		= new CGetKey(this);
+	tmrGetComboKey	= new CGetComboKey(this);
+	tmrGetHotKey	= new CGetLoadComboKey(this);
 
 	CreateControls(this);
 
@@ -90,8 +90,8 @@ TwinPad_Frame::~TwinPad_Frame()
 	tmrGetKey = 0;
 	delete tmrGetComboKey;
 	tmrGetComboKey = 0;
-	delete tmrGetLoadComboKey;
-	tmrGetLoadComboKey = 0;
+	delete tmrGetHotKey;
+	tmrGetHotKey = 0;
 }
 
 void TwinPad_Frame::OnClose(wxCloseEvent &event)

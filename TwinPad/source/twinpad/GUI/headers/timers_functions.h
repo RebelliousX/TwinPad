@@ -9,6 +9,7 @@ void OnTimeGetKeyForKeyboard();
 void OnTimeReAnimateAnalogSticks();
 void OnTimeAutoNavigateAndAssign();
 void OnTimeGetKeyForCombo();
+void OnTimeGetHotKey();
 
 struct keyInformation
 {

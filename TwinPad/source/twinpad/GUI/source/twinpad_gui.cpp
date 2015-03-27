@@ -374,7 +374,21 @@ void AddMiscTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.chkDisableOnFlyKey = new wxCheckBox(panel, ID_CHK_KEY_EVENTS, strEXTRA_ONFLY);
 	GUI_Controls.chkDisableKeyEvents = new wxCheckBox(panel, ID_CHK_KEY_EVENTS,	strEXTRA_KEY);
 	GUI_Controls.chkEnableHack = new wxCheckBox(panel, ID_CHK_HACK, strEXTRA_HACK);
+	
+	GUI_Controls.lblHotKey = new wxStaticText(panel, wxID_ANY, "NONE", wxDefaultPosition, wxSize(120, 20), wxTE_READONLY);
+	GUI_Controls.lblHotKey->SetWindowStyle(wxTE_CENTER);
+	GUI_Controls.lblHotKey->SetBackgroundColour(wxColor(66, 66, 66));
+	GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
+	GUI_Controls.lblHotKey->Bind(wxEVT_LEFT_UP, OnClickHotKeyForMisc);		// Get a key
+	GUI_Controls.lblHotKey->Bind(wxEVT_RIGHT_UP, OnClickHotKeyForMisc);		// Delete the key
+	wxToolTip *ttpLblHotKey = new wxToolTip("Left-Click: And then 'press any key' to assign it to the Hot Key.\n"
+		"Right-Click: To erase the configured Key.");
+	ttpLblHotKey->SetDelay(500);			// 0.5 second
+	ttpLblHotKey->SetAutoPop(30000);		// 30 seconds
+	GUI_Controls.lblHotKey->SetToolTip(ttpLblHotKey);
+
 	vSizer->Add(GUI_Controls.chkDisableOnFlyKey, 1, wxEXPAND | wxBOTTOM | wxLEFT, 5);
+	vSizer->Add(GUI_Controls.lblHotKey, 0, wxRIGHT | wxALIGN_RIGHT, 5);
 	vSizer->Add(GUI_Controls.chkDisableKeyEvents, 1, wxEXPAND | wxTOP | wxBOTTOM | wxLEFT, 5);
 	vSizer->Add(GUI_Controls.chkEnableHack, 1, wxEXPAND | wxTOP | wxLEFT, 5);
 

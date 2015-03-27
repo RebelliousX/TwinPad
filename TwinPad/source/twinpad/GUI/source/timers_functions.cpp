@@ -189,3 +189,34 @@ void OnTimeGetKeyForCombo()
 		GUI_Controls.lblComboKey->Refresh();
 	}
 }
+
+void OnTimeGetHotKey()
+{
+	keyInformation keyInfo;
+	keyInfo = GetKey();
+	if (keyInfo.keyName != "")
+	{
+		GUI_Controls.lblHotKey->SetLabel(keyInfo.keyName);
+		GUI_Controls.lblHotKey->SetBackgroundColour(wxColor(66, 66, 66));			// Dark Grey
+		GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
+		GUI_Controls.lblHotKey->Refresh();
+		GUI_Controls.mainFrame->tmrGetHotKey->Stop();
+	}
+
+	static int counter = 21;
+	if (++counter > 20)		// Toggle background color every 1 second (50 milliseconds x 20)
+	{
+		counter = 0;
+		if (GUI_Controls.lblHotKey->GetBackgroundColour() == wxColor("#990000"))	// Crimson bloody red :)
+		{
+			GUI_Controls.lblHotKey->SetBackgroundColour(wxColor("#100075"));		// Dark Blue
+			GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
+		}
+		else
+		{
+			GUI_Controls.lblHotKey->SetBackgroundColour(wxColor("#990000"));
+			GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
+		}
+		GUI_Controls.lblHotKey->Refresh();
+	}
+}
