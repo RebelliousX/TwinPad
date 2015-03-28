@@ -39,7 +39,7 @@ void OnTimeReAnimateAnalogSticks()
 	}
 }
 
-// Helper function called from OnTimeGetKeyForKeyboard(), OnTimeGetKeyForCombo() and OnTimeGetKeyForMisc()
+// Helper function called from OnTimeGetKeyForKeyboard(), OnTimeGetKeyForCombo() and OnTimeGetHotKey()
 keyInformation GetKey()
 {
 	static bool gotKey = false;
@@ -163,18 +163,8 @@ void OnTimeAutoNavigateAndAssign()
 
 void OnTimeGetKeyForCombo()
 {
-	keyInformation keyInfo;
-	keyInfo = GetKey();
-	if (keyInfo.keyName != "")
-	{
-		GUI_Controls.lblComboKey->SetLabel(keyInfo.keyName);
-		GUI_Controls.lblComboKey->SetBackgroundColour(wxColor(66,66,66));			// Dark Grey
-		GUI_Controls.lblComboKey->SetForegroundColour(wxColor("White"));
-		GUI_Controls.lblComboKey->Refresh();
-		GUI_Controls.mainFrame->tmrGetComboKey->Stop();
-	}
+	static int counter = 20;
 	
-	static int counter = 21;
 	if (++counter > 20)		// Toggle background color every 1 second (50 milliseconds x 20)
 	{
 		counter = 0;
@@ -190,22 +180,24 @@ void OnTimeGetKeyForCombo()
 		}
 		GUI_Controls.lblComboKey->Refresh();
 	}
-}
 
-void OnTimeGetHotKey()
-{
 	keyInformation keyInfo;
 	keyInfo = GetKey();
 	if (keyInfo.keyName != "")
 	{
-		GUI_Controls.lblHotKey->SetLabel(keyInfo.keyName);
-		GUI_Controls.lblHotKey->SetBackgroundColour(wxColor(66, 66, 66));			// Dark Grey
-		GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
-		GUI_Controls.lblHotKey->Refresh();
-		GUI_Controls.mainFrame->tmrGetHotKey->Stop();
+		GUI_Controls.mainFrame->tmrGetComboKey->Stop();
+		GUI_Controls.lblComboKey->SetLabel(keyInfo.keyName);
+		GUI_Controls.lblComboKey->SetBackgroundColour(wxColor(66,66,66));			// Dark Grey
+		GUI_Controls.lblComboKey->SetForegroundColour(wxColor("White"));
+		GUI_Controls.lblComboKey->Refresh();
+		counter = 20;
 	}
+}
 
-	static int counter = 21;
+void OnTimeGetHotKey()
+{
+	static int counter = 20;
+
 	if (++counter > 20)		// Toggle background color every 1 second (50 milliseconds x 20)
 	{
 		counter = 0;
@@ -220,5 +212,17 @@ void OnTimeGetHotKey()
 			GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
 		}
 		GUI_Controls.lblHotKey->Refresh();
+	}
+
+	keyInformation keyInfo;
+	keyInfo = GetKey();
+	if (keyInfo.keyName != "")
+	{
+		GUI_Controls.mainFrame->tmrGetHotKey->Stop();
+		GUI_Controls.lblHotKey->SetLabel(keyInfo.keyName);
+		GUI_Controls.lblHotKey->SetBackgroundColour(wxColor(66, 66, 66));			// Dark Grey
+		GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
+		GUI_Controls.lblHotKey->Refresh();
+		counter = 21;
 	}
 }

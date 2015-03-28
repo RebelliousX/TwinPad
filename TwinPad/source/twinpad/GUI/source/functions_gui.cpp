@@ -195,7 +195,7 @@ void LoadTwinPadConfigurations()
 	wxString line, subStr;
 	long val = 0;
 
-	// Skip header
+	// Skip twinpad header
 	file.GetFirstLine();
 	
 	// Read the two pads configurations and Walk/Run key
@@ -246,6 +246,8 @@ void LoadTwinPadConfigurations()
 	subStr.ToLong(&val, 10);
 	GUI_Config.m_mouseSensitivity = val;
 
+	// Skip extra options comment
+	file.GetNextLine();
 	// Read 'Extra Options' configuration
 	for(int i = 0; i < 7; i++)
 	{
@@ -292,7 +294,7 @@ void SaveTwinPadConfigurations()
 	// Read the two pads configurations and Walk/Run key
 	for (int pad = 0; pad < 2; pad++)
 	{
-		file.AddLine(wxString::Format("Pad #%d", pad + 1));
+		file.AddLine(wxString::Format("{-- Pad #%d --}", pad + 1));
 		for (int key = 0; key < 25; key++)
 		{
 			line = wxString::Format("[%d][%d] = 0x%X", pad, key, GUI_Config.m_pad[pad][key]);
@@ -300,8 +302,8 @@ void SaveTwinPadConfigurations()
 		}
 	}
 
-	// Read mouse buttons and scrollup/down configuration
-	file.AddLine("Mouse Buttons");
+	// Write mouse buttons and scrollup/down configuration
+	file.AddLine("{-- Mouse Options --}");
 	for (int i = 0; i < 10; i++)
 	{
 		int button = -1;
@@ -322,6 +324,7 @@ void SaveTwinPadConfigurations()
 	file.AddLine("Mouse Sensitivity \t= " + GUI_Controls.cmbMouseSensitivity->GetStringSelection());
 	
 	// Write 'Extra Options' configuration
+	file.AddLine("{-- Extra Options --}");
 	file.AddLine(wxString::Format("Disable Pad 1 \t\t= %d", (GUI_Controls.chkDisablePad1->GetValue() ? 1 : 0)));
 	file.AddLine(wxString::Format("Disable Pad 2 \t\t= %d", (GUI_Controls.chkDisablePad2->GetValue() ? 1 : 0)));
 	file.AddLine(wxString::Format("Disable KeyEvents \t= %d", (GUI_Controls.chkDisableKeyEvents->GetValue() ? 1 : 0)));
