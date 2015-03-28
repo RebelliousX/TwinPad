@@ -181,13 +181,37 @@ const CPS_Label DIK_KEYCODES[] = {
     , 0xED  , "DIK_MEDIASELECT"			// Media Select
 	};
 
+const CPS_Label MOUSE_CHOICES[] = { 
+	36, "NONE",
+	0,  "L2", 
+	1,	"R2", 
+	2,	"L1", 
+	3,	"R1", 
+	4,	"Triangle", 
+	5,	"Circle", 
+	6,	"Cross",
+	7,	"Square",
+	8,	"Select", 
+	9,	"L3", 
+	10,	"R3", 
+	11,	"Start", 
+	12,	"UP", 
+	13,	"RIGHT", 
+	14,	"DOWN", 
+	15,	"LEFT", 
+	16,	"Left Analog Stick",
+	17,	"Right Analog Stick"
+	};
+
+const wxString strMouseChoices[] = { "NONE", "L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square",
+"Select", "L3", "R3", "Start", "UP", "RIGHT", "DOWN", "LEFT", "Left Analog Stick", "Right Analog Stick"
+};
+
+
+
 const wxString strMouseLabels[] = { "Left Mouse Button", "Right Mouse Button", "Middle Mouse Button",
 		"Mouse Button # 4", "Mouse Button # 5", "Mouse Button # 6", "Mouse Button # 7",
 		"Mouse Button # 8", "Mouse Scroll Up", "Mouse Scroll Down" };
-
-const wxString strMouseChoices[] = { "NONE", "L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross",
-		"Square", "Select", "L3", "R3", "Start", "UP", "RIGHT", "DOWN", "LEFT", "Left Analog Stick",
-		"Right Analog Stick" };
 
 const wxString strMouseSensitivity[] = { "1", "2", "3", "4", "5", "6" };
 

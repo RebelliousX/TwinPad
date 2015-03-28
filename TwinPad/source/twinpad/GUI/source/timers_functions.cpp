@@ -97,11 +97,13 @@ void OnTimeGetKeyForKeyboard()
 			GUI_Controls.lblCtrl[GUI_Controls.indexOfButton]->SetLabel(keyInfo.keyName);
 			GUI_Controls.lblCtrl[GUI_Controls.indexOfButton]->SetKeyCode(keyInfo.keyValue);
 			GUI_Controls.animCtrl[GUI_Controls.indexOfButton]->Stop();
+			GUI_Config.m_pad[(GUI_Controls.pad1RadioBtn->GetValue() ? 0 : 1)][GUI_Controls.indexOfButton] = keyInfo.keyValue;
 		}
 		else if (GUI_Controls.indexOfButton == 24)
 		{
 			GUI_Controls.lblWalkRun->SetLabel(keyInfo.keyName);
 			GUI_Controls.lblWalkRun->SetKeyCode(keyInfo.keyValue);
+			GUI_Config.m_pad[(GUI_Controls.pad1RadioBtn->GetValue() ? 0 : 1)][GUI_Controls.indexOfButton] = keyInfo.keyValue;
 		}
 		GUI_Controls.lblEdit->SetBackgroundColour(wxColor("#100075"));	// Dark Blue
 		GUI_Controls.lblEdit->SetLabel("Current button to edit: NONE");

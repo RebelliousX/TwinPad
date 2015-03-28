@@ -55,7 +55,7 @@ void CreateNullFile()
 		while(counter < 24)		// 24 PS buttons
 		{
 			nullfile << strPad << counter << "] = 0x0" << std::endl;
-			GUI_Config.m_pad[pad][counter] = 0;
+			// GUI_Config.m_pad[pad][counter] = 0;
 			counter++;
 		}
 		nullfile << strPad << counter << "] = 0x0" << std::endl;  // for walk/run value
@@ -207,7 +207,7 @@ void Loading_TwinPad_Main_Config()
 			token.GetNextToken();				// Skips second token =
 			subStr = token.GetNextToken();				// we are interested in this token 0xNN
 			subStr.ToLong(&val, 16);					// Convert string to hex
-			GUI_Config.m_pad[pad][key] = int(val);		
+			// GUI_Config.m_pad[pad][key] = int(val);		
 		}
 
 	// Read mouse buttons and scrollup/down configuration
@@ -230,6 +230,87 @@ void Loading_TwinPad_Main_Config()
 		GUI_Config.m_extra[i] = val;
 	}
 	file.Close();
+}
+
+// Save TwinPad configurations (Keyboard, Mouse and the options in Misc tab)
+void SaveTwinPadConfigurations()
+{
+	wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
+	wxTextFile file(fileName);
+	if (!file.Open(fileName))
+	{
+		wxMessageBox("Couldn't open configuration files from the specified location!"
+			"\nMake sure 'inis' folder exists in the same directory with the emu."
+			"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+		::exit(0);
+	}
+
+	// erase contents
+	file.Clear();
+
+	wxStringTokenizer token;
+	wxString line, subStr;
+	long val = 0;
+	// Get header and skip it
+	file.AddLine(GUI_Controls.GetTwinPad_Header());
+	// Read the two pads configurations and Walk/Run key
+	for (int pad = 0; pad < 2; pad++)
+	{
+		file.AddLine(wxString::Format("Pad #%d", pad + 1));
+		for (int key = 0; key < 25; key++)
+		{
+			line = wxString::Format("[%d][%d] = 0x%x", pad, key, GUI_Config.m_pad[pad][key]);
+			file.AddLine(line);
+		}
+	}
+
+	// Read mouse buttons and scrollup/down configuration
+	file.AddLine("Mouse Buttons");
+	for (int i = 0; i < 10; i++)
+	{
+		int button = -1;
+		for (int j = 0; j < (sizeof(MOUSE_CHOICES) / sizeof(*MOUSE_CHOICES)); ++j)
+		{
+			if (MOUSE_CHOICES[j].name == GUI_Controls.cmbMouseComboBox[i]->GetStringSelection())
+			{
+				button = MOUSE_CHOICES[j].keyValue;
+				break;
+			}
+		}
+		line = wxString::Format("[%d] = %d", i, button);
+		file.AddLine(line);
+	}
+	// Mouse as pad 1 (0) or 2 (1)
+	file.AddLine(wxString::Format("Mouse as pad 1/2  (0/1) = %d", (GUI_Controls.mousePad1radioButton->GetValue() ? 0 : 1)));
+	// Mouse sensitivity
+	file.AddLine("Mouse Sensitivity \t= " + GUI_Controls.cmbMouseSensitivity->GetStringSelection());
+	
+	// Write 'Extra Options' configuration
+	file.AddLine(wxString::Format("Disable Pad 1 \t\t= %d", (GUI_Controls.chkDisablePad1->GetValue() ? 1 : 0)));
+	file.AddLine(wxString::Format("Disable Pad 2 \t\t= %d", (GUI_Controls.chkDisablePad2->GetValue() ? 1 : 0)));
+	file.AddLine(wxString::Format("Disable KeyEvents \t= %d", (GUI_Controls.chkDisableKeyEvents->GetValue() ? 1 : 0)));
+	file.AddLine(wxString::Format("Disable Mouse \t\t= %d", (GUI_Controls.chkDisableMouse->GetValue() ? 1 : 0)));
+	file.AddLine(wxString::Format("Disable Combos \t\t= %d", (GUI_Controls.chkDisableCombos->GetValue() ? 1 : 0)));
+	file.AddLine(wxString::Format("Disable Hot Key \t= %d", (GUI_Controls.chkDisableOnFlyKey->GetValue() ? 1 : 0)));
+	file.AddLine(wxString::Format("Enable Hack \t\t= %d", (GUI_Controls.chkEnableHack->GetValue() ? 0 : 1)));
+	// Hot key for showing config window
+	unsigned char key = 0;
+	wxString name = "DIK_" + GUI_Controls.lblHotKey->GetLabel();
+	for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
+		if (DIK_KEYCODES[i].name == name)
+		{
+			key = DIK_KEYCODES[i].keyValue;
+			break;
+		}
+	file.AddLine(wxString::Format("Hot Key \t\t= 0x%x", key));
+
+	file.Write();
+}
+
+// Save TwinPad combo configurations in Combo tab
+void SaveTwinPadComboConfigurations()
+{
+
 }
 
 // Loading images into controls

@@ -31,13 +31,13 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 	int switchToPad = 0, curPad = 0;
 	if (ev.GetId() == ID_PAD1_RADIOBTN)
 	{
-		curPad = 0;
-		switchToPad = 1;
+		curPad = 1;
+		switchToPad = 0;
 	}
 	else if (ev.GetId() == ID_PAD2_RADIOBTN)
 	{
-		curPad = 1;
-		switchToPad = 0;
+		curPad = 0;
+		switchToPad = 1;
 	}
 
 	// Save current config for the current pad
@@ -47,6 +47,7 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 		if (i < 24)
 		{
 			key = GUI_Controls.lblCtrl[i]->GetKeyCode();
+			GUI_Controls.lblCtrl[i]->SetLabel("NONE");
 			GUI_Controls.lblCtrl[i]->SetKeyCode(0);
 		}
 		else if (i == 24)
@@ -86,6 +87,7 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 			GUI_Controls.lblWalkRun->SetLabel(name);
 			GUI_Controls.lblWalkRun->SetKeyCode(key);
 		}
+		GUI_Config.m_pad[switchToPad][i] = key;
 	}
 }
 
@@ -123,7 +125,7 @@ void OnLblCtrlRightClick(wxMouseEvent &ev)
 	GUI_Controls.lblCtrl[id]->SetKeyCode(0);
 	GUI_Controls.lblEdit->SetLabel("Current button to edit: NONE");
 	GUI_Controls.animCtrl[id]->Stop();
-	return;	// a return will disable the context menu if the event was on lblCtrl
+	GUI_Config.m_pad[(GUI_Controls.pad1RadioBtn->GetValue() ? 0 : 1)][id] = 0;
 }
 
 // Handle Left-Click to assign a key to Walk/Run, Right-Clcik to remove assigned key
@@ -141,6 +143,7 @@ void OnClickWalkRun(wxMouseEvent &ev)
 	{
 		GUI_Controls.lblWalkRun->SetLabel("NONE");
 		GUI_Controls.lblWalkRun->SetKeyCode(0);
+		GUI_Config.m_pad[(GUI_Controls.pad1RadioBtn->GetValue() ? 0 : 1)][24] = 0;
 		return;
 	}
 }
@@ -185,7 +188,8 @@ void OnClickAutoNavigate(wxCommandEvent &ev)
 // This function handles the click event for Cancel button
 void OnClickOk(wxCommandEvent &ev)
 {
-	// TODO: Implement Ok button to save Configurations from all tabs
+	SaveTwinPadConfigurations();
+	SaveTwinPadComboConfigurations();
 
 	GUI_Controls.mainFrame->Hide();
 	GUI_Controls.mainFrame->Close(true);

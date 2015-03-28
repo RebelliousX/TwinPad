@@ -120,6 +120,17 @@ private:
 class GUI_Configurations
 {
 public:
+	GUI_Configurations()
+	{
+		for (int i = 0; i < 2; ++i)
+			for (int j = 0; j < 25; ++j)
+				m_pad[i][j] = 0;
+		for (int i = 0; i < 10; ++i)
+			m_mouse[i] = 36;
+		m_mouseAsPad = 0;
+		m_mouseSensitivity = 1;
+	}
+
 	int m_pad[2][25];
 	int m_mouse[10];
 	int m_extra[7];
@@ -142,3 +153,6 @@ void GetImageData(void* &iData, unsigned int *length, const unsigned int index);
 void ModifySensitivity();
 // Save the Grid to the Combos container
 void SaveGridToCombo(wxString &strUserInput);
+// Save configurations on exit (clicked OK)
+void SaveTwinPadConfigurations();
+void SaveTwinPadComboConfigurations();
