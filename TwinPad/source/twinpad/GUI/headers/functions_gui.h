@@ -67,6 +67,7 @@ public:
 	// new combo consists of 1 action which has 1 delay value and 0 buttons
 	CCombo(int numActions, int defaultDelay)
 	{
+		m_key = 0;
 		CAction *action = new CAction;
 		action->SetDelay(defaultDelay);
 		for (int i = 0; i < numActions; ++i)

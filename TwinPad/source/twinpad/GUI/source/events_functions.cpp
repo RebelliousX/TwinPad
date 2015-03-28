@@ -511,6 +511,7 @@ void OnClickNewCombo(wxCommandEvent &ev)
 	// Don't accept empty COMBO name
 	if (strResponse == wxEmptyString)
 		return;
+
 	// Don't accept duplicate COMBO names, we use the unique name to draw on grid
 	for (unsigned int i = 0; i < GUI_Controls.Combos.size(); ++i)
 		if (strResponse == GUI_Controls.Combos[i]->GetName())
@@ -536,8 +537,9 @@ void OnClickNewCombo(wxCommandEvent &ev)
 		GUI_Controls.virtualGrid->Refresh();
 		GUI_Controls.virtualGrid->ForceRefresh();
 		GUI_Controls.virtualGrid->SetFocus();
-		GUI_Controls.lblComboKey->SetLabel("NONE");
 	}
+	
+	GUI_Controls.lblComboKey->SetLabel("NONE");
 
 	// Add name for combo box
 	GUI_Controls.cmbComboName->Append(strResponse);
@@ -927,11 +929,14 @@ void OnChangeComboName(wxCommandEvent &ev)
 	// Clear grid - delete combo
 	// If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
 	if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
+	{
 		GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
+		GUI_Controls.lblComboKey->SetLabel("NONE");
+	}
 
 	// Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
-	// Hide grid to prevent flickering while adding buttons, and it is much faster this way. Show grid when we are done
-	GUI_Controls.virtualGrid->Hide();
+	// Freeze grid to prevent flickering while adding buttons, and it is much faster this way. Thaw grid when we are done
+	GUI_Controls.virtualGrid->Freeze();
 	for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
 	{
 		// GetValue() gets the new selected COMBO from the list
@@ -973,7 +978,7 @@ void OnChangeComboName(wxCommandEvent &ev)
 			break;	// No need to process other COMBOs
 		}
 	}
-	GUI_Controls.virtualGrid->Show(true); // Added all buttons! Show the grid
+	GUI_Controls.virtualGrid->Thaw(); // Added all buttons! Thaw the grid
 
 	Cell_Locator.SetLocation(0, 1, false);
 }
