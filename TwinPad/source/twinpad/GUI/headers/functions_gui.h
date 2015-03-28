@@ -129,6 +129,7 @@ public:
 			m_mouse[i] = 36;
 		m_mouseAsPad = 0;
 		m_mouseSensitivity = 1;
+		m_hotKey = 0;
 	}
 
 	int m_pad[2][25];
@@ -136,12 +137,16 @@ public:
 	int m_extra[7];
 	int m_mouseAsPad;
 	int m_mouseSensitivity;
+	int m_hotKey;
+
+	enum { DISABLE_PAD1 = 0, DISABLE_PAD2, DISABLE_KEYEVENTS, DISABLE_MOUSE,
+		   DISABLE_COMBOS, DISABLE_HOTKEY, ENABLE_HACK };
 };
 
 bool IsFileOkAndFix(const std::string &file, const std::string &header);
 void CreateNullFile();
 void CreateNullComboFile();
-void Loading_TwinPad_Main_Config();
+void LoadTwinPadConfigurations();
 
 // Forward declaration is necessary, to avoid problems
 class CPS_Anim;

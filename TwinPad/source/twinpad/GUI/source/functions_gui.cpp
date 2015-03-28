@@ -179,7 +179,7 @@ bool IsFileOkAndFix(const std::string &file, const std::string &header)
 	return false;
 }
 
-void Loading_TwinPad_Main_Config()
+void LoadTwinPadConfigurations()
 {
 	wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
 	wxTextFile file(fileName);
@@ -195,40 +195,76 @@ void Loading_TwinPad_Main_Config()
 	wxString line, subStr;
 	long val = 0;
 
-	// Get header and skip it
-	line = file.GetFirstLine();
+	// Skip header
+	file.GetFirstLine();
+	
 	// Read the two pads configurations and Walk/Run key
-	for(int pad = 0; pad < 2; pad++)
+	for (int pad = 0; pad < 2; pad++)
+	{
+		// Skip pad number comment
+		file.GetNextLine();
 		for (int key = 0; key < 25; key++)
 		{
 			line = file.GetNextLine();
 			token.SetString(line, " ", wxTOKEN_STRTOK);
 			token.GetNextToken();				// Skips first token [n][n]
 			token.GetNextToken();				// Skips second token =
-			subStr = token.GetNextToken();				// we are interested in this token 0xNN
-			subStr.ToLong(&val, 16);					// Convert string to hex
-			// GUI_Config.m_pad[pad][key] = int(val);		
+			subStr = token.GetNextToken();		// we are interested in this token 0xNN
+			subStr.ToLong(&val, 16);			// Convert string to hex
+			GUI_Config.m_pad[pad][key] = int(val);		
 		}
+	}
+
+	// Skip mouse comment
+	file.GetNextLine();
 
 	// Read mouse buttons and scrollup/down configuration
 	for(int i = 0; i < 10; i++)
 	{
 		line = file.GetNextLine();
 		token.SetString(line, " ", wxTOKEN_STRTOK);
-		token.GetNextToken();	// skips first token [n]
-		token.GetNextToken();	// skips second token =
+		token.GetNextToken();			// skips first token [n]
+		token.GetNextToken();			// skips second token =
 		subStr = token.GetNextToken();	// we are interested in this token N (DECIMAL)
 		subStr.ToLong(&val, 10);		// Convert string to dec
 		GUI_Config.m_mouse[i] = val;
 	}
 
+	// Mouse as pad 1 or 2 (0/1)
+	line = file.GetNextLine();
+	token.SetString(line, "=", wxTOKEN_STRTOK);
+	token.GetNextToken();				// skips "Mouse as pad 1/2  (1/2) "
+	subStr = token.GetNextToken();		// mouse as pad value
+	subStr.ToLong(&val, 10);
+	GUI_Config.m_mouseAsPad = val;
+
+	// Mouse sensitivity
+	line = file.GetNextLine();
+	token.SetString(line, "=", wxTOKEN_STRTOK);
+	token.GetNextToken();				// skips "Mouse Sensitivity 	"
+	subStr = token.GetNextToken();		// mouse sensitivity value
+	subStr.ToLong(&val, 10);
+	GUI_Config.m_mouseSensitivity = val;
+
 	// Read 'Extra Options' configuration
 	for(int i = 0; i < 7; i++)
 	{
 		line = file.GetNextLine();
-		line.ToLong(&val, 10);
+		token.SetString(line, "=", wxTOKEN_STRTOK);
+		token.GetNextToken();			// skips comment
+		subStr = token.GetNextToken();	// interested in the value here
+		subStr.ToLong(&val, 10);
 		GUI_Config.m_extra[i] = val;
 	}
+
+	// Hot Key for showing TwinPad window
+	line = file.GetNextLine();
+	token.SetString(line, "=", wxTOKEN_STRTOK);
+	token.GetNextToken();				// skips "Hot Key"
+	subStr = token.GetNextToken();		// interested in the value here
+	subStr.ToLong(&val, 16);
+	GUI_Config.m_hotKey = val;
+
 	file.Close();
 }
 
@@ -259,7 +295,7 @@ void SaveTwinPadConfigurations()
 		file.AddLine(wxString::Format("Pad #%d", pad + 1));
 		for (int key = 0; key < 25; key++)
 		{
-			line = wxString::Format("[%d][%d] = 0x%x", pad, key, GUI_Config.m_pad[pad][key]);
+			line = wxString::Format("[%d][%d] = 0x%X", pad, key, GUI_Config.m_pad[pad][key]);
 			file.AddLine(line);
 		}
 	}
@@ -302,7 +338,7 @@ void SaveTwinPadConfigurations()
 			key = DIK_KEYCODES[i].keyValue;
 			break;
 		}
-	file.AddLine(wxString::Format("Hot Key \t\t= 0x%x", key));
+	file.AddLine(wxString::Format("Hot Key \t\t= 0x%X", key));
 
 	file.Write();
 }

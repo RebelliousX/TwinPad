@@ -67,17 +67,97 @@ void CreateControls(TwinPad_Frame *window)
 	file2 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
 	IsFileOkAndFix(file2.ToStdString(), GUI_Controls.GetTwinPad_ComboHeader().ToStdString());
 
-	Loading_TwinPad_Main_Config();
+	LoadTwinPadConfigurations();
 
 	GUI_Controls.noteBook = new CNotebook(window, ID_NOTEBOOK);
 	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
-		
+
 	AddKeyboardTab(GUI_Controls);
 	AddMouseTab(GUI_Controls);
 	AddCombosTab(GUI_Controls);
 	AddMiscTab(GUI_Controls);
 
 	// AddGamePadTab(GUI_Controls);	// TODO: Maybe..
+
+
+	// Populate the dialog with loaded configurations from file
+	// --------------------------------------------------------
+
+	// Keyboard tab:
+	for (int i = 0; i < 25; ++i)
+	{
+		wxString keyName;
+		if (GUI_Config.m_pad[0][i] != 0)
+		{
+			for (int j = 0; j < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++j)
+				if (DIK_KEYCODES[j].keyValue == GUI_Config.m_pad[0][i])
+				{
+					keyName = DIK_KEYCODES[j].name;
+					keyName = keyName.substr(4, keyName.length());
+					break;
+				}
+		}
+		else
+			keyName = "NONE";
+
+		if (i < 24)
+		{
+			GUI_Controls.lblCtrl[i]->SetLabel(keyName);
+			GUI_Controls.lblCtrl[i]->SetKeyCode(GUI_Config.m_pad[0][i]);
+		}
+		else
+		{
+			GUI_Controls.lblWalkRun->SetLabel(keyName);
+			GUI_Controls.lblWalkRun->SetKeyCode(GUI_Config.m_pad[0][i]);
+		}
+	}
+
+	// Mouse tab:
+	for (int i = 0; i < 10; ++i)
+		for (int j = 0; j < (sizeof(MOUSE_CHOICES) / sizeof(*MOUSE_CHOICES)); ++j)
+			if (GUI_Config.m_mouse[i] == MOUSE_CHOICES[j].keyValue)
+			{
+				GUI_Controls.cmbMouseComboBox[i]->SetStringSelection(MOUSE_CHOICES[j].name);
+				break;
+			}
+
+	if (GUI_Config.m_mouseAsPad == 0)
+		GUI_Controls.mousePad1radioButton->SetValue(true);
+	else
+		GUI_Controls.mousePad2radioButton->SetValue(true);
+
+	GUI_Controls.cmbMouseSensitivity->SetStringSelection(wxString::Format("%d", GUI_Config.m_mouseSensitivity));
+
+	// Misc tab:
+	GUI_Controls.chkDisablePad1->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_PAD1] ? 1 : 0);
+	GUI_Controls.chkDisablePad2->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_PAD2] ? 1 : 0);
+	GUI_Controls.chkDisableKeyEvents->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_KEYEVENTS] ? 1 : 0);
+	GUI_Controls.chkDisableMouse->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_MOUSE] ? 1 : 0);
+	GUI_Controls.chkDisableCombos->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_COMBOS] ? 1 : 0);
+	GUI_Controls.chkDisableOnFlyKey->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_HOTKEY] ? 1 : 0);
+	GUI_Controls.chkEnableHack->SetValue(GUI_Config.m_extra[GUI_Config.ENABLE_HACK] ? 0 : 1);
+
+	wxString keyName;
+	if (GUI_Config.m_hotKey != 0)
+	{
+		for (int j = 0; j < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++j)
+			if (DIK_KEYCODES[j].keyValue == GUI_Config.m_hotKey)
+			{
+				keyName = DIK_KEYCODES[j].name;
+				keyName = keyName.substr(4, keyName.length());
+				break;
+			}
+	}
+	else
+		keyName = "NONE";
+		
+
+	GUI_Controls.lblHotKey->SetLabel(keyName);
+
+	// Combo tab:
+
+	// TODO: Implement loading TwinPad combo file first.
+	/*------- TODO -------*/
 }
 
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
