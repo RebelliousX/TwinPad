@@ -11,23 +11,23 @@ void OnLblCtrlRightClick(wxMouseEvent &ev);
 // To handle Left-Click assign a key, Right-Click remove assigned key
 void OnClickWalkRun(wxMouseEvent &ev);
 // Buttons (Cancel, Ok, 'Nullifies All' for Keyboard and Auto Navigate) Events
-void OnClickKeyboardNullifiesAll(wxCommandEvent &ev);
-void OnClickAutoNavigate(wxCommandEvent &ev);
-void OnClickCancel(wxCommandEvent &ev);
-void OnClickOk(wxCommandEvent &ev);
+void OnClickKeyboardNullifiesAll(wxMouseEvent &ev);
+void OnClickAutoNavigate(wxMouseEvent &ev);
+void OnClickCancel(wxMouseEvent &ev);
+void OnClickOk(wxMouseEvent &ev);
 // Change between PAD 1 and 2, save and reload configured buttons
 void OnRadBtnPadChange(wxCommandEvent &ev);
 // Action Events
-void OnClickNewAction(wxCommandEvent &ev);
-void OnClickDeleteLastAction(wxCommandEvent &ev);
-void OnClickInsertInbetweenAction(wxCommandEvent &ev);
-void OnClickInsertAction(wxCommandEvent &ev);
-void OnClickDeleteSelectedActions(wxCommandEvent &ev);
-void OnClickDeleteButton(wxCommandEvent &ev);
+void OnClickNewAction(wxMouseEvent &ev);
+void OnClickDeleteLastAction(wxMouseEvent &ev);
+void OnClickInsertInbetweenAction(wxMouseEvent &ev);
+void OnClickInsertAction(wxMouseEvent &ev);
+void OnClickDeleteSelectedActions(wxMouseEvent &ev);
+void OnClickDeleteButton(wxMouseEvent &ev);
 // Combo Events
-void OnClickNewCombo(wxCommandEvent &ev);
-void OnClickDeleteCombo(wxCommandEvent &ev);
-void OnClickRenameCombo(wxCommandEvent &ev);
+void OnClickNewCombo(wxMouseEvent &ev);
+void OnClickDeleteCombo(wxMouseEvent &ev);
+void OnClickRenameCombo(wxMouseEvent &ev);
 // ComboBox Events
 void OnChangeComboName(wxCommandEvent &ev);
 void OnChangeComboNameKey(wxKeyEvent &ev);
@@ -42,7 +42,7 @@ void OnMouseMoveOverGrid(wxMouseEvent &ev);
 // SpinCtrl Events
 void OnChangeSensitivity(wxSpinEvent &ev);
 // Mouse Events
-void OnClickMouseHelpButton(wxCommandEvent &ev);
-void OnClickMouseNullifiesAll(wxCommandEvent &ev);
+void OnClickMouseHelpButton(wxMouseEvent &ev);
+void OnClickMouseNullifiesAll(wxMouseEvent &ev);
 // Misc tab hot key even
 void OnClickHotKeyForMisc(wxMouseEvent &ev);

@@ -21,7 +21,7 @@ void SetupComboTab(wxPanel *panel)
 		GUI_Controls.psComboButtons[i]->SetAnimation(GUI_Controls.animCtrl[i]->GetAnimation());
 		GUI_Controls.psComboButtons[i]->SetIndex(i);
 		GUI_Controls.psComboButtons[i]->SetName(PS_LABEL[i].name);
-		GUI_Controls.psComboButtons[i]->Connect((ID_BTN2 + i), wxEVT_LEFT_UP, wxCommandEventHandler(CPS_Anim::OnClickAnimInKeyboardTab));
+		GUI_Controls.psComboButtons[i]->Connect((ID_BTN2 + i), wxEVT_LEFT_UP, wxMouseEventHandler(CPS_Anim::OnClickAnimInKeyboardTab));
 		if (i >= 16)		// Play Analog Stick animation by default
 			GUI_Controls.psComboButtons[i]->Play();
 		GUI_Controls.psComboButtons[i]->SetToolTip(PS_LABEL[i].name);
@@ -33,18 +33,18 @@ void SetupComboTab(wxPanel *panel)
 	wxBoxSizer *parentSizer = new wxBoxSizer(wxVERTICAL);
 	wxStaticBoxSizer *topLevelSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Key Combinations (COMBOs)");
 	wxStaticBoxSizer *stcComboEditorSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "COMBO Editor");
-	GUI_Controls.btnNewCombo = new wxButton(panel, wxID_ANY, "New Combo");
-	GUI_Controls.btnDeleteCombo = new wxButton(panel, wxID_ANY, "Delete Combo");
-	GUI_Controls.btnRenameCombo = new wxButton(panel, wxID_ANY, "Rename Combo");
+	GUI_Controls.btnNewCombo = new CButton(panel, wxID_ANY, "New Combo");
+	GUI_Controls.btnDeleteCombo = new CButton(panel, wxID_ANY, "Delete Combo");
+	GUI_Controls.btnRenameCombo = new CButton(panel, wxID_ANY, "Rename Combo");
 	stcComboEditorSizer->Add(GUI_Controls.btnNewCombo);
 	stcComboEditorSizer->AddSpacer(5);
 	stcComboEditorSizer->Add(GUI_Controls.btnDeleteCombo);
 	stcComboEditorSizer->AddSpacer(5);
 	stcComboEditorSizer->Add(GUI_Controls.btnRenameCombo);
 	// stcComboEditorSizer->AddSpacer(10);
-	GUI_Controls.btnNewCombo->Bind(wxEVT_BUTTON, ::OnClickNewCombo);
-	GUI_Controls.btnDeleteCombo->Bind(wxEVT_BUTTON, ::OnClickDeleteCombo);
-	GUI_Controls.btnRenameCombo->Bind(wxEVT_BUTTON, ::OnClickRenameCombo);
+	GUI_Controls.btnNewCombo->Bind(wxEVT_LEFT_UP, ::OnClickNewCombo);
+	GUI_Controls.btnDeleteCombo->Bind(wxEVT_LEFT_UP, ::OnClickDeleteCombo);
+	GUI_Controls.btnRenameCombo->Bind(wxEVT_LEFT_UP, ::OnClickRenameCombo);
 	wxStaticBoxSizer *stcComboNameSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "COMBO Name");
 	GUI_Controls.cmbComboName = new wxComboBox(panel, wxID_ANY, wxEmptyString,
 		wxDefaultPosition, wxSize(200, 25), 0, 0, wxCB_READONLY | wxCB_SORT);
@@ -111,22 +111,22 @@ void SetupComboTab(wxPanel *panel)
 	comboGridSizer->Add(comboGrid, 0, 0, 5);
 	wxBoxSizer *actionAndButtonSizer = new wxBoxSizer(wxVERTICAL);
 	wxStaticBoxSizer *editComboSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Action Editor");
-	GUI_Controls.btnNewAction = new wxButton(panel, wxID_ANY, "New Action");
-	GUI_Controls.btnDeleteLastAction = new wxButton(panel, wxID_ANY, "Delete Last Action");
-	GUI_Controls.btnInsertActions = new wxButton(panel, wxID_ANY, "Insert Actions");
-	GUI_Controls.btnInsertInbetweenAction = new wxButton(panel, wxID_ANY, "Insert Inbetween Actions");
-	GUI_Controls.btnDeleteSelectedActions = new wxButton(panel, wxID_ANY, "Delete Selected Actions");
-	GUI_Controls.btnDeleteButton = new wxButton(panel, wxID_ANY, "Delete Selected Button");
+	GUI_Controls.btnNewAction = new CButton(panel, wxID_ANY, "New Action");
+	GUI_Controls.btnDeleteLastAction = new CButton(panel, wxID_ANY, "Delete Last Action");
+	GUI_Controls.btnInsertActions = new CButton(panel, wxID_ANY, "Insert Actions");
+	GUI_Controls.btnInsertInbetweenAction = new CButton(panel, wxID_ANY, "Insert Inbetween Actions");
+	GUI_Controls.btnDeleteSelectedActions = new CButton(panel, wxID_ANY, "Delete Selected Actions");
+	GUI_Controls.btnDeleteButton = new CButton(panel, wxID_ANY, "Delete Selected Button");
 	wxSize largestButtonSize = GUI_Controls.btnInsertInbetweenAction->GetSize();
 	GUI_Controls.btnNewAction->SetMinSize(largestButtonSize);
 	GUI_Controls.btnDeleteLastAction->SetMinSize(largestButtonSize);
 	GUI_Controls.btnInsertInbetweenAction->SetMinSize(largestButtonSize);
-	GUI_Controls.btnNewAction->Bind(wxEVT_BUTTON, OnClickNewAction);
-	GUI_Controls.btnDeleteLastAction->Bind(wxEVT_BUTTON, OnClickDeleteLastAction);
-	GUI_Controls.btnInsertInbetweenAction->Bind(wxEVT_BUTTON, OnClickInsertInbetweenAction);
-	GUI_Controls.btnInsertActions->Bind(wxEVT_BUTTON, OnClickInsertAction);
-	GUI_Controls.btnDeleteSelectedActions->Bind(wxEVT_BUTTON, OnClickDeleteSelectedActions);
-	GUI_Controls.btnDeleteButton->Bind(wxEVT_BUTTON, OnClickDeleteButton);
+	GUI_Controls.btnNewAction->Bind(wxEVT_LEFT_UP, OnClickNewAction);
+	GUI_Controls.btnDeleteLastAction->Bind(wxEVT_LEFT_UP, OnClickDeleteLastAction);
+	GUI_Controls.btnInsertInbetweenAction->Bind(wxEVT_LEFT_UP, OnClickInsertInbetweenAction);
+	GUI_Controls.btnInsertActions->Bind(wxEVT_LEFT_UP, OnClickInsertAction);
+	GUI_Controls.btnDeleteSelectedActions->Bind(wxEVT_LEFT_UP, OnClickDeleteSelectedActions);
+	GUI_Controls.btnDeleteButton->Bind(wxEVT_LEFT_UP, OnClickDeleteButton);
 	editComboSizer->Add(GUI_Controls.btnNewAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
 	editComboSizer->AddSpacer(5);
 	editComboSizer->Add(GUI_Controls.btnDeleteLastAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
@@ -316,8 +316,7 @@ void SetupComboTab(wxPanel *panel)
 // Save the Grid to the Combos container
 void SaveGridToCombo(wxString &strUserInput)
 {
-	// Save Current Combo (if not already saved)
-	// when saving, Check to see if the combo exist, if it does, use the same combo otherwise add a new one
+	// Get the key assigned for the combo
 	wxString keyName = GUI_Controls.lblComboKey->GetLabel();
 	unsigned char keyValue;
 	if (keyName == "NONE")
@@ -335,6 +334,12 @@ void SaveGridToCombo(wxString &strUserInput)
 			}
 		}
 	}
+
+	// Get which pad is assigned for the combo
+	int pad = (GUI_Controls.cmbWhichPad->GetStringSelection() == "Pad 1") ? 0 : 1;
+
+	// Save Current Combo (if not already saved)
+	// when saving, Check to see if the combo exist, if it does, use the same combo otherwise add a new one.
 
 	// Check to see if we are modifying the same COMBO, if yes, erase it so we can overwrite it or start a new one
 	for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
@@ -355,6 +360,7 @@ void SaveGridToCombo(wxString &strUserInput)
 	CCombo *curCombo = new CCombo;
 	curCombo->SetKey((int)keyValue);
 	curCombo->SetName(strUserInput);
+	curCombo->SetPad(pad);
 	for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
 	{
 		CAction *action = new CAction;

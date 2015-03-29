@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\twinpad\GUI\source\combo_events.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\combo_gui.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\events_functions.cpp" />
     <ClCompile Include="source\twinpad\GUI\source\functions_gui.cpp" />

@@ -114,9 +114,11 @@ public:
 
 	int FilterEvent(wxEvent& event)
 	{
-		// Disable return key everywhere
-		if (((wxKeyEvent&)event).GetKeyCode() == WXK_RETURN)
-			return true;
+		if ( (((wxKeyEvent&)event).GetKeyCode() == WXK_LEFT) ||
+			 (((wxKeyEvent&)event).GetKeyCode() == WXK_RIGHT) ||
+			 (((wxKeyEvent&)event).GetKeyCode() == WXK_TAB) )
+				return true;
+
 		// To prevent navigation of controls using arrow keys and tab, ignore all key down events
 		if (event.GetEventType() == wxEVT_KEY_DOWN ||
 			event.GetEventType() == wxEVT_KEY_UP)

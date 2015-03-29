@@ -93,6 +93,8 @@ public:
 	void SetKey(int key) { m_key = key; }
 	void SetName(const wxString &name) { m_comboName = name; }
 	const wxString& GetName() const { return m_comboName; }
+	void SetPad(int pad) { m_pad = pad; }
+	int GetPad() { return m_pad; }
 
 	// Add Action at the end
 	void AddAction(CAction *action)
@@ -114,6 +116,7 @@ public:
 private:
 	std::vector<CAction *> m_actions;	// vector of pointers to Actions
 	int m_key;							// holds assigned key for current combo
+	int m_pad;							// which pad the current combo is assigned to
 	wxString m_comboName;				// current combo name
 };
 

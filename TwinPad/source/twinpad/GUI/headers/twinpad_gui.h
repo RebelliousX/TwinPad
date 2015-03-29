@@ -21,7 +21,9 @@ public:
 	CPS_BTN(wxWindow *parent, wxWindowID id, const wxBitmap &bitmap, const wxPoint &pos = wxDefaultPosition,
 				const wxSize &size = wxDefaultSize, long style = 4L, const wxValidator &validator = wxDefaultValidator,
 				const wxString &name = wxButtonNameStr) : wxBitmapButton(parent, id, bitmap, pos, size, style, validator, name) { }
-	virtual bool AcceptsFocusFromKeyboard() const { return false; }  // Prevent TAB traversing chain for buttons
+	// Disable tab traversal
+	virtual bool AcceptsFocus() const { return false; }
+	virtual bool AcceptsFocusFromKeyboard() const { return false; }
 };
 
 class CPS_Anim : public wxAnimationCtrl
@@ -33,14 +35,17 @@ public:
 		: wxAnimationCtrl(parent, id, wxNullAnimation, wxDefaultPosition)
 		{ }
 
-	void OnClickAnimInKeyboardTab(wxCommandEvent &event);		// Keyboard tab
-	void OnComboClick(wxCommandEvent &event);					// Combo tab
+	void OnClickAnimInKeyboardTab(wxMouseEvent &event);			// Keyboard tab
 
 	void SetIndex(int i) { index = i; }
 	int GetIndex() { return index; }
 
 	void SetName(const wxString &str) { name = str; }
 	wxString GetName() { return name; } 
+
+	// Disable tab traversal
+	virtual bool AcceptsFocus() const { return false; }
+	virtual bool AcceptsFocusFromKeyboard() const { return false; }
 
 private:
 	int index;
@@ -50,10 +55,8 @@ private:
 class CPS_LBL : public wxStaticText
 {
 public:
-	CPS_LBL(wxWindow *parent, wxWindowID id, const wxString &value, const wxSize &size = wxDefaultSize)
-		: wxStaticText(parent, id, value, wxDefaultPosition, size) { }
-
-	// void OnClick(wxCommandEvent &event);
+	CPS_LBL(wxWindow *parent, wxWindowID id, const wxString &title, const wxSize &size = wxDefaultSize)
+		: wxStaticText(parent, id, title, wxDefaultPosition, size) { }
 
 	void SetIndex(int i) { index = i; }
 	int GetIndex() { return index; }
@@ -67,6 +70,56 @@ private:
 	int index;
 	wxString name;
 	unsigned char keyCode;		// Keyboard key value, Used for saving contents to file
+};
+
+class CButton : public wxButton
+{
+public:
+	CButton(wxWindow *parent, wxWindowID id, const wxString &title) : wxButton(parent, id, title)
+	{
+		Connect(wxEVT_KEY_DOWN, wxCommandEventHandler(CButton::DontAcceptKeyEvent));
+		Connect(wxEVT_KEY_UP, wxCommandEventHandler(CButton::DontAcceptKeyEvent));
+		Connect(wxEVT_ANY, wxEventHandler(CButton::DontAcceptKeyEvent));
+	}
+
+	// Disable tab traversal
+	virtual bool AcceptsFocus() const { return false; }
+	virtual bool AcceptsFocusFromKeyboard() const { return false; }
+	
+	void DontAcceptKeyEvent(wxCommandEvent &ev)
+	{
+		if (ev.GetEventType() == wxEVT_KEY_DOWN || ev.GetEventType() == wxEVT_KEY_UP)
+		{
+			//this->GetParent()->SetFocus();
+			ev.StopPropagation();
+			return;
+		}
+		ev.Skip();
+	}
+
+	void DontAcceptKeyEvent(wxEvent &ev)
+	{
+		if (((wxKeyEvent&)ev).GetKeyCode() == WXK_RETURN || ((wxKeyEvent&)ev).GetKeyCode() == WXK_SPACE)
+		{
+			return;
+		}
+		ev.Skip();
+	}
+};
+
+class CRadButton : public wxRadioButton
+{
+public:
+	CRadButton(wxWindow *parent, wxWindowID id, const wxString &title) : wxRadioButton(parent, id, title)
+	{
+		Connect(wxEVT_KEY_UP, wxKeyEventHandler(CRadButton::DisableKeyboard));
+		Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CRadButton::DisableKeyboard));
+	}
+	// Disable tab traversal
+	virtual bool AcceptsFocus() const { return false; }
+	virtual bool AcceptsFocusFromKeyboard() const { return false; }
+private:
+	void DisableKeyboard(wxKeyEvent &ev) { return; }
 };
 
 class CNotebook : public wxNotebook
@@ -119,21 +172,21 @@ public:
 	CPS_Anim *animCtrl[intPS_BUTTONS];
 	wxStaticText *lblLabel[intANALOG_DIRECTIONS];		// Left or Right (for analog stick)
 	CPS_LBL *lblWalkRun;
-	wxRadioButton *pad1RadioBtn;
-	wxRadioButton *pad2RadioBtn;
+	CRadButton *pad1RadioBtn;
+	CRadButton *pad2RadioBtn;
 	wxStaticText *lblEdit;
-	wxButton *btnOK;
-	wxButton *btnCancel;
-	wxButton *btnAutoNavigate;
-	wxButton *btnNullifiesAll;
+	CButton *btnOK;
+	CButton *btnCancel;
+	CButton *btnAutoNavigate;
+	CButton *btnNullifiesAll;
 
 	// TAB 2: Mouse
 	wxStaticText *lblMouseLabel[intMOUSE_BUTTONS];
 	wxComboBox *cmbMouseComboBox[intMOUSE_BUTTONS];
-	wxRadioButton *mousePad1radioButton;
-	wxRadioButton *mousePad2radioButton;
-	wxButton *btnMouseNullifiesAll;
-	wxButton *btnMouseHelp;
+	CRadButton *mousePad1radioButton;
+	CRadButton *mousePad2radioButton;
+	CButton *btnMouseNullifiesAll;
+	CButton *btnMouseHelp;
 	wxComboBox *cmbMouseSensitivity;
 
 	// TAB 3: COMBOs
@@ -141,15 +194,15 @@ public:
 	CTableBase *tableBaseGrid;
 	std::vector<CCombo *> Combos;
 	CPS_Anim *psComboButtons[24];
-	wxButton *btnNewCombo;
-	wxButton *btnDeleteCombo;
-	wxButton *btnRenameCombo;
-	wxButton *btnNewAction;
-	wxButton *btnDeleteLastAction;
-	wxButton *btnInsertActions;
-	wxButton *btnInsertInbetweenAction;
-	wxButton *btnDeleteSelectedActions;
-	wxButton *btnDeleteButton;
+	CButton *btnNewCombo;
+	CButton *btnDeleteCombo;
+	CButton *btnRenameCombo;
+	CButton *btnNewAction;
+	CButton *btnDeleteLastAction;
+	CButton *btnInsertActions;
+	CButton *btnInsertInbetweenAction;
+	CButton *btnDeleteSelectedActions;
+	CButton *btnDeleteButton;
 	wxSpinCtrl *spnDefaultDelay;
 	wxSpinCtrl *spnSensitivity;
 	wxComboBox *cmbComboName;

@@ -200,7 +200,7 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 				flexSizer->Add(GUI_Controls.animCtrl[animIndex], 1, wxEXPAND);
 				GUI_Controls.animCtrl[animIndex]->SetIndex(animIndex);
 				GUI_Controls.animCtrl[animIndex]->SetName(PS_LABEL[animIndex].name);
-				GUI_Controls.animCtrl[animIndex]->Connect((ID_BTN + animIndex), wxEVT_LEFT_UP, wxCommandEventHandler(CPS_Anim::OnClickAnimInKeyboardTab));
+				GUI_Controls.animCtrl[animIndex]->Connect((ID_BTN + animIndex), wxEVT_LEFT_UP, wxMouseEventHandler(CPS_Anim::OnClickAnimInKeyboardTab));
 				GUI_Controls.animCtrl[animIndex]->Bind(wxEVT_RIGHT_UP, ::OnLblCtrlRightClick);
 				GUI_Controls.animCtrl[animIndex]->SetToolTip(wxString::Format("%s:\n%s%s", PS_LABEL[psb_Index].name,
 					"Left-Click: And then 'press any key' to assign it to the current Button.\n",
@@ -245,8 +245,8 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 
 	// Choose PAD1 or PAD2
 	wxStaticBoxSizer *choosePadSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Which PAD?");
-	GUI_Controls.pad1RadioBtn = new wxRadioButton(panel, ID_PAD1_RADIOBTN, "PAD 1");
-	GUI_Controls.pad2RadioBtn = new wxRadioButton(panel, ID_PAD2_RADIOBTN, "PAD 2");
+	GUI_Controls.pad1RadioBtn = new CRadButton(panel, ID_PAD1_RADIOBTN, "PAD 1");
+	GUI_Controls.pad2RadioBtn = new CRadButton(panel, ID_PAD2_RADIOBTN, "PAD 2");
 	GUI_Controls.pad1RadioBtn->Bind(wxEVT_RADIOBUTTON, ::OnRadBtnPadChange);
 	GUI_Controls.pad2RadioBtn->Bind(wxEVT_RADIOBUTTON, ::OnRadBtnPadChange);
 	choosePadSizer->Add(GUI_Controls.pad1RadioBtn, 0, wxALIGN_CENTER);
@@ -277,15 +277,15 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.lblEdit->SetForegroundColour(wxColor("#FFFFFF"));	// White
 	GUI_Controls.lblEdit->SetWindowStyle(wxTE_CENTER);
 
-	GUI_Controls.btnAutoNavigate = new wxButton(panel, ID_BTN_AUTO, "Auto Navigate");
-	GUI_Controls.btnNullifiesAll = new wxButton(panel, ID_BTN_NULL, "Nullifies All");
-	GUI_Controls.btnOK = new wxButton(panel, wxID_OK, "Ok");				// wxID_OK for the dialog return value
-	GUI_Controls.btnCancel = new wxButton(panel, wxID_CANCEL, "Cancel");	// wxID_CANCEL for the dialog return value
+	GUI_Controls.btnAutoNavigate = new CButton(panel, ID_BTN_AUTO, "Auto Navigate");
+	GUI_Controls.btnNullifiesAll = new CButton(panel, ID_BTN_NULL, "Nullifies All");
+	GUI_Controls.btnOK = new CButton(panel, ID_BTN_OK, "Ok");				// Don't use wxID_OK, will cause trouble with Return key
+	GUI_Controls.btnCancel = new CButton(panel, ID_BTN_CANCEL, "Cancel");	// Don't use wxID_CANCEL
 
-	GUI_Controls.btnCancel->Bind(wxEVT_BUTTON, OnClickCancel);
-	GUI_Controls.btnOK->Bind(wxEVT_BUTTON, OnClickOk);
-	GUI_Controls.btnNullifiesAll->Bind(wxEVT_BUTTON, OnClickKeyboardNullifiesAll);
-	GUI_Controls.btnAutoNavigate->Bind(wxEVT_BUTTON, OnClickAutoNavigate);
+	GUI_Controls.btnCancel->Bind(wxEVT_LEFT_UP, OnClickCancel);
+	GUI_Controls.btnOK->Bind(wxEVT_LEFT_UP, OnClickOk);
+	GUI_Controls.btnNullifiesAll->Bind(wxEVT_LEFT_UP, OnClickKeyboardNullifiesAll);
+	GUI_Controls.btnAutoNavigate->Bind(wxEVT_LEFT_UP, OnClickAutoNavigate);
 
 	// Bottom Sizer, Contains 4 buttons: OK, Cancel, Auto Navigate, and Nullifies All
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -365,18 +365,18 @@ void AddMouseTab(CTwinPad_Gui &GUI_Controls)
 
 	// Selection of Pad 1 or 2
 	wxStaticBoxSizer *selectPadSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Which PAD?");
-	GUI_Controls.mousePad1radioButton = new wxRadioButton(panel, ID_PAD1_TAB2_RADIOBTN, "PAD 1");
-	GUI_Controls.mousePad2radioButton = new wxRadioButton(panel, ID_PAD2_TAB2_RADIOBTN, "PAD 2");
+	GUI_Controls.mousePad1radioButton = new CRadButton(panel, ID_PAD1_TAB2_RADIOBTN, "PAD 1");
+	GUI_Controls.mousePad2radioButton = new CRadButton(panel, ID_PAD2_TAB2_RADIOBTN, "PAD 2");
 	selectPadSizer->Add(GUI_Controls.mousePad1radioButton, 0, wxALIGN_CENTER);
 	selectPadSizer->AddSpacer(20);
 	selectPadSizer->Add(GUI_Controls.mousePad2radioButton, 0, wxALIGN_CENTER);
 	GUI_Controls.mousePad1radioButton->SetValue(true);
 	
 	// Nullifies All for mouse and help buttons
-	GUI_Controls.btnMouseNullifiesAll = new wxButton(panel, ID_BTN_NULL_MOUSE, "Nullifies All");
-	GUI_Controls.btnMouseHelp = new wxButton(panel, ID_BTN_HELP_MOUSE, "Help");
-	GUI_Controls.btnMouseHelp->Bind(wxEVT_BUTTON, OnClickMouseHelpButton);
-	GUI_Controls.btnMouseNullifiesAll->Bind(wxEVT_BUTTON, OnClickMouseNullifiesAll);
+	GUI_Controls.btnMouseNullifiesAll = new CButton(panel, ID_BTN_NULL_MOUSE, "Nullifies All");
+	GUI_Controls.btnMouseHelp = new CButton(panel, ID_BTN_HELP_MOUSE, "Help");
+	GUI_Controls.btnMouseHelp->Bind(wxEVT_LEFT_UP, OnClickMouseHelpButton);
+	GUI_Controls.btnMouseNullifiesAll->Bind(wxEVT_LEFT_UP, OnClickMouseNullifiesAll);
 
 	wxStaticBoxSizer *sensitivitySizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Sensitivity");
 	GUI_Controls.cmbMouseSensitivity = new wxComboBox(panel, wxID_ANY, "1", wxDefaultPosition, 

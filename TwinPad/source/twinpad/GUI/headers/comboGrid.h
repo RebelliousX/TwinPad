@@ -161,7 +161,28 @@ class CComboGrid : public wxGrid
 public:
 	CComboGrid(wxWindow *window, wxWindowID id, wxPoint &point, wxSize &size)
 		: wxGrid(window, id, point, size)
-	{ }
+	{
+		// prevent moving to next row or cell when pressing tab
+		Connect(wxEVT_GRID_TABBING, wxGridEventHandler(CComboGrid::StopTabbing));
+		// prevent the use of arrow keys
+		Connect(wxEVT_KEY_DOWN, wxCommandEventHandler(CComboGrid::DisableArrowKeys));
+	}
+
+	// Disable tab traversal
+	virtual bool AcceptsFocus() const { return false; }
+	virtual bool AcceptsFocusFromKeyboard() const { return false; }
+private:
+	void StopTabbing(wxGridEvent &ev) { return; }
+	void DisableArrowKeys(wxCommandEvent &ev) 
+	{
+		if ( (((wxKeyEvent&)ev).GetKeyCode() == WXK_UP)		||
+			 (((wxKeyEvent&)ev).GetKeyCode() == WXK_DOWN)	||
+			 (((wxKeyEvent&)ev).GetKeyCode() == WXK_RIGHT)	||
+			 (((wxKeyEvent&)ev).GetKeyCode() == WXK_LEFT) )
+				return;
+		else
+			ev.Skip();
+	}
 };
 
 // Custom Cell Renderer for draw images (not strings) on Cells
