@@ -63,9 +63,9 @@ void CreateControls(TwinPad_Frame *window)
 	// Check to see if configuration files are present, otherwise create null ones
 	wxString file1, file2;
 	file1 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
-	IsFileOkAndFix(file1.ToStdString(), GUI_Controls.GetTwinPad_Header().ToStdString());
+	IsFileOkAndFix(file1, GUI_Controls.GetTwinPad_Header());
 	file2 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
-	IsFileOkAndFix(file2.ToStdString(), GUI_Controls.GetTwinPad_ComboHeader().ToStdString());
+	IsFileOkAndFix(file2, GUI_Controls.GetTwinPad_ComboHeader());
 
 	LoadTwinPadConfigurations();
 
@@ -135,7 +135,7 @@ void CreateControls(TwinPad_Frame *window)
 	GUI_Controls.chkDisableMouse->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_MOUSE] ? 1 : 0);
 	GUI_Controls.chkDisableCombos->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_COMBOS] ? 1 : 0);
 	GUI_Controls.chkDisableOnFlyKey->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_HOTKEY] ? 1 : 0);
-	GUI_Controls.chkEnableHack->SetValue(GUI_Config.m_extra[GUI_Config.ENABLE_HACK] ? 0 : 1);
+	GUI_Controls.chkEnableHack->SetValue(GUI_Config.m_extra[GUI_Config.ENABLE_HACK] ? 1 : 0);
 
 	wxString keyName;
 	if (GUI_Config.m_hotKey != 0)

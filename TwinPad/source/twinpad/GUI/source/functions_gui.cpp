@@ -1,8 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-
 #include "fastCompile.h"
 #include "twinpad_gui.h"
 #include "timers_functions.h"
@@ -26,142 +21,169 @@ extern GUI_Configurations GUI_Config;
 // Creates a default TwinPad.ini file
 void CreateNullFile()
 {
-	int counter;
-	
-	std::string file = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
-	std::string strPad;
-
-	std::ofstream nullfile(file.c_str(), std::ios::out);
-
-	if (!nullfile.is_open())
+	wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
+	wxTextFile file(fileName);
+	if (!file.Open(fileName))
 	{
-		wxMessageBox("Couldn't create TwinPad.ini configuration file into the specified location!\n\n"
-			"\nMake sure at least 'inis' folder exists in the same directory with the emu."
-			"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-		GUI_Controls.mainFrame->Close(true);
-	}
-
-	// Write header and config version number
-	nullfile << GUI_Controls.GetTwinPad_Header() << std::endl;
-	// Write assigned keys for both pads
-	for(int pad = 0; pad <= 1; pad++)
-	{
-		if (pad == 0) 
-			strPad = "[0][";
-		else
-			strPad = "[1][";
-		
-		counter = 0;
-		while(counter < 24)		// 24 PS buttons
+		if (!file.Create(fileName))
 		{
-			nullfile << strPad << counter << "] = 0x0" << std::endl;
-			// GUI_Config.m_pad[pad][counter] = 0;
-			counter++;
+			wxMessageBox("Couldn't create TwinPad.ini configuration file into the specified location!\n\n"
+				"\nMake sure at least 'inis' folder exists in the same directory with the emu."
+				"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+			::exit(0);
 		}
-		nullfile << strPad << counter << "] = 0x0" << std::endl;  // for walk/run value
+		else
+			file.Open(fileName);
 	}
 
-	// Write Mouse configuration
-	counter = 0;
-	while(counter < 10)
-	{
-		nullfile << wxString("[") << counter << "] = 36" << std::endl;
-		GUI_Config.m_mouse[counter] = 36;
-		counter++;
-	}
-	nullfile << "0" << std::endl;		/*  Mouse as PAD 1  */
-	GUI_Config.m_mouseAsPad = 0;
-	nullfile << "1" << std::endl;		/*  Mouse sensitivity default value.  */
-	GUI_Config.m_mouseSensitivity = 1;
+	GUI_Configurations null_config;
 
-	// Write 'Extra Options' configuration
-	counter = 0;
-	while(counter <= 6)
-	{
-		nullfile << "0" << std::endl;
-		GUI_Config.m_extra[counter] = 0;
-		counter++;
-	}
+	// Erase contents
+	file.Clear();
+
+	// Add TwinPad Header
+	file.AddLine(GUI_Controls.GetTwinPad_Header());
 	
-	nullfile.close();
+	for (int pad = 0; pad < 2; ++pad)
+	{
+		file.AddLine(wxString::Format("{-- Pad #%d --}", pad + 1));
+		for (int button = 0; button < 25; ++button)
+			file.AddLine(wxString::Format("[%d][%d]) = 0x%X", pad, button, null_config.m_pad[pad][button]));
+	}
+
+	file.AddLine("{--Mouse Options--}");
+
+	for (int mouseButton = 0; mouseButton < 10; ++mouseButton)
+		file.AddLine(wxString::Format("[%d] = %d", mouseButton, null_config.m_mouse[mouseButton]));
+
+	file.AddLine(wxString::Format("Mouse as pad 1/2  (0/1) = %d", null_config.m_mouseAsPad));
+	file.AddLine(wxString::Format("Mouse Sensitivity 	= %d", null_config.m_mouseSensitivity));
+	file.AddLine("{ --Extra Options-- }");
+
+	file.AddLine(wxString::Format("Disable Pad 1 \t\t= %d", null_config.m_extra[null_config.DISABLE_PAD1]));
+	file.AddLine(wxString::Format("Disable Pad 2 \t\t= %d", null_config.m_extra[null_config.DISABLE_PAD2]));
+	file.AddLine(wxString::Format("Disable KeyEvents \t= %d", null_config.m_extra[null_config.DISABLE_KEYEVENTS]));
+	file.AddLine(wxString::Format("Disable Mouse \t\t= %d", null_config.m_extra[null_config.DISABLE_MOUSE]));
+	file.AddLine(wxString::Format("Disable Combos \t\t= %d", null_config.m_extra[null_config.DISABLE_COMBOS]));
+	file.AddLine(wxString::Format("Disable Hot Key \t= %d", null_config.m_extra[null_config.DISABLE_HOTKEY]));
+	file.AddLine(wxString::Format("Enable Hack \t\t= %d", null_config.m_extra[null_config.ENABLE_HACK]));
+	file.AddLine(wxString::Format("Hot Key \t\t= 0x%X", null_config.m_hotKey));
+
+	file.Write();
+	file.Close();
 }
 
 // Creates a default TwinPad_COMBOs.ini file
 void CreateNullComboFile()
 {
-	std::string file = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
-	std::ofstream txtFile(file.c_str(), std::ios::out);
-
-	if (!txtFile.is_open())
+	wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
+	wxTextFile file(fileName);
+	if (!file.Open(fileName))
 	{
-		wxMessageBox("Couldn't create TwinPad_Combos.ini configuration file into the specified location!\n\n"
-			"\nMake sure at least 'inis' folder exists in the same directory with the emu."
-			"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+		if (!file.Create(fileName))
+		{
+			wxMessageBox("Couldn't create TwinPad_Combos.ini configuration file into the specified location!\n\n"
+				"\nMake sure at least 'inis' folder exists in the same directory with the emu."
+				"\nAnd that you have permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+			::exit(0);
+		}
+		else
+			file.Open(fileName);
+	}
+
+	file.Clear();
+	file.AddLine(GUI_Controls.GetTwinPad_ComboHeader());
+	file.AddLine("ComboCount\t = 0");
+
+	file.Write();
+	file.Close();
+}
+
+bool IsFileOkAndFix(const wxString &fileName, const wxString &header)
+{
+	int select = 0;
+
+	if (header == GUI_Controls.GetTwinPad_Header())
+		select = 1;
+	else if (header == GUI_Controls.GetTwinPad_ComboHeader())
+		select = 2;
+	else
+	{
+		wxMessageBox("Unknown header passed to IsFileOkAndFix()", "Fatal error! Exiting.", wxICON_ERROR);
 		::exit(0);
 	}
 
-	txtFile << GUI_Controls.GetTwinPad_ComboHeader() << std::endl;
-	txtFile << "ComboCount\t= 0\n";
+	wxTextFile file(fileName);
+	if (!file.Exists())
+	{
+		file.Create();
+		file.Write();
+		file.Close();
+		if (select == 1)
+		{
+			CreateNullFile();
+			return true;
+		}
+		else if (select == 2)
+		{
+			CreateNullComboFile();
+			return true;
+		}
+		else
+		{
+			wxMessageBox(wxString::Format("Couldn't create %s configuration file into the specified location!\n\n"
+				"\nMake sure at least 'inis' folder exists in the same directory with the emu."
+				"\nAnd that you have permission to read/write in that directory.", fileName),
+				"Open files failed!", wxICON_ERROR);
+			::exit(0);
+		}
+	}
 
-	txtFile.close();
-}
-
-bool IsFileOkAndFix(const std::string &file, const std::string &header)
-{
-	std::ifstream f(file);
-		
-	std::string str = "";
+	wxString str	= "";
 	wxString strMsg = "";
 
-	int select = 0;
-	if (header == GUI_Controls.GetTwinPad_Header())
-		select = 1;		// TwinPad.ini
-	else if (header == GUI_Controls.GetTwinPad_ComboHeader())
-		select = 2;		// TwinPad_COMBOs.ini
-		
-	// First: Check if file can be opened
-	if (f.is_open())
+	// Check the Header if version is compatible
+	if (file.Open(fileName))
 	{
-		// Second: Check the Header if version is compatible
-		getline(f, str);
+		str = file.GetFirstLine();
 		if (select == 1)
 		{
 			if (str != GUI_Controls.GetTwinPad_Header())
 			{
-				f.close();
+				file.Close();
 				CreateNullFile();
 				int len = str.length();
-				std::string strCmp = "TwinPad Configurations";
-				std::string substring = str.substr(1, strCmp.length());
+				wxString strCmp = "TwinPad Configurations";
+				wxString substring = str.substr(1, strCmp.length());
 				if (len == GUI_Controls.GetTwinPad_Header().length() && substring == strCmp)
 					wxMessageBox(wxString::Format("TwinPad configuration file is old, all previous settings are lost.\n\n"
-						"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_Header()),
-						"Oops!", wxICON_INFORMATION);
+					"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_Header()),
+					"Oops!", wxICON_INFORMATION);
 				else
 					wxMessageBox("TwinPad configuration file is corrupted, all previous settings are lost.\n\n",
-									"Oops!", wxICON_EXCLAMATION);
-					
+					"Oops!", wxICON_EXCLAMATION);
+
 				return true;	// Created null file, then it is OK. If didn't create null file, shouldn't have reached here.
 			}
 			else
 				return true;	// File is OK
 		}
-		else if (select == 2)
+		else
 		{
 			if (str != GUI_Controls.GetTwinPad_ComboHeader())
 			{
-				f.close();
+				file.Close();
 				CreateNullComboFile();
 				int len = str.length();
-				std::string strCmp = "TwinPad COMBO Configurations";
-				std::string substring = str.substr(1, strCmp.length());
+				wxString strCmp = "TwinPad COMBO Configurations";
+				wxString substring = str.substr(1, strCmp.length());
 				if (len == GUI_Controls.GetTwinPad_ComboHeader().length() && substring == strCmp)
 					wxMessageBox(wxString::Format("TwinPad COMBOs configuration file is old, all previous settings are lost.\n\n"
-						"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_ComboHeader()),
-						"Oops!", wxICON_INFORMATION);
+					"Old version: %s\nNew version: %s", str, GUI_Controls.GetTwinPad_ComboHeader()),
+					"Oops!", wxICON_INFORMATION);
 				else
 					wxMessageBox("TwinPad COMBOs configuration file is corrupted, all previous settings are lost.\n\n",
-									"Oops!", wxICON_EXCLAMATION);
+					"Oops!", wxICON_EXCLAMATION);
 
 				return true;	// Create null file, then is OK
 			}
@@ -169,14 +191,8 @@ bool IsFileOkAndFix(const std::string &file, const std::string &header)
 				return true;	// File is OK
 		}
 	}
-	else
-	{
-		if (select == 1) CreateNullFile();
-		if (select == 2) CreateNullComboFile();
-	}
-	
-	f.close();
-	return false;
+	file.Close();
+	return true;
 }
 
 void LoadTwinPadConfigurations()
@@ -331,7 +347,7 @@ void SaveTwinPadConfigurations()
 	file.AddLine(wxString::Format("Disable Mouse \t\t= %d", (GUI_Controls.chkDisableMouse->GetValue() ? 1 : 0)));
 	file.AddLine(wxString::Format("Disable Combos \t\t= %d", (GUI_Controls.chkDisableCombos->GetValue() ? 1 : 0)));
 	file.AddLine(wxString::Format("Disable Hot Key \t= %d", (GUI_Controls.chkDisableOnFlyKey->GetValue() ? 1 : 0)));
-	file.AddLine(wxString::Format("Enable Hack \t\t= %d", (GUI_Controls.chkEnableHack->GetValue() ? 0 : 1)));
+	file.AddLine(wxString::Format("Enable Hack \t\t= %d", (GUI_Controls.chkEnableHack->GetValue() ? 1 : 0)));
 	// Hot key for showing config window
 	unsigned char key = 0;
 	wxString name = "DIK_" + GUI_Controls.lblHotKey->GetLabel();
@@ -344,6 +360,7 @@ void SaveTwinPadConfigurations()
 	file.AddLine(wxString::Format("Hot Key \t\t= 0x%X", key));
 
 	file.Write();
+	file.Close();
 }
 
 // Save TwinPad combo configurations in Combo tab

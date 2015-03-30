@@ -130,6 +130,8 @@ public:
 				m_pad[i][j] = 0;
 		for (int i = 0; i < 10; ++i)
 			m_mouse[i] = 36;
+		for (int i = 0; i < 7; ++i)
+			m_extra[i] = 0;
 		m_mouseAsPad = 0;
 		m_mouseSensitivity = 1;
 		m_hotKey = 0;
@@ -146,7 +148,7 @@ public:
 		   DISABLE_COMBOS, DISABLE_HOTKEY, ENABLE_HACK };
 };
 
-bool IsFileOkAndFix(const std::string &file, const std::string &header);
+bool IsFileOkAndFix(const wxString &file, const wxString &header);
 void CreateNullFile();
 void CreateNullComboFile();
 void LoadTwinPadConfigurations();
