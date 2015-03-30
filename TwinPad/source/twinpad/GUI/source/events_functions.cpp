@@ -189,6 +189,10 @@ void OnClickAutoNavigate(wxMouseEvent &ev)
 // This function handles the click event for Cancel button
 void OnClickOk(wxMouseEvent &ev)
 {
+	// save current combo first (the one showing in grid), in case we modified it.
+	// Because it is not saved until we switch to another combo.
+	SaveGridToCombo(GUI_Controls.cmbComboName->GetStringSelection());
+
 	SaveTwinPadConfigurations();
 	SaveTwinPadComboConfigurations();
 

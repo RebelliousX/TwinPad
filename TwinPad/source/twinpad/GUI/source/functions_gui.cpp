@@ -366,7 +366,50 @@ void SaveTwinPadConfigurations()
 // Save TwinPad combo configurations in Combo tab
 void SaveTwinPadComboConfigurations()
 {
+	wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
+	wxTextFile file(fileName);
 
+	// Erase contents
+	file.Clear();
+
+	// Add Combo file header
+	file.AddLine(GUI_Controls.GetTwinPad_ComboHeader());
+
+	// Add number of Combos
+	file.AddLine(wxString::Format("ComboCount \t= %d", GUI_Controls.Combos.size()));
+
+	for (unsigned int combo = 0; combo < GUI_Controls.Combos.size(); ++combo)
+	{
+		file.AddLine(wxString::Format("{-- %s --}", GUI_Controls.Combos[combo]->GetName()));
+		file.AddLine(wxString::Format("ActionCount \t= %d", GUI_Controls.Combos[combo]->GetNumberActions()));
+		file.AddLine(wxString::Format("ComboAsPad \t= %d", GUI_Controls.Combos[combo]->GetPad()));
+		file.AddLine(wxString::Format("ComboKey \t= 0x%X", GUI_Controls.Combos[combo]->GetKey()));
+		file.AddLine("-===================-");
+
+		for (int action = 0; action < GUI_Controls.Combos[combo]->GetNumberActions(); ++action)
+		{
+			file.AddLine(wxString::Format("ActionDelay \t\t= %d", GUI_Controls.Combos[combo]->GetAction(action)->GetDelay()));
+			file.AddLine(wxString::Format("NumOfButtons \t\t= %d", GUI_Controls.Combos[combo]->GetAction(action)->GetNumberOfButtons()));
+			
+			wxString line_action = "";
+			
+			for (int button = 0; button < GUI_Controls.Combos[combo]->GetAction(action)->GetNumberOfButtons(); ++button)
+			{
+				wxString buttonNumber = "";
+				wxString buttonSensitivity = "";
+
+				buttonNumber = wxString::Format("(%d, ", GUI_Controls.Combos[combo]->GetAction(action)->GetButton(button)->buttonValue);
+				buttonSensitivity = wxString::Format("%d) ", GUI_Controls.Combos[combo]->GetAction(action)->GetButton(button)->buttonSensitivity);
+
+				line_action += (buttonNumber + buttonSensitivity);
+			}
+
+			file.AddLine(line_action);
+		}
+	}
+
+	file.Write();
+	file.Close();
 }
 
 // Loading images into controls
