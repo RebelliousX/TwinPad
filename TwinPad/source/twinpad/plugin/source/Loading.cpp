@@ -1,4 +1,3 @@
-#include <windows.h>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -6,13 +5,8 @@
 
 #include "Loading.h"
 
+#include "fastCompile.h"
 #include "twinpad_gui.h"
-
-#ifndef WX_PRECOM
-#include "wx/wx.h"
-#else
-#include "wx/wxprec.h"
-#endif
 
 using std::vector;
 
@@ -148,64 +142,18 @@ void LoadCombos()
 
 // We only need to load the KEYS, because TwinPad.exe handle the job of Saving them,
 void LoadConfig() {
-	static bool LoadOnce = false;
 
-	if (LoadOnce) return;
+	LoadTwinPadConfigurations();
 
-	LoadOnce = true;
+	for (int pad = 0; pad < 2; ++pad)
+		for (int button = 0; button < 25; ++button)
+			confKeys[pad][button] = GUI_Config.m_pad[pad][button];
 
-    FILE *f;
-	char str[256];
-    char cfg[1024];
-	int i, j;
-
-	sprintf(cfg,"inis/TwinPad.ini");
-
-    f = fopen(cfg,"r");
-    if (f == NULL) return;
-	// Skip Header.
-	fseek(f, 31, SEEK_SET); // Header is 29 character + '\n' + carriage return.
-
-	// Read data
-	for (j=0; j<2; j++) {
-		for (i=0; i<25; i++) {
-			sprintf(str, "[%d][%d] = 0x%%x\n", j, i);
-			fscanf(f, str, &confKeys[j][i]);
-		}
-	}
-	
-	for (i = 0; i < 8; i++)
-	{
-		sprintf(str, "[%d] = %%d\n", i);
-		fscanf(f, str, &MouseButtonMap[i]);
-	}
-	sprintf(str, "[%d] = %%d\n", i);
-	fscanf(f, str, &mouseScrollUp);
-	i++;
-	sprintf(str, "[%d] = %%d\n", i);
-	fscanf(f, str, &mouseScrollDown);
-
-	fscanf(f, "%d", &mousePAD);
-	fscanf(f, "%d", &mouseSensitivity);
-	fscanf(f, "%d", &ExtendedOptions.IsEnabled_PAD1);
-	fscanf(f, "%d", &ExtendedOptions.IsEnabled_PAD2);
-	fscanf(f, "%d", &ExtendedOptions.IsEnabled_MOUSE);
-	fscanf(f, "%d", &ExtendedOptions.IsEnabled_COMBOS);
-	fscanf(f, "%d", &ExtendedOptions.IsEnabled_ComboHotKey);
-	fscanf(f, "%d", &ExtendedOptions.IsEnabled_KeyEvents);
-	fscanf(f, "%d", &ExtendedOptions.IsEnabled_FasterCombo);
-    fclose(f);
-
-	// I have to invert every data member of ExtendedOptions, in the INI
-	// 0 = Enabled, 1 = Disabled, which is the state of the CheckBoxes..
-	// these from 1 to 0..
-	ExtendedOptions.IsEnabled_PAD1		  = !ExtendedOptions.IsEnabled_PAD1;
-	ExtendedOptions.IsEnabled_PAD2		  = !ExtendedOptions.IsEnabled_PAD2;
-	ExtendedOptions.IsEnabled_MOUSE		  = !ExtendedOptions.IsEnabled_MOUSE;
-	ExtendedOptions.IsEnabled_KeyEvents   = !ExtendedOptions.IsEnabled_KeyEvents;
-	ExtendedOptions.IsEnabled_COMBOS      = !ExtendedOptions.IsEnabled_COMBOS;
-	ExtendedOptions.IsEnabled_ComboHotKey = !ExtendedOptions.IsEnabled_ComboHotKey;
-	// The last option we leave it intact, it's the only one means ENABLE, all the other are DISABLEd, lol..
-	// ExtendedOptions.IsEnabled_FasterCombo = ExtendedOptions.IsEnabled_FasterCombo;
+	ExtendedOptions.IsEnabled_PAD1 = !GUI_Config.m_extra[GUI_Config.DISABLE_PAD1];
+	ExtendedOptions.IsEnabled_PAD2 = !GUI_Config.m_extra[GUI_Config.DISABLE_PAD2];
+	ExtendedOptions.IsEnabled_KeyEvents = !GUI_Config.m_extra[GUI_Config.DISABLE_KEYEVENTS];
+	ExtendedOptions.IsEnabled_MOUSE = !GUI_Config.m_extra[GUI_Config.DISABLE_MOUSE];
+	ExtendedOptions.IsEnabled_COMBOS = !GUI_Config.m_extra[GUI_Config.DISABLE_COMBOS];
+	ExtendedOptions.IsEnabled_HotKey = !GUI_Config.m_extra[GUI_Config.DISABLE_HOTKEY];
+	ExtendedOptions.m_hotKey = GUI_Config.m_hotKey;
 }
-

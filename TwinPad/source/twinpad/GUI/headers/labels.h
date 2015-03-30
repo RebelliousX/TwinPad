@@ -235,10 +235,12 @@ const wxString strEXTRA_INFO =	"It might be necessary to suppress some features 
 								"Or if wanted to handled by different pad plugin (e.g., 2nd one).\n" \
 								"So I give the chance to disable some features.\n";
 
-const wxString strEXTRA_ONFLY = "Disable the Hot Key defined below to Load TwinPad Config Utility\n" \
-								"on the fly, the hot key is usefull when running COMBOs Editor for\n" \
-								"example while playing, testing and editing the Combo without\n" \
-								"exiting the Emu. Or simply changing your controls.";
+const wxString strEXTRA_ONFLY = "Disable the hot key defined below to load TwinPad configurations\n" \
+								"on the fly, the hot key is usefull when running COMBOs editor for\n" \
+								"example while playing, - or simply changing your controls. - testing\n" \
+								"and editing Combos without exiting the game or the GS/GPU window.\n" \
+								"Use the emu to summon TwinPad, edit then save. Finally load the new\n" \
+								"contents by pressing the assigned key below.";
 
 const wxString strEXTRA_KEY   = "Disable the plugin from sending key events to the emu,\n" \
 								"when running 2 different pad plugins. To prevent\n" \

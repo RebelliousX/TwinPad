@@ -1,5 +1,4 @@
 #include "fastCompile.h"
-
 #include "TwinPad.h"
 #include "main.h"
 #include "Externals.h"
@@ -436,11 +435,15 @@ void AllInOne(int pad)
 	}
 
 	// HotKey for Loading COMBOs on the fly :), usefull when testing/editing COMBOs while playing.
-	if (ExtendedOptions.IsEnabled_ComboHotKey)
+	if (ExtendedOptions.IsEnabled_HotKey)
 	{
-		if ( DIKEYDOWN(BufferKeyState, DIK_SPACE) && 
-			!DIKEYDOWN(KeyState, DIK_SPACE))
-				LoadCombos();
+		if (DIKEYDOWN(BufferKeyState, ExtendedOptions.m_hotKey) &&
+			!DIKEYDOWN(KeyState, ExtendedOptions.m_hotKey))
+		{
+			// Load configuration from 'TwinPad.ini' and 'TwinPad_COMBOs.ini'
+			LoadConfig();
+			LoadCombos();
+		}
 	}
 
 	// // Process Special EmuKeys and Map DirectInput to VirtualKey
