@@ -152,6 +152,7 @@ bool IsFileOkAndFix(const wxString &file, const wxString &header);
 void CreateNullFile();
 void CreateNullComboFile();
 void LoadTwinPadConfigurations();
+void LoadTwinPadComboConfigurations();
 
 // Forward declaration is necessary, to avoid problems
 class CPS_Anim;

@@ -191,7 +191,8 @@ void OnClickOk(wxMouseEvent &ev)
 {
 	// save current combo first (the one showing in grid), in case we modified it.
 	// Because it is not saved until we switch to another combo.
-	SaveGridToCombo(GUI_Controls.cmbComboName->GetStringSelection());
+	if (GUI_Controls.cmbComboName->GetStringSelection() != "")
+		SaveGridToCombo(GUI_Controls.cmbComboName->GetStringSelection());
 
 	SaveTwinPadConfigurations();
 	SaveTwinPadComboConfigurations();

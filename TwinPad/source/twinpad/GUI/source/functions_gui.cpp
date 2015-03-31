@@ -286,6 +286,126 @@ void LoadTwinPadConfigurations()
 	file.Close();
 }
 
+// Load TwinPad Combos configurations
+void LoadTwinPadComboConfigurations()
+{
+	wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
+	wxTextFile file(fileName);
+	file.Open(fileName);
+
+	// Erase contents of COMBOs vector
+	for (unsigned int i = 0; i < GUI_Controls.Combos.size(); ++i)
+		delete GUI_Controls.Combos[i];
+	GUI_Controls.Combos.clear();
+
+	// Skip TwinPad COMBOs header
+	file.GetFirstLine();
+
+	wxStringTokenizer token;
+	wxString line, subStr;
+	long val = 0;
+
+	// Combo count
+	line = file.GetNextLine();
+	token.SetString(line, "=", wxTOKEN_STRTOK);
+	token.GetNextToken();				// skip ComboCount
+	subStr = token.GetNextToken();		// interested in the value here
+	subStr.ToLong(&val, 10);
+
+	int comboCount = (int)val;
+
+	for (int combo = 0; combo < comboCount; ++combo)
+	{
+		CCombo *tempCombo = new CCombo;
+		
+		line = file.GetNextLine();
+		line = line.substr(4, (line.length() - 8));	// trim beginning "{-- " and ending " --}
+		tempCombo->SetName(line);
+
+		line = file.GetNextLine();
+		token.SetString(line, "=", wxTOKEN_STRTOK);	
+		token.GetNextToken();						// skip ActionCount =
+		subStr = token.GetNextToken();				// interested in the value here
+		subStr.ToLong(&val, 10);
+		
+		int actionCount = (int)val;
+
+		line = file.GetNextLine();
+		token.SetString(line, "=", wxTOKEN_STRTOK);
+		token.GetNextToken();						// skip ComboAsPad =
+		subStr = token.GetNextToken();				// interested in the value here
+		subStr.ToLong(&val, 10);
+		tempCombo->SetPad((int)val);
+
+		line = file.GetNextLine();
+		token.SetString(line, "=", wxTOKEN_STRTOK);
+		token.GetNextToken();						// skip ComboKey =
+		subStr = token.GetNextToken();				// interested in the value here
+		subStr.ToLong(&val, 16);
+		tempCombo->SetKey((int)val);
+
+		file.GetNextLine();							// skip line separator '-===================-'
+
+		for (int action = 0; action < actionCount; ++action)
+		{
+			CAction *tempAction = new CAction;
+			
+			line = file.GetNextLine();
+			token.SetString(line, "=", wxTOKEN_STRTOK);
+			token.GetNextToken();						// skip ActionDelay =
+			subStr = token.GetNextToken();				// interested in the value here
+			subStr.ToLong(&val, 10);
+			tempAction->SetDelay((int)val);
+
+			line = file.GetNextLine();
+			token.SetString(line, "=", wxTOKEN_STRTOK);
+			token.GetNextToken();						// skip NumOfButtons =
+			subStr = token.GetNextToken();				// interested in the value here
+			subStr.ToLong(&val, 10);
+
+			int buttonCount = (int)val;
+
+			line = file.GetNextLine();					// contains buttons and their sensitivity
+
+			for (int button = 0; button < buttonCount; ++button)
+			{
+				CCellValue tempButton;
+				wxString subSubStr = "";
+				
+				int trimNumChar = 0;
+
+				token.SetString(line, ")", wxTOKEN_STRTOK);
+				subStr = token.GetNextToken();			// Get "(nn, mmm"
+				subSubStr = subStr;						// save to deal with second value
+				trimNumChar = subStr.length() + 2;		// save "(nn, mmm) " length to trim line later, 2 for ") "
+				token.SetString(subSubStr, "(", wxTOKEN_STRTOK);
+				subSubStr = token.GetNextToken();		// skip '('
+				token.SetString(subSubStr, ",", wxTOKEN_STRTOK);
+				subSubStr = token.GetNextToken();		// Get 'nn'
+				subSubStr.ToLong(&val, 10);
+				tempButton.buttonValue = (int)val;
+
+				token.SetString(subStr, " ", wxTOKEN_STRTOK);
+				token.GetNextToken();							// skip '(nn, '
+				subSubStr = token.GetNextToken();				// Get 'mmm'
+				subSubStr.ToLong(&val, 10);
+				tempButton.buttonSensitivity = (int)val;
+
+				tempButton.buttonName = PS_LABEL[tempButton.buttonValue].name;
+
+				line = line.substr(trimNumChar, line.length());
+				
+				tempAction->AddButton(&tempButton);
+			}
+			tempCombo->AddAction(tempAction);
+			delete tempAction;
+			tempAction = 0;
+		}
+		GUI_Controls.Combos.push_back(tempCombo);
+	}
+	file.Close();
+}
+
 // Save TwinPad configurations (Keyboard, Mouse and the options in Misc tab)
 void SaveTwinPadConfigurations()
 {

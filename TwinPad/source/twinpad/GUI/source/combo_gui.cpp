@@ -355,31 +355,34 @@ void SaveGridToCombo(wxString &strUserInput)
 		}
 	}
 
-	// Save the COMBO from the grid (before clearing the grid) into Combos container
-	// if it was erased above, it will be recreated here
-	CCombo *curCombo = new CCombo;
-	curCombo->SetKey((int)keyValue);
-	curCombo->SetName(strUserInput);
-	curCombo->SetPad(pad);
-	for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+	if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
 	{
-		CAction *action = new CAction;
-		CCellValue *val;
-		// for column 0, CCellValue's buttonName = Action Delay, while all other members = -1
-		val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
-		long int delay;
-		val->buttonName.ToLong(&delay);
-		/* GUI_Controls.virtualGrid->GetCellValue(row, 0).ToLong(&delay); */
-		action->SetDelay(delay);
-
-		for (int col = 1; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+		// Save the COMBO from the grid (before clearing the grid) into Combos container
+		// if it was erased above, it will be recreated here
+		CCombo *curCombo = new CCombo;
+		curCombo->SetKey((int)keyValue);
+		curCombo->SetName(strUserInput);
+		curCombo->SetPad(pad);
+		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
 		{
-			val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
-			// if button is not empty, add it
-			if (val->buttonName != "")
-				action->AddButton(val);
+			CAction *action = new CAction;
+			CCellValue *val;
+			// for column 0, CCellValue's buttonName = Action Delay, while all other members = -1
+			val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
+			long int delay;
+			val->buttonName.ToLong(&delay);
+			/* GUI_Controls.virtualGrid->GetCellValue(row, 0).ToLong(&delay); */
+			action->SetDelay(delay);
+
+			for (int col = 1; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+			{
+				val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+				// if button is not empty, add it
+				if (val->buttonName != "")
+					action->AddButton(val);
+			}
+			curCombo->AddAction(action);
 		}
-		curCombo->AddAction(action);
+		GUI_Controls.Combos.push_back(curCombo);
 	}
-	GUI_Controls.Combos.push_back(curCombo);
 }

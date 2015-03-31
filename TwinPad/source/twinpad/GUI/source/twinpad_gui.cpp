@@ -57,6 +57,9 @@ void OnNotebookChange(wxCommandEvent &evt)
 
 void CreateControls(TwinPad_Frame *window)
 {
+	// Clean some important stuff for subsequent calls to open twinpad (mainly for combo)
+	GUI_Controls.Clean();
+
 	// Save the pointer of the main frame to make access easier
 	GUI_Controls.mainFrame = window;
 
@@ -68,6 +71,7 @@ void CreateControls(TwinPad_Frame *window)
 	IsFileOkAndFix(file2, GUI_Controls.GetTwinPad_ComboHeader());
 
 	LoadTwinPadConfigurations();
+	LoadTwinPadComboConfigurations();
 
 	GUI_Controls.noteBook = new CNotebook(window, ID_NOTEBOOK);
 	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
@@ -155,9 +159,9 @@ void CreateControls(TwinPad_Frame *window)
 	GUI_Controls.lblHotKey->SetLabel(keyName);
 
 	// Combo tab:
+	for (unsigned int combo = 0; combo < GUI_Controls.Combos.size(); ++combo)
+		GUI_Controls.cmbComboName->Append(GUI_Controls.Combos[combo]->GetName());
 
-	// TODO: Implement loading TwinPad combo file first.
-	/*------- TODO -------*/
 }
 
 void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)

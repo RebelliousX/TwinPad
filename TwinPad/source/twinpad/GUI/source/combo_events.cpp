@@ -320,7 +320,7 @@ void OnClickNewCombo(wxMouseEvent &ev)
 		if (strResponse == GUI_Controls.Combos[i]->GetName())
 		{
 			wxMessageBox("There is another COMBO with the same name! Please choose a different name.\n\n"
-				"Note: Name is NOT case sensitive, that is 'Orange', 'oRange' or 'ORANGE' are not the same name.",
+				"Note: Name is case sensitive, that is 'Orange', 'oRange' or 'ORANGE' are not the same name.",
 				"Duplicate COMBO name found!", wxICON_EXCLAMATION);
 			return;
 		}
@@ -713,30 +713,33 @@ void OnChangeComboName(wxCommandEvent &ev)
 			}
 		}
 
-		CCombo *curCombo = new CCombo;
-		curCombo->SetKey((int)keyValue);
-		curCombo->SetName(strPrevious);
-		curCombo->SetPad(pad);
-		for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
+		if (strPrevious != "")
 		{
-			CAction *action = new CAction;
-			CCellValue *val;
-			// for column 0, CCellValue's buttonName = Action Delay, while all other members = -1
-			val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
-			long int delay;
-			val->buttonName.ToLong(&delay);
-			action->SetDelay(delay);
-
-			for (int col = 1; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+			CCombo *curCombo = new CCombo;
+			curCombo->SetKey((int)keyValue);
+			curCombo->SetName(strPrevious);
+			curCombo->SetPad(pad);
+			for (int row = 0; row < GUI_Controls.virtualGrid->GetNumberRows(); ++row)
 			{
-				val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
-				// if button is not empty, add it
-				if (val->buttonName != "")
-					action->AddButton(val);
+				CAction *action = new CAction;
+				CCellValue *val;
+				// for column 0, CCellValue's buttonName = Action Delay, while all other members = -1
+				val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, 0, "");
+				long int delay;
+				val->buttonName.ToLong(&delay);
+				action->SetDelay(delay);
+
+				for (int col = 1; col < GUI_Controls.virtualGrid->GetNumberCols(); ++col)
+				{
+					val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
+					// if button is not empty, add it
+					if (val->buttonName != "")
+						action->AddButton(val);
+				}
+				curCombo->AddAction(action);
 			}
-			curCombo->AddAction(action);
+			GUI_Controls.Combos.push_back(curCombo);
 		}
-		GUI_Controls.Combos.push_back(curCombo);
 	}
 	
 	// Clear grid - delete combo

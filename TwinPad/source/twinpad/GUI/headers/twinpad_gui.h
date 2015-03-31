@@ -161,6 +161,18 @@ public:
 		Combo.clear(); */
 	}
 
+	void Clean()
+	{
+		indexOfButton = -1;
+		curTab = 0;
+		strPreviousComboSelection = "";
+
+		for (std::vector<CCombo *>::iterator it = Combos.begin(); it != Combos.end(); ++it)
+			if (*it)
+				delete *it;
+		Combos.clear();
+	}
+
 	TwinPad_Frame *mainFrame;
 	CNotebook *noteBook;
 
@@ -208,7 +220,6 @@ public:
 	wxComboBox *cmbComboName;
 	wxComboBox *cmbWhichPad;
 	wxStaticText *lblComboKey;
-
 	// for use when changing ComboBox selection
 	wxString strPreviousComboSelection;
 
