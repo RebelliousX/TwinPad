@@ -78,7 +78,7 @@ s32  _PADopen(HWND hDsp) {
 	}
 
 	LoadConfig();
-	//LoadCombos();
+	LoadCombos();
 
 	// If DirectInput Fails, return error..
 	if (g_DI == NULL)
@@ -427,7 +427,7 @@ void AllInOne(int pad)
 						  // That's why I use this hack "FASTER COMBO", it gets executed everytime if enabled.. 2X
 		}
 		
-		if (!ExtendedOptions.IsEnabled_FasterCombo && g_comboPAD == pad)
+		if (!ExtendedOptions.IsEnabled_FasterCombo /*&& g_comboPAD == pad*/)
 		{
 			ExecCombo(); // will take g_comboPAD anyways, but the difference is this one gets executed once every
 						// two iterations, because pad toggles 0 and 1..
