@@ -2,6 +2,7 @@
 #include "TwinPad.h"
 #include "main.h"
 #include "Externals.h"
+#include "COMBOs.h"
 
 unsigned int pads=0;
 
@@ -421,16 +422,14 @@ void AllInOne(int pad)
 	// Process COMBO Buttons
 	if (ExtendedOptions.IsEnabled_COMBOS)
 	{
-		if (ExtendedOptions.IsEnabled_FasterCombo)
-		{
-			ExecCombo();  // will take g_comboPAD anyways, if I pass it "pad" it will ruin everything
-						  // That's why I use this hack "FASTER COMBO", it gets executed everytime if enabled.. 2X
-		}
 		
-		if (!ExtendedOptions.IsEnabled_FasterCombo /*&& g_comboPAD == pad*/)
+		ExecCombo(pad);  // will take g_comboPAD anyways, if I pass it "pad" it will ruin everything
+						 // That's why I use this hack "FASTER COMBO", it gets executed everytime if enabled.. 2X
+		
+		if (!ExtendedOptions.IsEnabled_FasterCombo)
 		{
-			ExecCombo(); // will take g_comboPAD anyways, but the difference is this one gets executed once every
-						// two iterations, because pad toggles 0 and 1..
+			ExecCombo(pad); // will take g_comboPAD anyways, but the difference is this one gets executed once every
+							// two iterations, because pad toggles 0 and 1..
 		}
 	}
 

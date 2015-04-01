@@ -21,11 +21,11 @@ void _PADEvent(int PAD);
 void _PADEventExtra(int PAD);
 void PADsetMode(int pad, int mode);
 
-extern void ProcMouseInput(int pad);
-extern void LoadCombos();
-extern void LoadConfig();
-extern void InitRects(void);
-extern bool ExecCombo();
+void ProcMouseInput(int pad);
+void LoadCombos();
+void LoadConfig();
+void InitRects(void);
+
 // extern void ComboAnalog(int analogKey, int pad);
 
 void AllInOne(int pad);

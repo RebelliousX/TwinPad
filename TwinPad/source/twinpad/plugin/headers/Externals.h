@@ -46,16 +46,4 @@ extern int padOpened;
 extern unsigned char minXY[2], maxXY[2];
 extern unsigned char states[2][10];
 
-extern unsigned short g_comboCounter;
-extern unsigned short g_comboPAD;
-
-#include <vector>
-
-using std::vector;
-
-vector<vector<vector<int>>> extern COMBO;
-vector<vector<int>> extern ActionDelay;
-vector<int> extern ActionCount;
-vector<int> extern ComboKey;
-
 #endif
