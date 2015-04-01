@@ -31,7 +31,6 @@
     <ClInclude Include="source\twinpad\Plugin\headers\Externals.h" />
     <ClInclude Include="source\twinpad\Plugin\headers\GeneralOptions.h" />
     <ClInclude Include="source\twinpad\Plugin\headers\Loading.h" />
-    <ClInclude Include="source\twinpad\Plugin\headers\MouseMapping.h" />
     <ClInclude Include="source\twinpad\Plugin\headers\PS2Etypes.h" />
     <ClInclude Include="source\twinpad\Plugin\headers\TwinPad.h" />
   </ItemGroup>

@@ -11,17 +11,16 @@ unsigned int mouseSensitivity;
 RECT WndRect, testRect, rectMouseArea;
 POINT MousePt;
 u16 status[2];
-int pressure;
+CPressure Pressure;
 
 unsigned long confKeys[2][25];
-char MouseButtonMap[8]; // Deal with Mouse Buttons.
 
 void _EmuKeys();
 void _PADEvent(int PAD);
 void _PADEventExtra(int PAD);
 void PADsetMode(int pad, int mode);
 
-void ProcMouseInput(int pad);
+void ProcMouseInput();
 void LoadCombos();
 void LoadConfig();
 void InitRects(void);

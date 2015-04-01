@@ -1,5 +1,6 @@
 #include "fastCompile.h"
 #include "TwinPad.h"
+#include "twinpad_gui.h"
 #include "main.h"
 #include "Externals.h"
 #include "COMBOs.h"
@@ -71,7 +72,9 @@ s32  _PADopen(HWND hDsp) {
 	PADsetMode(0, 0);
 	PADsetMode(1, 0);
 
-	pressure = 100;
+	// Fully pressed
+	Pressure = { 255, 255, 255, 255, 255, 255,
+				 255, 255, 255, 255, 255, 255, };
 
 	for (int i = 0; i <=1; i++) {
 		ranalog[i].x = ranalog[i].y = lanalog[i].x = lanalog[i].y = 0x80;
@@ -107,7 +110,7 @@ s32  _PADopen(HWND hDsp) {
 // These are the commands' set for PSX/PS2 DualShock1 or 2.. 
 // Playstation 2 (Dual Shock) controller protocol notes
 // for more information. Please visit those awesome reference: 
-// https:// gist.github.com/scanlime/5042071 and http:// store.curiousinventor.com/guides/PS2/#mappings
+// https://gist.github.com/scanlime/5042071 and http://store.curiousinventor.com/guides/PS2/#mappings
 u8 stdpar[2][20] = { {0xff, 0x5a, 0xff, 0xff, 0x80, 0x80, 0x80, 0x80,
 				      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 					  0x00, 0x00, 0x00, 0x00},
@@ -220,28 +223,28 @@ u8  _PADpoll(u8 value) {
 				{
 				
 				case 0xbf: // X
-					stdpar[curPad][14] = (pressure*255)/100;
+					stdpar[curPad][14] = Pressure.Cross;
 					break;
 				case 0xdf: // Circle
-					stdpar[curPad][13] = (pressure*255)/100;
+					stdpar[curPad][13] = Pressure.Circle;
 					break;
 				case 0xef: // Triangle
-					stdpar[curPad][12] = (pressure*255)/100;
+					stdpar[curPad][12] = Pressure.Triangle;
 					break;
 				case 0x7f: // Square
-					stdpar[curPad][15] = (pressure*255)/100;
+					stdpar[curPad][15] = Pressure.Square;
 					break;
 				case 0xfb: // L1
-					stdpar[curPad][16] = (pressure*255)/100;
+					stdpar[curPad][16] = Pressure.L1;
 					break;
 				case 0xf7: // R1
-					stdpar[curPad][17] = (pressure*255)/100;
+					stdpar[curPad][17] = Pressure.R1;
 					break;
 				case 0xfe: // L2
-					stdpar[curPad][18] = (pressure*255)/100;
+					stdpar[curPad][18] = Pressure.L2;
 					break;
 				case 0xfd: // R2
-					stdpar[curPad][19] = (pressure*255)/100;
+					stdpar[curPad][19] = Pressure.R2;
 					break;
 				default:
 					stdpar[curPad][14] = 0x00; // Not pressed
@@ -257,16 +260,16 @@ u8  _PADpoll(u8 value) {
 				switch(button_check2)
 				{
 				case 0xE: // UP
-					stdpar[curPad][10] = (pressure*255)/100; 
+					stdpar[curPad][10] = Pressure.Up; 
 					break;
 				case 0xB: // DOWN
-					stdpar[curPad][11] = (pressure*255)/100; 
+					stdpar[curPad][11] = Pressure.Down; 
 					break;
 				case 0x7: // LEFT
-					stdpar[curPad][9] = (pressure*255)/100; 
+					stdpar[curPad][9] = Pressure.Left; 
 					break;
 				case 0xD: // RIGHT
-					stdpar[curPad][8] = (pressure*255)/100; 
+					stdpar[curPad][8] = Pressure.Right; 
 					break;
 				default:
 					stdpar[curPad][8] = 0x00;  // Not pressed
@@ -394,6 +397,13 @@ void AllInOne(int pad)
 	// KeyRelease everything.. 
 	status[pad] = 0xffff;
 	lanalog[pad].x = lanalog[pad].y = 0x80;
+	ranalog[pad].x = ranalog[pad].y = 0x80;
+	lanalog[pad].button = ranalog[pad].button;
+
+	// Fully pressed is the default and resetted every frame
+	// values may change as needed, see CPressure class for interpretation
+	Pressure = { 255, 255, 255, 255, 255, 255,
+				 255, 255, 255, 255, 255, 255 };
 
 	// Get Current Keyboard status, and save the old status.
 	GetKeyboardStatus();
@@ -408,29 +418,24 @@ void AllInOne(int pad)
 	// Mouse
 	if (ExtendedOptions.IsEnabled_MOUSE)
 	{
-		if (pad == mousePAD)
+		if (pad == GUI_Config.m_mouseAsPad)
 		{
 			// Initializing Rects.
 			InitRects();
 			// Get Current Mouse status.
 			GetMouseStatus();
 			// Process Mouse Input
-			ProcMouseInput(pad);
+			ProcMouseInput();
 		}
 	}
 
 	// Process COMBO Buttons
 	if (ExtendedOptions.IsEnabled_COMBOS)
 	{
-		
-		ExecCombo(pad);  // will take g_comboPAD anyways, if I pass it "pad" it will ruin everything
-						 // That's why I use this hack "FASTER COMBO", it gets executed everytime if enabled.. 2X
-		
+		ExecCombo(pad);
+						 	
 		if (!ExtendedOptions.IsEnabled_FasterCombo)
-		{
-			ExecCombo(pad); // will take g_comboPAD anyways, but the difference is this one gets executed once every
-							// two iterations, because pad toggles 0 and 1..
-		}
+			ExecCombo(pad);
 	}
 
 	// HotKey for Loading COMBOs on the fly :), usefull when testing/editing COMBOs while playing.

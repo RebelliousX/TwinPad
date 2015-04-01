@@ -122,27 +122,7 @@ void GetKeyboardStatus()
 void GetMouseStatus()
 {
 	if (hGFXwnd != GetForegroundWindow()) return;
-	// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
-	// Using Win32Api to get cursor pos, it's more convinient while playing
-	// in window mode, as the user may want to run other apps as will.
-	GetCursorPos(&MousePt);
-
-	// Check to see if the cursor is inside GS window.
-	// if so, process Inputs, else skip them.
-	if (MousePt.x >= WndRect.left && MousePt.x <= WndRect.right &&
-		MousePt.y >= WndRect.top  && MousePt.y <= WndRect.bottom)
-		{
-			if (lbutDown == 1 || rbutDown == 1 || mbutDown == 1)
-				ClipCursor(&WndRect);
-			inside = true;
-		}
-		else
-		{
-			ClipCursor(NULL);
-			inside = false;
-			return;
-		}
-
+	
 	// Test if Error occurred by another application that acquired the device
 	while(FAILED(g_DIMouse->GetDeviceState(
 		sizeof(DIMOUSESTATE2), &MouseState)))
@@ -153,5 +133,35 @@ void GetMouseStatus()
         return; // serious error
         }
      }
+
+	// Using Win32Api to get cursor pos, it's more convinient while playing
+	// in window mode, as the user may want to run other apps as will.
+	GetCursorPos(&MousePt);
+
+	// Check to see if the cursor is inside GS window.
+	// if so, process Inputs, else skip them.
+	if (MousePt.x >= WndRect.left && MousePt.x <= WndRect.right &&
+		MousePt.y >= WndRect.top  && MousePt.y <= WndRect.bottom)
+	{
+		bool isPressed = false;
+		for (int i = 0; i < 8; ++i)
+			if (MouseState.rgbButtons[i] & 0x80)
+			{
+				ClipCursor(&WndRect);
+				inside = true;
+				isPressed = true;
+				break;
+			}
+		if (isPressed == false)
+		{
+			ClipCursor(0);
+			inside = false;
+		}
+	}
+	else
+	{
+		ClipCursor(NULL);
+		inside = false;
+	}
 }
 // // // // // // // // // // // // // // // // // // // // // // // // End of DirectInput Funtions// // // // // // // // // // // // // // // // // // // // /
