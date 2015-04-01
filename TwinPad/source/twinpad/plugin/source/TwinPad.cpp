@@ -420,7 +420,7 @@ void AllInOne(int pad)
 	{
 		if (pad == GUI_Config.m_mouseAsPad)
 		{
-			// Initializing Rects.
+			// Initializing rectangles for mouse capture.
 			InitRects();
 			// Get Current Mouse status.
 			GetMouseStatus();
@@ -431,12 +431,7 @@ void AllInOne(int pad)
 
 	// Process COMBO Buttons
 	if (ExtendedOptions.IsEnabled_COMBOS)
-	{
 		ExecCombo(pad);
-						 	
-		if (!ExtendedOptions.IsEnabled_FasterCombo)
-			ExecCombo(pad);
-	}
 
 	// HotKey for Loading COMBOs on the fly :), usefull when testing/editing COMBOs while playing.
 	if (ExtendedOptions.IsEnabled_HotKey)

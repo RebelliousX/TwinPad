@@ -36,8 +36,7 @@ void ExecCombo(int pad)
 					if (curButton < 16 && curButton >= 0)
 					{
 						status[pad] &= ~(1 << curButton);
-						PS2BUTTON pressureButton = (PS2BUTTON)curButton;
-						switch (pressureButton)
+						switch ((PS2BUTTON)curButton)
 						{
 						case PS2BUTTON::CIRCLE:
 							Pressure.Circle = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
