@@ -130,22 +130,20 @@ public:
 				m_pad[i][j] = 0;
 		for (int i = 0; i < 10; ++i)
 			m_mouse[i] = 36;
-		for (int i = 0; i < 7; ++i)
+		for (int i = 0; i < 5; ++i)
 			m_extra[i] = 0;
 		m_mouseAsPad = 0;
 		m_mouseSensitivity = 1;
-		m_hotKey = 0;
 	}
 
 	int m_pad[2][25];
 	int m_mouse[10];
-	int m_extra[7];
+	int m_extra[5];
 	int m_mouseAsPad;
 	int m_mouseSensitivity;
-	int m_hotKey;
 
 	enum { DISABLE_PAD1 = 0, DISABLE_PAD2, DISABLE_KEYEVENTS, DISABLE_MOUSE,
-		   DISABLE_COMBOS, DISABLE_HOTKEY, ENABLE_HACK };
+		   DISABLE_COMBOS };
 };
 
 bool IsFileOkAndFix(const wxString &file, const wxString &header);

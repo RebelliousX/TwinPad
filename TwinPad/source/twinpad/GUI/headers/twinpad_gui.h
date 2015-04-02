@@ -230,8 +230,6 @@ public:
 	wxCheckBox *chkDisableCombos;
 	wxCheckBox *chkDisableOnFlyKey;
 	wxCheckBox *chkDisableKeyEvents;
-	wxCheckBox *chkEnableHack;
-	wxStaticText *lblHotKey;
 
 	// TAB #?: GamePad (nothing here yet)
 

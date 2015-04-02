@@ -39,7 +39,7 @@ void OnTimeReAnimateAnalogSticks()
 	}
 }
 
-// Helper function called from OnTimeGetKeyForKeyboard(), OnTimeGetKeyForCombo() and OnTimeGetHotKey()
+// Helper function called from OnTimeGetKeyForKeyboard() and OnTimeGetKeyForCombo()
 keyInformation GetKey()
 {
 	static bool gotKey = false;
@@ -191,38 +191,5 @@ void OnTimeGetKeyForCombo()
 		GUI_Controls.lblComboKey->SetForegroundColour(wxColor("White"));
 		GUI_Controls.lblComboKey->Refresh();
 		counter = 20;
-	}
-}
-
-void OnTimeGetHotKey()
-{
-	static int counter = 20;
-
-	if (++counter > 20)		// Toggle background color every 1 second (50 milliseconds x 20)
-	{
-		counter = 0;
-		if (GUI_Controls.lblHotKey->GetBackgroundColour() == wxColor("#990000"))	// Crimson bloody red :)
-		{
-			GUI_Controls.lblHotKey->SetBackgroundColour(wxColor("#100075"));		// Dark Blue
-			GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
-		}
-		else
-		{
-			GUI_Controls.lblHotKey->SetBackgroundColour(wxColor("#990000"));
-			GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
-		}
-		GUI_Controls.lblHotKey->Refresh();
-	}
-
-	keyInformation keyInfo;
-	keyInfo = GetKey();
-	if (keyInfo.keyName != "")
-	{
-		GUI_Controls.mainFrame->tmrGetHotKey->Stop();
-		GUI_Controls.lblHotKey->SetLabel(keyInfo.keyName);
-		GUI_Controls.lblHotKey->SetBackgroundColour(wxColor(66, 66, 66));			// Dark Grey
-		GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
-		GUI_Controls.lblHotKey->Refresh();
-		counter = 21;
 	}
 }

@@ -138,25 +138,6 @@ void CreateControls(TwinPad_Frame *window)
 	GUI_Controls.chkDisableKeyEvents->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_KEYEVENTS] ? 1 : 0);
 	GUI_Controls.chkDisableMouse->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_MOUSE] ? 1 : 0);
 	GUI_Controls.chkDisableCombos->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_COMBOS] ? 1 : 0);
-	GUI_Controls.chkDisableOnFlyKey->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_HOTKEY] ? 1 : 0);
-	GUI_Controls.chkEnableHack->SetValue(GUI_Config.m_extra[GUI_Config.ENABLE_HACK] ? 1 : 0);
-
-	wxString keyName;
-	if (GUI_Config.m_hotKey != 0)
-	{
-		for (int j = 0; j < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++j)
-			if (DIK_KEYCODES[j].keyValue == GUI_Config.m_hotKey)
-			{
-				keyName = DIK_KEYCODES[j].name;
-				keyName = keyName.substr(4, keyName.length());
-				break;
-			}
-	}
-	else
-		keyName = "NONE";
-		
-
-	GUI_Controls.lblHotKey->SetLabel(keyName);
 
 	// Combo tab:
 	for (unsigned int combo = 0; combo < GUI_Controls.Combos.size(); ++combo)
@@ -436,58 +417,34 @@ void AddMiscTab(CTwinPad_Gui &GUI_Controls)
 	// main sizer
 	wxBoxSizer *parentSizer = new wxBoxSizer(wxVERTICAL);
 
+	wxStaticText *lblLabel = new wxStaticText(panel, wxID_ANY, strEXTRA_INFO);
+
 	// Static box around mouse controls
 	wxStaticBoxSizer *optionSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Options");
 
-
-	wxStaticText *lblLabel = new wxStaticText(panel, wxID_ANY, strEXTRA_INFO);
-
-	wxFlexGridSizer *flexSizer = new wxFlexGridSizer(2, 2, 15, 60);
+	wxFlexGridSizer *flexSizer = new wxFlexGridSizer(2, 2, 15, 100);
 
 	GUI_Controls.chkDisablePad1	= new wxCheckBox(panel, ID_CHK_PAD1, "Disable PAD 1");
 	GUI_Controls.chkDisablePad2	= new wxCheckBox(panel, ID_CHK_PAD2, "Disable PAD 2");
+	GUI_Controls.chkDisableMouse = new wxCheckBox(panel, ID_CHK_MOUSE, "Disable Mouse");
+	GUI_Controls.chkDisableCombos = new wxCheckBox(panel, ID_CHK_COMBOS, "Disable COMBOs");
 	flexSizer->Add(GUI_Controls.chkDisablePad1);
 	flexSizer->Add(GUI_Controls.chkDisablePad2);
-
-	GUI_Controls.chkDisableMouse = new wxCheckBox(panel, ID_CHK_MOUSE, "Disable Mouse");
-	GUI_Controls.chkDisableCombos	= new wxCheckBox(panel, ID_CHK_COMBOS, "Disable COMBOs");
 	flexSizer->Add(GUI_Controls.chkDisableMouse);
 	flexSizer->Add(GUI_Controls.chkDisableCombos);
 
-	wxBoxSizer *vSizer = new wxBoxSizer(wxVERTICAL);
-	GUI_Controls.chkDisableOnFlyKey = new wxCheckBox(panel, ID_CHK_KEY_EVENTS, strEXTRA_ONFLY);
+	wxBoxSizer *hSizer = new wxBoxSizer(wxHORIZONTAL);
 	GUI_Controls.chkDisableKeyEvents = new wxCheckBox(panel, ID_CHK_KEY_EVENTS,	strEXTRA_KEY);
-	GUI_Controls.chkEnableHack = new wxCheckBox(panel, ID_CHK_HACK, strEXTRA_HACK);
-	
-	GUI_Controls.lblHotKey = new wxStaticText(panel, wxID_ANY, "NONE", wxDefaultPosition, wxSize(120, 20), wxTE_READONLY);
-	GUI_Controls.lblHotKey->SetWindowStyle(wxTE_CENTER);
-	GUI_Controls.lblHotKey->SetBackgroundColour(wxColor(66, 66, 66));
-	GUI_Controls.lblHotKey->SetForegroundColour(wxColor("White"));
-	GUI_Controls.lblHotKey->Bind(wxEVT_LEFT_UP, OnClickHotKeyForMisc);		// Get a key
-	GUI_Controls.lblHotKey->Bind(wxEVT_RIGHT_UP, OnClickHotKeyForMisc);		// Delete the key
-	wxToolTip *ttpLblHotKey = new wxToolTip("Left-Click: And then 'press any key' to assign it to the Hot Key.\n"
-		"Right-Click: To erase the configured Key.");
-	ttpLblHotKey->SetDelay(500);			// 0.5 second
-	ttpLblHotKey->SetAutoPop(30000);		// 30 seconds
-	GUI_Controls.lblHotKey->SetToolTip(ttpLblHotKey);
+	hSizer->Add(GUI_Controls.chkDisableKeyEvents, 1, wxEXPAND | wxALL, 10);
 
-	vSizer->Add(GUI_Controls.chkDisableOnFlyKey, 1, wxEXPAND | wxBOTTOM | wxLEFT, 5);
-	vSizer->Add(GUI_Controls.lblHotKey, 0, wxRIGHT | wxALIGN_RIGHT, 5);
-	vSizer->Add(GUI_Controls.chkDisableKeyEvents, 1, wxEXPAND | wxTOP | wxBOTTOM | wxLEFT, 5);
-	vSizer->Add(GUI_Controls.chkEnableHack, 1, wxEXPAND | wxTOP | wxLEFT, 5);
-
-	wxBoxSizer *extraSpaceSizer = new wxBoxSizer(wxVERTICAL);
-	extraSpaceSizer->AddSpacer(20);
-
-	optionSizer->Add(flexSizer, 0, wxALL, 10);
-	optionSizer->Add(vSizer);
+	optionSizer->Add(flexSizer, 1, wxALL, 10);
+	optionSizer->Add(hSizer, 2, wxEXPAND, 10);
 
 	// Finally, add sub-sizers to parent sizer
-
-	parentSizer->Add(lblLabel, 0, wxALIGN_CENTER | wxALL, 10);
-	parentSizer->Add(optionSizer, 1, wxEXPAND | wxLEFT | wxRIGHT, 20);
-	parentSizer->Add(extraSpaceSizer);
-
+	parentSizer->Add(lblLabel, 0, wxEXPAND | wxALL, 10);
+	parentSizer->Add(optionSizer, 1, wxEXPAND | wxLEFT | wxRIGHT, 10);
+	parentSizer->AddSpacer(30);
+	
 	panel->SetSizerAndFit(parentSizer);
 	GUI_Controls.minWinSize[MISC_TAB] = parentSizer->GetSize();		// MISC TAB
 }

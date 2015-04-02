@@ -7,7 +7,4 @@ class GeneralOptions {
 		bool IsEnabled_MOUSE;			// Is Mouse Enabled
 		bool IsEnabled_COMBOS;			// Is COMBOs Enabled
 		bool IsEnabled_KeyEvents;		// Is KeyEvents Enabled
-		bool IsEnabled_FasterCombo;		// Is Combo being executed 2X faster!
-		bool IsEnabled_HotKey;			// Is Hot Key enabled
-		u8 m_hotKey;					// Hot key for loading configurations on the fly
 };

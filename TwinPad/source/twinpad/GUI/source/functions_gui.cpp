@@ -65,9 +65,6 @@ void CreateNullFile()
 	file.AddLine(wxString::Format("Disable KeyEvents \t= %d", null_config.m_extra[null_config.DISABLE_KEYEVENTS]));
 	file.AddLine(wxString::Format("Disable Mouse \t\t= %d", null_config.m_extra[null_config.DISABLE_MOUSE]));
 	file.AddLine(wxString::Format("Disable Combos \t\t= %d", null_config.m_extra[null_config.DISABLE_COMBOS]));
-	file.AddLine(wxString::Format("Disable Hot Key \t= %d", null_config.m_extra[null_config.DISABLE_HOTKEY]));
-	file.AddLine(wxString::Format("Enable Hack \t\t= %d", null_config.m_extra[null_config.ENABLE_HACK]));
-	file.AddLine(wxString::Format("Hot Key \t\t= 0x%X", null_config.m_hotKey));
 
 	file.Write();
 	file.Close();
@@ -265,7 +262,7 @@ void LoadTwinPadConfigurations()
 	// Skip extra options comment
 	file.GetNextLine();
 	// Read 'Extra Options' configuration
-	for(int i = 0; i < 7; i++)
+	for(int i = 0; i < 5; i++)
 	{
 		line = file.GetNextLine();
 		token.SetString(line, "=", wxTOKEN_STRTOK);
@@ -274,14 +271,6 @@ void LoadTwinPadConfigurations()
 		subStr.ToLong(&val, 10);
 		GUI_Config.m_extra[i] = val;
 	}
-
-	// Hot Key for showing TwinPad window
-	line = file.GetNextLine();
-	token.SetString(line, "=", wxTOKEN_STRTOK);
-	token.GetNextToken();				// skips "Hot Key"
-	subStr = token.GetNextToken();		// interested in the value here
-	subStr.ToLong(&val, 16);
-	GUI_Config.m_hotKey = val;
 
 	file.Close();
 }
@@ -466,19 +455,7 @@ void SaveTwinPadConfigurations()
 	file.AddLine(wxString::Format("Disable KeyEvents \t= %d", (GUI_Controls.chkDisableKeyEvents->GetValue() ? 1 : 0)));
 	file.AddLine(wxString::Format("Disable Mouse \t\t= %d", (GUI_Controls.chkDisableMouse->GetValue() ? 1 : 0)));
 	file.AddLine(wxString::Format("Disable Combos \t\t= %d", (GUI_Controls.chkDisableCombos->GetValue() ? 1 : 0)));
-	file.AddLine(wxString::Format("Disable Hot Key \t= %d", (GUI_Controls.chkDisableOnFlyKey->GetValue() ? 1 : 0)));
-	file.AddLine(wxString::Format("Enable Hack \t\t= %d", (GUI_Controls.chkEnableHack->GetValue() ? 1 : 0)));
-	// Hot key for showing config window
-	unsigned char key = 0;
-	wxString name = "DIK_" + GUI_Controls.lblHotKey->GetLabel();
-	for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
-		if (DIK_KEYCODES[i].name == name)
-		{
-			key = DIK_KEYCODES[i].keyValue;
-			break;
-		}
-	file.AddLine(wxString::Format("Hot Key \t\t= 0x%X", key));
-
+	
 	file.Write();
 	file.Close();
 }

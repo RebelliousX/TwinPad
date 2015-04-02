@@ -104,30 +104,6 @@ private:
 	wxWindow *win;
 };
 
-class CGetLoadComboKey : public wxTimer
-{
-public:
-	CGetLoadComboKey(wxWindow *win) : wxTimer(), win(win) { }
-
-	virtual void Notify()
-	{
-		OnTimeGetHotKey();
-	}
-
-	virtual bool Start(int milliseconds)
-	{
-		return wxTimer::Start(milliseconds);
-	}
-
-	virtual void Stop()
-	{
-		return wxTimer::Stop();
-	}
-private:
-	wxWindow *win;
-};
-
-
 // Main DialogBox of TwinPad
 class TwinPad_Frame : public wxDialog
 {
@@ -141,5 +117,4 @@ public:
 	CAutoNav *tmrAutoNavigate;				// For Auto Navigation in Keyboard tab
 	CGetKey *tmrGetKey;						// To get a key value in keyboard tab
 	CGetComboKey *tmrGetComboKey;			// To get a key value in Combo tab
-	CGetLoadComboKey *tmrGetHotKey;	// To get a key value in Misc tab (Combo Load on the fly)
 };

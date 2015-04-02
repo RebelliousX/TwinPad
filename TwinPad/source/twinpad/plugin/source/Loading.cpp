@@ -27,6 +27,4 @@ void LoadConfig() {
 	ExtendedOptions.IsEnabled_KeyEvents = !GUI_Config.m_extra[GUI_Config.DISABLE_KEYEVENTS];
 	ExtendedOptions.IsEnabled_MOUSE = !GUI_Config.m_extra[GUI_Config.DISABLE_MOUSE];
 	ExtendedOptions.IsEnabled_COMBOS = !GUI_Config.m_extra[GUI_Config.DISABLE_COMBOS];
-	ExtendedOptions.IsEnabled_HotKey = !GUI_Config.m_extra[GUI_Config.DISABLE_HOTKEY];
-	ExtendedOptions.m_hotKey = GUI_Config.m_hotKey;
 }

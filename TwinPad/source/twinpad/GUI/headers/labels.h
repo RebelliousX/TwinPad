@@ -235,24 +235,9 @@ const wxString strEXTRA_INFO =	"It might be necessary to suppress some features 
 								"Or if wanted to handled by different pad plugin (e.g., 2nd one).\n" \
 								"So I give the chance to disable some features.\n";
 
-const wxString strEXTRA_ONFLY = "Disable the hot key defined below to load TwinPad configurations\n" \
-								"on the fly, the hot key is usefull when running COMBOs editor for\n" \
-								"example while playing, - or simply changing your controls. - testing\n" \
-								"and editing Combos without exiting the game or the GS/GPU window.\n" \
-								"Use the emu to summon TwinPad, edit then save. Finally load the new\n" \
-								"contents by pressing the assigned key below.";
-
 const wxString strEXTRA_KEY   = "Disable the plugin from sending key events to the emu,\n" \
-								"when running 2 different pad plugins. To prevent\n" \
-								"double key strokes when hitting F1 to save for example.";
-
-const wxString strEXTRA_HACK  = "Tick this one if the game has only one player like FFX.\n" \
-								"If the game supports two players, leave it empty.\n" \
-								"Techincally selecting this one, will double the rate\n" \
-								"COMBOs being executed. For example, if you don't select this and\n" \
-								"you play FFX, then Lulu's Fury overdrive spells will drop\n" \
-								"to half. If you play Tekken 3, in a PSX emu, the Combo timing\n" \
-								"will be correct, and vice versa. YMMV :)";
+								"when running 2 different pad plugins. To prevent double\n" \
+								"key strokes when hitting F1 to save for example.";
 
 enum TAB_INDEX { KEYBOARD_TAB, MOUSE_TAB, COMBOS_TAB, MISC_TAB, GAMEPAD_TAB };
 enum class PS2BUTTON {
@@ -275,7 +260,6 @@ enum ID {
 	ID_LBL = 3000, ID_LBL_WALKRUN = 3008,
 	ID_NOTEBOOK = 4000,
 	ID_PAD1_RADIOBTN = 5000, ID_PAD2_RADIOBTN, ID_PAD1_TAB2_RADIOBTN, ID_PAD2_TAB2_RADIOBTN,
-	ID_CHK_PAD1 = 6000, ID_CHK_PAD2, ID_CHK_MOUSE, ID_CHK_COMBOS, ID_CHK_ON_FLY, ID_CHK_KEY_EVENTS,
-	ID_CHK_HACK,
+	ID_CHK_PAD1 = 6000, ID_CHK_PAD2, ID_CHK_MOUSE, ID_CHK_COMBOS, ID_CHK_KEY_EVENTS,
 	ID_TIMER1 = 7000, ID_TIMER2, ID_TIMER3,
 };

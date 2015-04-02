@@ -433,18 +433,6 @@ void AllInOne(int pad)
 	if (ExtendedOptions.IsEnabled_COMBOS)
 		ExecCombo(pad);
 
-	// HotKey for Loading COMBOs on the fly :), usefull when testing/editing COMBOs while playing.
-	if (ExtendedOptions.IsEnabled_HotKey)
-	{
-		if (DIKEYDOWN(BufferKeyState, ExtendedOptions.m_hotKey) &&
-			!DIKEYDOWN(KeyState, ExtendedOptions.m_hotKey))
-		{
-			// Load configuration from 'TwinPad.ini' and 'TwinPad_COMBOs.ini'
-			LoadConfig();
-			LoadCombos();
-		}
-	}
-
 	// // Process Special EmuKeys and Map DirectInput to VirtualKey
 	if (ExtendedOptions.IsEnabled_KeyEvents)
 		_EmuKeys();
