@@ -76,7 +76,7 @@ s32  _PADopen(HWND hDsp) {
 	Pressure = { 255, 255, 255, 255, 255, 255,
 				 255, 255, 255, 255, 255, 255, };
 
-	for (int i = 0; i <=1; i++) {
+	for (int i = 0; i < 2; ++i) {
 		ranalog[i].x = ranalog[i].y = lanalog[i].x = lanalog[i].y = 0x80;
 		ranalog[i].button =  lanalog[i].button = 0;
 	}
@@ -99,6 +99,10 @@ s32  _PADopen(HWND hDsp) {
         }
 		
 		hGFXwnd = hGSPUwnd;
+
+		// PCSXR/PSXeven or other PSX emus do not pass HWND for the GPU
+		if (hGFXwnd == NULL)
+			hGFXwnd = hGSPUwnd = GetActiveWindow();
 
 		if( !InitDI())
 			return 1;

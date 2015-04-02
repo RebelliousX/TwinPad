@@ -4,6 +4,7 @@
 #include "twinpad_gui.h"
 #include "main.h"			// for ConfigureTwinPad_Plugin()
 #include "Externals.h"
+#include "wx/filename.h"		// to check if directory exists or not
 
 // Name of this plugin and the version number
 char *libraryName      = "TwinPad";
@@ -31,6 +32,7 @@ u32 CALLBACK PS2EgetLibVersion2(u32 type)
 void CALLBACK PADsetSettingsDir(const char* dir)
 {
 	wxString path = (dir == NULL) ? "inis/" : dir;
+
 	GUI_Controls.SetSettingsPath(path);
 }
 
@@ -72,6 +74,10 @@ u8 CALLBACK PADpoll(u8 value)
 
 void CALLBACK PADconfigure()
 {
+	// Check if the settings path is the default directory and if it exists or not, if not create it
+	if (GUI_Controls.GetSettingsPath() == "inis/")
+		wxFileName::Mkdir("inis", 0777, wxPATH_MKDIR_FULL);
+
 	ConfigureTwinPad();
 }
 
@@ -155,7 +161,7 @@ long CALLBACK PADreadPort2(PadDataS* pads)
 
 u32 CALLBACK PSEgetLibType(void)
 { 
-	return 8; 
+	return 8; // PSE_LT_PAD
 }
 
 char* CALLBACK PSEgetLibName(void)

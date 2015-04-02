@@ -128,7 +128,7 @@ void ProcMouseInput()
 
 	for (int mouseButton = 0; mouseButton < 8; ++mouseButton)
 	{
-		if (MouseState.rgbButtons[mouseButton] & 0x80)
+		if ((MouseState.rgbButtons[mouseButton] & 0x80) && GUI_Config.m_mouse[mouseButton] != 36) // 36 is no button configured
 			MouseInputMapper(GUI_Config.m_mouse[mouseButton]);
 	}
 }
