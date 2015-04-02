@@ -139,17 +139,23 @@ void InitRects()
 
 	if (counter++  == 60) // update every (second or half)..
 	{
-		GetWindowRect(hGFXwnd, &testRect);
+		POINT ptClientUL;
+		POINT ptClientBR;
 
-		rectMouseArea = testRect;
+		GetClientRect(hGFXwnd, &rectMouseArea);
 
-		WndRect.left   = testRect.left   + 5;
-		WndRect.right  = testRect.right  - 5;
-		WndRect.bottom = testRect.bottom - 5;
-		WndRect.top    = testRect.top    + 30;
+		ptClientUL.x = rectMouseArea.left;
+		ptClientUL.y = rectMouseArea.top;
+		ptClientBR.x = rectMouseArea.right + 1;
+		ptClientBR.y = rectMouseArea.bottom + 1;
 
-		ScreenWidth  = rectMouseArea.right - rectMouseArea.left;
-		ScreenHeight = rectMouseArea.bottom - rectMouseArea.top;
+		ClientToScreen(hGFXwnd, &ptClientUL);
+		ClientToScreen(hGFXwnd, &ptClientBR);
+
+		SetRect(&WndRect, ptClientUL.x, ptClientUL.y, ptClientBR.x, ptClientBR.y);
+
+		ScreenWidth = rectMouseArea.right;
+		ScreenHeight = rectMouseArea.bottom;
 
 		if (GUI_Config.m_mouseSensitivity > 1)
 		{
