@@ -1,8 +1,5 @@
 #include "DirectInput.h"
-
 #include "twinpad_gui.h"
-
-
 #include <dinput.h>
 
 // DirectInput Variables

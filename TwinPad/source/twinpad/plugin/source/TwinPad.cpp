@@ -5,6 +5,15 @@
 #include "Externals.h"
 #include "COMBOs.h"
 
+// The following data types will be used as global externs.
+Analog lanalog[2], ranalog[2];
+
+static keyEvent curEvent, oldEvent;
+RECT WndRect, rectMouseArea;
+POINT MousePt;
+u16 status[2];
+CPressure Pressure;
+
 unsigned int pads=0;
 
 int ScreenWidth = 0, ScreenHeight = 0;		// To handle Analog Coords correctly.

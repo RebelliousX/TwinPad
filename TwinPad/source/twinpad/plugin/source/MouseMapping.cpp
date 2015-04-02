@@ -28,36 +28,42 @@ void MouseInputMapper(int func)
 		{   // Accurate and Old mode.
 			mouseX = MousePt.x - WndRect.left;
 			mouseY = MousePt.y - WndRect.top;
-			ScreenWidth = WndRect.right - WndRect.left;
-			ScreenHeight = WndRect.bottom - WndRect.top;
 			// ScreenWidth or Height means screens or windows Width or Height..
-			RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255) & 0xff;
-			RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255) & 0xff;
+			RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255);
+			RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255);
 			lanalog[GUI_Config.m_mouseAsPad].x = RelativeX;
 			lanalog[GUI_Config.m_mouseAsPad].y = RelativeY;
 		}
 		else
 		{   // Trying to shrink the Dead Zone in the Center of the Window..
-			mouseX = MousePt.x - rectMouseArea.left;
-			mouseY = MousePt.y - rectMouseArea.top;
-			if (MousePt.x > rectMouseArea.left && MousePt.x < rectMouseArea.right)
-			{
-				RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255) & 0xff;
-				lanalog[GUI_Config.m_mouseAsPad].x = RelativeX;
-			}
-			if (MousePt.y > rectMouseArea.top && MousePt.y < rectMouseArea.bottom)
-			{
-				RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255) & 0xff;
-				lanalog[GUI_Config.m_mouseAsPad].y = RelativeY;
-			}
-			if (MousePt.x >= rectMouseArea.right)
-				lanalog[GUI_Config.m_mouseAsPad].x = 255;
-			if (MousePt.x <= rectMouseArea.left)
-				lanalog[GUI_Config.m_mouseAsPad].x = 0;
-			if (MousePt.y >= rectMouseArea.bottom)
-				lanalog[GUI_Config.m_mouseAsPad].y = 255;
-			if (MousePt.y <= rectMouseArea.top)
-				lanalog[GUI_Config.m_mouseAsPad].y = 0;
+			if (MousePt.x < (ScreenWidth / 2))
+				mouseX = MousePt.x - WndRect.left - rectMouseArea.left;
+			else
+				mouseX = MousePt.x - WndRect.left + rectMouseArea.left;
+
+			if (MousePt.y < (ScreenHeight / 2))
+				mouseY = MousePt.y - WndRect.top - rectMouseArea.top;
+			else
+				mouseY = MousePt.y - WndRect.top + rectMouseArea.top;
+			
+			float Xfactor = (float)rectMouseArea.right / ScreenWidth;
+			float Yfactor = (float)rectMouseArea.bottom / ScreenHeight;
+
+			RelativeX = (int)(((float)mouseX / rectMouseArea.right) * Xfactor * 255);
+			RelativeY = (int)(((float)mouseY / rectMouseArea.bottom) * Yfactor * 255);
+
+			if ((RelativeX > 128) && (RelativeX > (Xfactor * 255)))
+				RelativeX = 255;
+			if ((RelativeX < 128) && (RelativeX < (Xfactor * 25.5)))
+				RelativeX = 0;
+
+			if ((RelativeY > 128) && (RelativeY > (Yfactor * 255)))
+				RelativeY = 255;
+			if ((RelativeY < 128) && (RelativeY < (Yfactor * 25.5)))
+				RelativeY = 0;
+
+			lanalog[GUI_Config.m_mouseAsPad].x = RelativeX;
+			lanalog[GUI_Config.m_mouseAsPad].y = RelativeY;
 		}
 	}
 
@@ -71,36 +77,42 @@ void MouseInputMapper(int func)
 		{   // Accurate and Old mode.
 			mouseX = MousePt.x - WndRect.left;
 			mouseY = MousePt.y - WndRect.top;
-			ScreenWidth = WndRect.right - WndRect.left;
-			ScreenHeight = WndRect.bottom - WndRect.top;
 			// ScreenWidth or Height means screen's or window's Width or Height..
-			RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255) & 0xff;
-			RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255) & 0xff;
+			RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255);
+			RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255);
 			ranalog[GUI_Config.m_mouseAsPad].x = RelativeX;
 			ranalog[GUI_Config.m_mouseAsPad].y = RelativeY;
 		}
 		else
 		{   // Trying to shrink the Dead Zone in the Center of the Window..
-			mouseX = MousePt.x - rectMouseArea.left;
-			mouseY = MousePt.y - rectMouseArea.top;
-			if (MousePt.x > rectMouseArea.left && MousePt.x < rectMouseArea.right)
-			{
-				RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255) & 0xff;
-				ranalog[GUI_Config.m_mouseAsPad].x = RelativeX;
-			}
-			if (MousePt.y > rectMouseArea.top && MousePt.y < rectMouseArea.bottom)
-			{
-				RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255) & 0xff;
-				ranalog[GUI_Config.m_mouseAsPad].y = RelativeY;
-			}
-			if (MousePt.x >= rectMouseArea.right)
-				ranalog[GUI_Config.m_mouseAsPad].x = 255;
-			if (MousePt.x <= rectMouseArea.left)
-				ranalog[GUI_Config.m_mouseAsPad].x = 0;
-			if (MousePt.y >= rectMouseArea.bottom)
-				ranalog[GUI_Config.m_mouseAsPad].y = 255;
-			if (MousePt.y <= rectMouseArea.top)
-				ranalog[GUI_Config.m_mouseAsPad].y = 0;
+			if (MousePt.x < (ScreenWidth / 2))
+				mouseX = MousePt.x - WndRect.left - rectMouseArea.left;
+			else
+				mouseX = MousePt.x - WndRect.left + rectMouseArea.left;
+
+			if (MousePt.y < (ScreenHeight / 2))
+				mouseY = MousePt.y - WndRect.top - rectMouseArea.top;
+			else
+				mouseY = MousePt.y - WndRect.top + rectMouseArea.top;
+
+			float Xfactor = (float)rectMouseArea.right / ScreenWidth;
+			float Yfactor = (float)rectMouseArea.bottom / ScreenHeight;
+
+			RelativeX = (int)(((float)mouseX / rectMouseArea.right) * Xfactor * 255);
+			RelativeY = (int)(((float)mouseY / rectMouseArea.bottom) * Yfactor * 255);
+
+			if ((RelativeX > 128) && (RelativeX > (Xfactor * 255)))
+				RelativeX = 255;
+			if ((RelativeX < 128) && (RelativeX < (Xfactor * 25.5)))
+				RelativeX = 0;
+
+			if ((RelativeY > 128) && (RelativeY >(Yfactor * 255)))
+				RelativeY = 255;
+			if ((RelativeY < 128) && (RelativeY < (Yfactor * 25.5)))
+				RelativeY = 0;
+
+			ranalog[GUI_Config.m_mouseAsPad].x = RelativeX;
+			ranalog[GUI_Config.m_mouseAsPad].y = RelativeY;
 		}
 	}
 	
@@ -159,16 +171,13 @@ void InitRects()
 
 		if (GUI_Config.m_mouseSensitivity > 1)
 		{
-			int Xfactor = (mouseSensitivity - 1) * 64;
-			int Yfactor = (mouseSensitivity - 1) * 48;
+			int Xfactor = (GUI_Config.m_mouseSensitivity - 1) * ScreenWidth / 20;
+			int Yfactor = (GUI_Config.m_mouseSensitivity - 1) * ScreenHeight / 20;
 			
 			rectMouseArea.left   += Xfactor;
 			rectMouseArea.right  -= Xfactor;
 			rectMouseArea.top    += Yfactor;
 			rectMouseArea.bottom -= Yfactor;
-
-			ScreenWidth  = rectMouseArea.right  - rectMouseArea.left;
-			ScreenHeight = rectMouseArea.bottom - rectMouseArea.top;
 		}
 
 		counter = 0;

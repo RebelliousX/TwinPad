@@ -23,12 +23,11 @@ typedef struct {
 } Analog;
 
 extern unsigned int mousePAD;
-extern unsigned int mouseSensitivity;
 extern bool inside;  // if mouse inside the window..
 extern Analog lanalog[2];
 extern Analog ranalog[2];
 extern POINT MousePt;
-extern RECT WndRect, rectMouseArea, testRect;
+extern RECT WndRect, rectMouseArea;
 extern int ScreenWidth;
 extern int ScreenHeight;
 extern u16 status[2];
