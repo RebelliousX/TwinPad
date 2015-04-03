@@ -143,6 +143,35 @@ void ProcMouseInput()
 		if ((MouseState.rgbButtons[mouseButton] & 0x80) && GUI_Config.m_mouse[mouseButton] != 36) // 36 is no button configured
 			MouseInputMapper(GUI_Config.m_mouse[mouseButton]);
 	}
+
+	// Mouse wheel, scroll up/down
+	if (MouseState.lZ != 0)
+	{
+		if (GUI_Config.m_mouse[8] == 36 || GUI_Config.m_mouse[9] == 36)
+		{
+			short pressure_ = 255;
+			pressure_ += ((short)MouseState.lZ / 120) * 5;
+			if (pressure_ >= 255) pressure_ = 255;
+			if (pressure_ <= 0) pressure_ = 0;
+
+			Pressure = { pressure_, pressure_, pressure_, pressure_, pressure_, pressure_,
+				pressure_, pressure_, pressure_, pressure_, pressure_, pressure_ };
+		}
+		else
+		{
+			static long prevWheelPos = MouseState.lZ;
+
+			// Scroll Up
+			if (GUI_Config.m_mouse[8] != 36 && MouseState.lZ > prevWheelPos)
+				MouseInputMapper(GUI_Config.m_mouse[8]);
+
+			// Scroll Down
+			if (GUI_Config.m_mouse[9] != 36 && MouseState.lZ < prevWheelPos)
+				MouseInputMapper(GUI_Config.m_mouse[9]);
+
+			prevWheelPos = MouseState.lZ;
+		}
+	}
 }
 
 void InitRects()

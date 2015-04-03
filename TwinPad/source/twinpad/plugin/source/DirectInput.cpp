@@ -141,6 +141,7 @@ void GetMouseStatus()
 		MousePt.y >= WndRect.top  && MousePt.y <= WndRect.bottom)
 	{
 		bool isPressed = false;
+		
 		for (int i = 0; i < 8; ++i)
 			if (MouseState.rgbButtons[i] & 0x80)
 			{
@@ -149,6 +150,13 @@ void GetMouseStatus()
 				isPressed = true;
 				break;
 			}
+		
+		if (MouseState.lZ != 0)
+		{
+			inside = true;
+			isPressed = true;
+		}
+
 		if (isPressed == false)
 		{
 			ClipCursor(0);

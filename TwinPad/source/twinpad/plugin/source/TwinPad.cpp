@@ -413,11 +413,6 @@ void AllInOne(int pad)
 	ranalog[pad].x = ranalog[pad].y = 0x80;
 	lanalog[pad].button = ranalog[pad].button;
 
-	// Fully pressed is the default and resetted every frame
-	// values may change as needed, see CPressure class for interpretation
-	Pressure = { 255, 255, 255, 255, 255, 255,
-				 255, 255, 255, 255, 255, 255 };
-
 	// Get Current Keyboard status, and save the old status.
 	GetKeyboardStatus();
 	
