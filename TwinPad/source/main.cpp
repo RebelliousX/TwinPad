@@ -114,13 +114,13 @@ public:
 		if ( (((wxKeyEvent&)event).GetKeyCode() == WXK_LEFT) ||
 			 (((wxKeyEvent&)event).GetKeyCode() == WXK_RIGHT) ||
 			 (((wxKeyEvent&)event).GetKeyCode() == WXK_TAB) )
-				return true;
+				return 1;
 
 		// To prevent navigation of controls using arrow keys and tab, ignore all key down events
 		if (event.GetEventType() == wxEVT_KEY_DOWN ||
 			event.GetEventType() == wxEVT_KEY_UP)
 			if (GUI_Controls.curTab == 0)	// Keyboard tab
-				return true;
+				return 1;
 		// Accept all other events (it will crash otherwise)
 		return -1;
 	}

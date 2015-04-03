@@ -15,6 +15,14 @@ using namespace std;	// for exceptions
 CTwinPad_Gui GUI_Controls;
 GUI_Configurations GUI_Config;
 
+void OnNotebookChanging(wxCommandEvent &evt)
+{
+	if (evt.GetEventType() == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING)
+	{
+		GUI_Controls.noteBook->Freeze();
+	}
+}
+
 void OnNotebookChange(wxCommandEvent &evt)
 {
 	if (evt.GetEventType() == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED)
@@ -51,7 +59,8 @@ void OnNotebookChange(wxCommandEvent &evt)
 		GUI_Controls.noteBook->GetParent()->SetMinClientSize(curTabSize);
 		GUI_Controls.noteBook->GetParent()->SetClientSize(curTabSize);
 		GUI_Controls.noteBook->GetParent()->ClientToWindowSize(curTabSize);
-		GUI_Controls.noteBook->GetParent()->UpdateWindowUI();
+
+		GUI_Controls.noteBook->Thaw();
 	}
 }
 
@@ -74,7 +83,8 @@ void CreateControls(TwinPad_Frame *window)
 	LoadTwinPadComboConfigurations();
 
 	GUI_Controls.noteBook = new CNotebook(window, ID_NOTEBOOK);
-	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, &::OnNotebookChange);
+	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, ::OnNotebookChange);
+	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING, ::OnNotebookChanging);
 
 	AddKeyboardTab(GUI_Controls);
 	AddMouseTab(GUI_Controls);
