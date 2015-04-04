@@ -1,6 +1,6 @@
 TwinPad is a pad plugin for PSX (PSEmu Pro specification) and PS2 (PCSX2) emulator..
 Created by Rebel_X and it is licensed under GPL2 or higher.
-Some of the work is based on the original PADwinKeyboard plugin by PADwin Twam
+Some of the work is based on the original PADwinKeyboard plugin by PADwin Team
 (asadr and Linuzappz).
 
 Original license from PADwin team
