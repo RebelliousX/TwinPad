@@ -441,7 +441,10 @@ void AllInOne(int pad)
 
 	// Process COMBO Buttons
 	if (Configurations.IsEnabled_COMBOS())
-		ExecCombo(pad);
+		if (pad == 0)
+			ExecComboPad1(pad);
+		else
+			ExecComboPad2(pad);
 
 	// // Process Special EmuKeys and Map DirectInput to VirtualKey
 	if (Configurations.IsEnabled_KeyEvents())
