@@ -325,13 +325,12 @@ void OnClickNewCombo(wxMouseEvent &ev)
 			return;
 		}
 
-	// Save current Combo (before making a new one) from grid to Combos container if we have at least 1 Combo
+	// Save current Combo (before making a new one) from grid to Combos container
 	// It is very important that we use the cmbComboName to get the name of current Combo. If the same Combo
 	// name found in the container, it will be overwritten with this one.
-	
 	SaveGridToCombo(GUI_Controls.cmbComboName->GetStringSelection());
 	
-	// Clear grid - delete combo
+	// Clear grid
 	// If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
 	if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
 	{
