@@ -10,11 +10,11 @@ void ExecCombo(int pad)
 
 	static int counter = 0, delay = 0, activeCombo = -1;
 	if (ComboStatus == false)
-		for (unsigned int i = 0; i < GUI_Controls.Combos.size(); i++)
+		for (unsigned int i = 0; i < Configurations.Combos.size(); i++)
 		{
-			if (GUI_Controls.Combos[i]->GetPad() == pad)
+			if (Configurations.Combos[i]->GetPad() == pad)
 			{
-				if (DIKEYDOWN(KeyState, GUI_Controls.Combos[i]->GetKey()) && GUI_Controls.Combos[i]->GetKey() != 0)
+				if (DIKEYDOWN(KeyState, Configurations.Combos[i]->GetKey()) && Configurations.Combos[i]->GetKey() != 0)
 				{
 					ComboStatus = true;
 					activeCombo = i;
@@ -24,55 +24,55 @@ void ExecCombo(int pad)
 		
 	if (ComboStatus)
 	{
-		if (GUI_Controls.Combos[activeCombo]->GetPad() == pad)
+		if (Configurations.Combos[activeCombo]->GetPad() == pad)
 		{
 			static int curAction = 0;
-			int numOfButtonsInAction = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetNumberOfButtons();
+			int numOfButtonsInAction = Configurations.Combos[activeCombo]->GetAction(curAction)->GetNumberOfButtons();
 			if (numOfButtonsInAction > 0)
 			{
 				for (int button = 0; button < numOfButtonsInAction; ++button)
 				{
-					int curButton = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonValue;
+					int curButton = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonValue;
 					if (curButton < 16 && curButton >= 0)
 					{
 						status[pad] &= ~(1 << curButton);
 						switch ((PS2BUTTON)curButton)
 						{
 						case PS2BUTTON::CIRCLE:
-							Pressure.Circle = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Circle = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::SQUARE:
-							Pressure.Square = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Square = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::TRIANGLE:
-							Pressure.Triangle = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Triangle = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::CROSS:
-							Pressure.Cross = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Cross = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::L1:
-							Pressure.L1 = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.L1 = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::L2:
-							Pressure.L2 = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.L2 = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::R1:
-							Pressure.R1 = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.R1 = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::R2:
-							Pressure.R2 = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.R2 = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::UP:
-							Pressure.Up = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Up = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::RIGHT:
-							Pressure.Right = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Right = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::DOWN:
-							Pressure.Down = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Down = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						case PS2BUTTON::LEFT:
-							Pressure.Left = GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Left = Configurations.Combos[activeCombo]->GetAction(curAction)->GetButton(button)->buttonSensitivity;
 							break;
 						}
 					}
@@ -81,13 +81,13 @@ void ExecCombo(int pad)
 							ComboAnalog((int)curButton, pad);
 				}
 			}
-			if (++delay >= GUI_Controls.Combos[activeCombo]->GetAction(curAction)->GetDelay())
+			if (++delay >= Configurations.Combos[activeCombo]->GetAction(curAction)->GetDelay())
 			{
 				curAction++;
 				delay = 0;
 			}
 
-			if (curAction >= GUI_Controls.Combos[activeCombo]->GetNumberActions())
+			if (curAction >= Configurations.Combos[activeCombo]->GetNumberActions())
 				delay = curAction = ComboStatus = 0;
 		}
 	}

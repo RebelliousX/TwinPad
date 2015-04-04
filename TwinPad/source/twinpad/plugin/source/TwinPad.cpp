@@ -85,11 +85,13 @@ s32  _PADopen(HWND hDsp) {
 	Pressure = { 255, 255, 255, 255, 255, 255,
 				 255, 255, 255, 255, 255, 255, };
 
-	for (int i = 0; i < 2; ++i) {
+	for (int i = 0; i < 2; ++i) 
+	{
 		ranalog[i].x = ranalog[i].y = lanalog[i].x = lanalog[i].y = 0x80;
 		ranalog[i].button =  lanalog[i].button = 0;
 	}
 
+	Configurations.Clean();
 	LoadConfig();
 	LoadCombos();
 
@@ -417,16 +419,16 @@ void AllInOne(int pad)
 	GetKeyboardStatus();
 	
 	// Process KeyPresses
-	if (ExtendedOptions.IsEnabled_PAD1 && pad == 0)
+	if (Configurations.IsEnabled_PAD1() && pad == 0)
 		_PADEvent(0);
 
-	if (ExtendedOptions.IsEnabled_PAD2 && pad == 1)
+	if (Configurations.IsEnabled_PAD2() && pad == 1)
 		_PADEvent(1);
 
 	// Mouse
-	if (ExtendedOptions.IsEnabled_MOUSE)
+	if (Configurations.IsEnabled_MOUSE())
 	{
-		if (pad == GUI_Config.m_mouseAsPad)
+		if (pad == Configurations.m_mouseAsPad)
 		{
 			// Initializing rectangles for mouse capture.
 			InitRects();
@@ -438,11 +440,11 @@ void AllInOne(int pad)
 	}
 
 	// Process COMBO Buttons
-	if (ExtendedOptions.IsEnabled_COMBOS)
+	if (Configurations.IsEnabled_COMBOS())
 		ExecCombo(pad);
 
 	// // Process Special EmuKeys and Map DirectInput to VirtualKey
-	if (ExtendedOptions.IsEnabled_KeyEvents)
+	if (Configurations.IsEnabled_KeyEvents())
 		_EmuKeys();
 	
 	// Make a copy of old Keyboard state..
@@ -455,7 +457,7 @@ void _PADEvent(int pad) {
 	if (pad == 0) {
 		_PADEventExtra(pad);
 		for (i=0; i<16; i++)
-			if ( DIKEYDOWN(KeyState, confKeys[pad][i]) )
+			if ( DIKEYDOWN(KeyState, Configurations.m_pad[pad][i]) )
 				status[pad]&=~(1<<i);
 			// else /*release code became obsolete*/
 			// 	status[pad]|= (1<<i);
@@ -463,7 +465,7 @@ void _PADEvent(int pad) {
 	if (pad == 1) {
 		_PADEventExtra(pad);
 		for (i=0; i<16; i++)
-			if ( DIKEYDOWN(KeyState, confKeys[pad][i]) )
+			if ( DIKEYDOWN(KeyState, Configurations.m_pad[pad][i]) )
 				status[pad]&=~(1<<i);
 			// else /*release code became obsolete*/
 			// 	status[pad]|= (1<<i);
@@ -475,7 +477,7 @@ void _PADEvent(int pad) {
 void _PADEventExtra( int pad )
 {
 	// Left Analog stick as Keyboard..
-	if ( DIKEYDOWN(KeyState, confKeys[pad][16]) ) // up (forward)
+	if ( DIKEYDOWN(KeyState, Configurations.m_pad[pad][16]) ) // up (forward)
 	{
 		states[pad][0] = 1;
 		lanalog[pad].y = minXY[pad];
@@ -485,7 +487,7 @@ void _PADEventExtra( int pad )
 				states[pad][0] = 0;
 				lanalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][18])) // down (backward)
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][18])) // down (backward)
 	{
 		states[pad][1] = 1;
 		lanalog[pad].y = maxXY[pad];
@@ -495,7 +497,7 @@ void _PADEventExtra( int pad )
 				states[pad][1] = 0;
 				lanalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][17])) // right
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][17])) // right
 	{
 		states[pad][2] = 1;
 		lanalog[pad].x = maxXY[pad];
@@ -505,7 +507,7 @@ void _PADEventExtra( int pad )
 				states[pad][2] = 0;
 				lanalog[pad].x = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][19])) // left
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][19])) // left
 	{
 		states[pad][3] = 1;
 		lanalog[pad].x = minXY[pad];
@@ -516,7 +518,7 @@ void _PADEventExtra( int pad )
 				lanalog[pad].x = 0x80;
 			}
 	// Right Analog stick as Keyboard..
-	if (DIKEYDOWN(KeyState, confKeys[pad][20])) // up (forward)
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][20])) // up (forward)
 	{
 		states[pad][4] = 1;
 		ranalog[pad].y = minXY[pad];
@@ -526,7 +528,7 @@ void _PADEventExtra( int pad )
 				states[pad][4] = 0;
 				ranalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][22])) // down (backward)
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][22])) // down (backward)
 	{
 		states[pad][5] = 1;
 		ranalog[pad].y = maxXY[pad];
@@ -536,7 +538,7 @@ void _PADEventExtra( int pad )
 				states[pad][5] = 0;
 				ranalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][21])) // right
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][21])) // right
 	{
 		states[pad][6] = 1;
 		ranalog[pad].x = maxXY[pad];
@@ -546,7 +548,7 @@ void _PADEventExtra( int pad )
 				states[pad][6] = 0;
 				ranalog[pad].x = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][23])) // left
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][23])) // left
 	{
 		states[pad][7] = 1;
 		ranalog[pad].x = minXY[pad];
@@ -556,7 +558,7 @@ void _PADEventExtra( int pad )
 				states[pad][7] = 0;
 				ranalog[pad].x = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][9]))	 // L3
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][9]))	 // L3
 	{
 		states[pad][8] = 1;
 		lanalog[pad].button = 1;
@@ -566,7 +568,7 @@ void _PADEventExtra( int pad )
 				states[pad][8] = 0;
 				lanalog[pad].button = 0;
 			}
-	if (DIKEYDOWN(KeyState, confKeys[pad][10])) // R3
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][10])) // R3
 	{
 		states[pad][9] = 1;
 		ranalog[pad].button = 1;
@@ -579,8 +581,8 @@ void _PADEventExtra( int pad )
 
 	// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
 	// Special Keys to TOGGLE between Sensitivity of Analog controls, (Walk/Run)
-	if ( DIKEYDOWN(BufferKeyState, confKeys[pad][24]) && // was pressed before
-		 !DIKEYDOWN(KeyState, confKeys[pad][24]))        // but it's NOT pressed now, there is KEYRELEASE
+	if ( DIKEYDOWN(BufferKeyState, Configurations.m_pad[pad][24]) && // was pressed before
+		 !DIKEYDOWN(KeyState, Configurations.m_pad[pad][24]))        // but it's NOT pressed now, there is KEYRELEASE
 		{
 			if (minXY[pad] == 0)
 			{
@@ -685,7 +687,7 @@ void _EmuKeys()
 // PADkeyEvent is called every vsync (return NULL if no event)
 keyEvent* CALLBACK PADkeyEvent() {
 
-	if (!ExtendedOptions.IsEnabled_KeyEvents)
+	if (!Configurations.IsEnabled_KeyEvents())
 		return NULL;
 
 	// Shift Key test..

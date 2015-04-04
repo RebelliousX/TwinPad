@@ -14,7 +14,7 @@
 
 // Globals defined in TwinPad_Gui.cpp
 extern CTwinPad_Gui GUI_Controls;
-extern GUI_Configurations GUI_Config;
+extern MainConfigurations Configurations;
 
 // Sorry for the inconsistencies, using fstream and wxfile at the same time, just wanted to try both :)
 
@@ -36,7 +36,7 @@ void CreateNullFile()
 			file.Open(fileName);
 	}
 
-	GUI_Configurations null_config;
+	MainConfigurations null_config;
 
 	// Erase contents
 	file.Clear();
@@ -224,7 +224,7 @@ void LoadTwinPadConfigurations()
 			token.GetNextToken();				// Skips second token =
 			subStr = token.GetNextToken();		// we are interested in this token 0xNN
 			subStr.ToLong(&val, 16);			// Convert string to hex
-			GUI_Config.m_pad[pad][key] = int(val);		
+			Configurations.m_pad[pad][key] = int(val);		
 		}
 	}
 
@@ -240,7 +240,7 @@ void LoadTwinPadConfigurations()
 		token.GetNextToken();			// skips second token =
 		subStr = token.GetNextToken();	// we are interested in this token N (DECIMAL)
 		subStr.ToLong(&val, 10);		// Convert string to dec
-		GUI_Config.m_mouse[i] = val;
+		Configurations.m_mouse[i] = val;
 	}
 
 	// Mouse as pad 1 or 2 (0/1)
@@ -249,7 +249,7 @@ void LoadTwinPadConfigurations()
 	token.GetNextToken();				// skips "Mouse as pad 1/2  (1/2) "
 	subStr = token.GetNextToken();		// mouse as pad value
 	subStr.ToLong(&val, 10);
-	GUI_Config.m_mouseAsPad = val;
+	Configurations.m_mouseAsPad = val;
 
 	// Mouse sensitivity
 	line = file.GetNextLine();
@@ -257,7 +257,7 @@ void LoadTwinPadConfigurations()
 	token.GetNextToken();				// skips "Mouse Sensitivity 	"
 	subStr = token.GetNextToken();		// mouse sensitivity value
 	subStr.ToLong(&val, 10);
-	GUI_Config.m_mouseSensitivity = val;
+	Configurations.m_mouseSensitivity = val;
 
 	// Skip extra options comment
 	file.GetNextLine();
@@ -269,7 +269,7 @@ void LoadTwinPadConfigurations()
 		token.GetNextToken();			// skips comment
 		subStr = token.GetNextToken();	// interested in the value here
 		subStr.ToLong(&val, 10);
-		GUI_Config.m_extra[i] = val;
+		Configurations.m_extra[i] = val;
 	}
 
 	file.Close();
@@ -283,9 +283,9 @@ void LoadTwinPadComboConfigurations()
 	file.Open(fileName);
 
 	// Erase contents of COMBOs vector
-	for (unsigned int i = 0; i < GUI_Controls.Combos.size(); ++i)
-		delete GUI_Controls.Combos[i];
-	GUI_Controls.Combos.clear();
+	for (unsigned int i = 0; i < Configurations.Combos.size(); ++i)
+		delete Configurations.Combos[i];
+	Configurations.Combos.clear();
 
 	// Skip TwinPad COMBOs header
 	file.GetFirstLine();
@@ -390,7 +390,7 @@ void LoadTwinPadComboConfigurations()
 			delete tempAction;
 			tempAction = 0;
 		}
-		GUI_Controls.Combos.push_back(tempCombo);
+		Configurations.Combos.push_back(tempCombo);
 	}
 	file.Close();
 }
@@ -422,7 +422,7 @@ void SaveTwinPadConfigurations()
 		file.AddLine(wxString::Format("{-- Pad #%d --}", pad + 1));
 		for (int key = 0; key < 25; key++)
 		{
-			line = wxString::Format("[%d][%d] = 0x%X", pad, key, GUI_Config.m_pad[pad][key]);
+			line = wxString::Format("[%d][%d] = 0x%X", pad, key, Configurations.m_pad[pad][key]);
 			file.AddLine(line);
 		}
 	}
@@ -473,30 +473,30 @@ void SaveTwinPadComboConfigurations()
 	file.AddLine(GUI_Controls.GetTwinPad_ComboHeader());
 
 	// Add number of Combos
-	file.AddLine(wxString::Format("ComboCount \t= %d", GUI_Controls.Combos.size()));
+	file.AddLine(wxString::Format("ComboCount \t= %d", Configurations.Combos.size()));
 
-	for (unsigned int combo = 0; combo < GUI_Controls.Combos.size(); ++combo)
+	for (unsigned int combo = 0; combo < Configurations.Combos.size(); ++combo)
 	{
-		file.AddLine(wxString::Format("{-- %s --}", GUI_Controls.Combos[combo]->GetName()));
-		file.AddLine(wxString::Format("ActionCount \t= %d", GUI_Controls.Combos[combo]->GetNumberActions()));
-		file.AddLine(wxString::Format("ComboAsPad \t= %d", GUI_Controls.Combos[combo]->GetPad()));
-		file.AddLine(wxString::Format("ComboKey \t= 0x%X", GUI_Controls.Combos[combo]->GetKey()));
+		file.AddLine(wxString::Format("{-- %s --}", Configurations.Combos[combo]->GetName()));
+		file.AddLine(wxString::Format("ActionCount \t= %d", Configurations.Combos[combo]->GetNumberActions()));
+		file.AddLine(wxString::Format("ComboAsPad \t= %d", Configurations.Combos[combo]->GetPad()));
+		file.AddLine(wxString::Format("ComboKey \t= 0x%X", Configurations.Combos[combo]->GetKey()));
 		file.AddLine("-===================-");
 
-		for (int action = 0; action < GUI_Controls.Combos[combo]->GetNumberActions(); ++action)
+		for (int action = 0; action < Configurations.Combos[combo]->GetNumberActions(); ++action)
 		{
-			file.AddLine(wxString::Format("ActionDelay \t\t= %d", GUI_Controls.Combos[combo]->GetAction(action)->GetDelay()));
-			file.AddLine(wxString::Format("NumOfButtons \t\t= %d", GUI_Controls.Combos[combo]->GetAction(action)->GetNumberOfButtons()));
+			file.AddLine(wxString::Format("ActionDelay \t\t= %d", Configurations.Combos[combo]->GetAction(action)->GetDelay()));
+			file.AddLine(wxString::Format("NumOfButtons \t\t= %d", Configurations.Combos[combo]->GetAction(action)->GetNumberOfButtons()));
 			
 			wxString line_action = "";
 			
-			for (int button = 0; button < GUI_Controls.Combos[combo]->GetAction(action)->GetNumberOfButtons(); ++button)
+			for (int button = 0; button < Configurations.Combos[combo]->GetAction(action)->GetNumberOfButtons(); ++button)
 			{
 				wxString buttonNumber = "";
 				wxString buttonSensitivity = "";
 
-				buttonNumber = wxString::Format("(%d, ", GUI_Controls.Combos[combo]->GetAction(action)->GetButton(button)->buttonValue);
-				buttonSensitivity = wxString::Format("%d) ", GUI_Controls.Combos[combo]->GetAction(action)->GetButton(button)->buttonSensitivity);
+				buttonNumber = wxString::Format("(%d, ", Configurations.Combos[combo]->GetAction(action)->GetButton(button)->buttonValue);
+				buttonSensitivity = wxString::Format("%d) ", Configurations.Combos[combo]->GetAction(action)->GetButton(button)->buttonSensitivity);
 
 				line_action += (buttonNumber + buttonSensitivity);
 			}

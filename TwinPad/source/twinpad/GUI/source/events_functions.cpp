@@ -57,13 +57,13 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 			GUI_Controls.lblWalkRun->SetLabel("NONE");
 			GUI_Controls.lblWalkRun->SetKeyCode(0);
 		}
-		GUI_Config.m_pad[curPad][i] = key;
+		Configurations.m_pad[curPad][i] = key;
 	}
 
 	// Load config for pad we are switching to
 	for (int i = 0; i < 25; ++i)
 	{
-		unsigned char key = GUI_Config.m_pad[switchToPad][i];
+		unsigned char key = Configurations.m_pad[switchToPad][i];
 		wxString name;
 		if (key == 0)
 			name = "NONE";
@@ -88,7 +88,7 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 			GUI_Controls.lblWalkRun->SetLabel(name);
 			GUI_Controls.lblWalkRun->SetKeyCode(key);
 		}
-		GUI_Config.m_pad[switchToPad][i] = key;
+		Configurations.m_pad[switchToPad][i] = key;
 	}
 }
 
@@ -126,7 +126,7 @@ void OnLblCtrlRightClick(wxMouseEvent &ev)
 	GUI_Controls.lblCtrl[id]->SetKeyCode(0);
 	GUI_Controls.lblEdit->SetLabel("Current button to edit: NONE");
 	GUI_Controls.animCtrl[id]->Stop();
-	GUI_Config.m_pad[(GUI_Controls.pad1RadioBtn->GetValue() ? 0 : 1)][id] = 0;
+	Configurations.m_pad[(GUI_Controls.pad1RadioBtn->GetValue() ? 0 : 1)][id] = 0;
 }
 
 // Handle Left-Click to assign a key to Walk/Run, Right-Clcik to remove assigned key
@@ -144,7 +144,7 @@ void OnClickWalkRun(wxMouseEvent &ev)
 	{
 		GUI_Controls.lblWalkRun->SetLabel("NONE");
 		GUI_Controls.lblWalkRun->SetKeyCode(0);
-		GUI_Config.m_pad[(GUI_Controls.pad1RadioBtn->GetValue() ? 0 : 1)][24] = 0;
+		Configurations.m_pad[(GUI_Controls.pad1RadioBtn->GetValue() ? 0 : 1)][24] = 0;
 		return;
 	}
 }

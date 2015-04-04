@@ -120,10 +120,10 @@ private:
 	wxString m_comboName;				// current combo name
 };
 
-class GUI_Configurations
+class MainConfigurations
 {
 public:
-	GUI_Configurations()
+	MainConfigurations()
 	{
 		for (int i = 0; i < 2; ++i)
 			for (int j = 0; j < 25; ++j)
@@ -136,14 +136,60 @@ public:
 		m_mouseSensitivity = 1;
 	}
 
+	~MainConfigurations()
+	{
+		// When TwinPad exits, clean all dynamic memory to avoid memory leaks.
+		// Note that CCombo destructor will call CAction's destructor, which in turn will delete all buttons.
+		for (std::vector<CCombo *>::iterator it = Combos.begin(); it != Combos.end(); ++it)
+			if (*it)
+				delete *it;
+		Combos.clear();
+
+		// C++11 comes handy in this situation, I might use this later instead.
+		/* for (auto oneCombo : Combo)
+		if (oneCombo)
+		delete oneCombo;
+		Combo.clear(); */
+	}
+
+	void Clean()
+	{
+		for (std::vector<CCombo *>::iterator it = Combos.begin(); it != Combos.end(); ++it)
+			if (*it)
+				delete *it;
+		Combos.clear();
+
+		for (int pad = 0; pad < 2; ++pad)
+			for (int button = 0; button < 25; ++button)
+				m_pad[pad][button] = 0;
+
+		for (int i = 0; i < 10; ++i)
+			m_mouse[i] = 36;
+
+		for (int i = 0; i < 5; ++i)
+			m_extra[i] = 0;
+
+		m_mouseAsPad = 0;
+		m_mouseSensitivity = 1;
+	}
+
+	std::vector<CCombo *> Combos;
 	int m_pad[2][25];
 	int m_mouse[10];
 	int m_extra[5];
 	int m_mouseAsPad;
 	int m_mouseSensitivity;
 
-	enum { DISABLE_PAD1 = 0, DISABLE_PAD2, DISABLE_KEYEVENTS, DISABLE_MOUSE,
-		   DISABLE_COMBOS };
+	enum {
+		DISABLE_PAD1 = 0, DISABLE_PAD2, DISABLE_KEYEVENTS, DISABLE_MOUSE,
+		DISABLE_COMBOS
+	};
+
+	bool IsEnabled_PAD1() { return !m_extra[DISABLE_PAD1]; };				// Is PAD 1 Enabled
+	bool IsEnabled_PAD2() { return !m_extra[DISABLE_PAD2]; };				// Is PAD 2 Enabled
+	bool IsEnabled_MOUSE() { return !m_extra[DISABLE_MOUSE]; }				// Is Mouse Enabled
+	bool IsEnabled_COMBOS() { return !m_extra[DISABLE_COMBOS]; }			// Is COMBOs Enabled
+	bool IsEnabled_KeyEvents() { return !m_extra[DISABLE_KEYEVENTS]; };		// Is KeyEvents Enabled
 };
 
 bool IsFileOkAndFix(const wxString &file, const wxString &header);

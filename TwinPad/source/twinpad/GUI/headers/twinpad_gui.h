@@ -145,36 +145,15 @@ public:
 		curTab = 0;
 	}
 
-	~CTwinPad_Gui()
-	{
-		// When TwinPad exits, clean all dynamic memory to avoid memory leaks.
-		// Note that CCombo destructor will call CAction's destructor, which in turn will delete all buttons.
-		for (std::vector<CCombo *>::iterator it = Combos.begin(); it != Combos.end(); ++it)
-			if (*it)
-				delete *it;
-		Combos.clear();
-
-		// C++11 comes handy in this situation, I might use this later instead.
-		/* for (auto oneCombo : Combo)
-			if (oneCombo)
-				delete oneCombo;
-		Combo.clear(); */
-	}
-
 	void Clean()
 	{
 		indexOfButton = -1;
 		curTab = 0;
 		strPreviousComboSelection = "";
-
-		for (std::vector<CCombo *>::iterator it = Combos.begin(); it != Combos.end(); ++it)
-			if (*it)
-				delete *it;
-		Combos.clear();
 	}
 
 	TwinPad_Frame *mainFrame;
-	CNotebook *noteBook;
+	CNotebook *Notebook;
 
 	int indexOfButton;	
 	int curTab;
@@ -204,7 +183,7 @@ public:
 	// TAB 3: COMBOs
 	CComboGrid *virtualGrid;
 	CTableBase *tableBaseGrid;
-	std::vector<CCombo *> Combos;
+	
 	CPS_Anim *psComboButtons[24];
 	CButton *btnNewCombo;
 	CButton *btnDeleteCombo;
@@ -253,13 +232,13 @@ private:
 };
 
 extern CTwinPad_Gui GUI_Controls;
-extern GUI_Configurations GUI_Config;
+extern MainConfigurations Configurations;
 
 void CreateControls(TwinPad_Frame * window);
-void AddKeyboardTab(CTwinPad_Gui &GUI_Controls);
-void AddMouseTab(CTwinPad_Gui &GUI_Controls);
-void AddGamePadTab(CTwinPad_Gui &GUI_Controls);
-void AddCombosTab(CTwinPad_Gui &GUI_Controls);
-void AddMiscTab(CTwinPad_Gui &GUI_Controls);
+void AddKeyboardTab();
+void AddMouseTab();
+void AddGamePadTab();
+void AddCombosTab();
+void AddMiscTab();
 
 void SetupComboTab(wxPanel *panel);

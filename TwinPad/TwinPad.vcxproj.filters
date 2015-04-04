@@ -57,9 +57,6 @@
     <ClInclude Include="source\twinpad\Plugin\headers\Externals.h">
       <Filter>Header Files\Plugin</Filter>
     </ClInclude>
-    <ClInclude Include="source\twinpad\Plugin\headers\GeneralOptions.h">
-      <Filter>Header Files\Plugin</Filter>
-    </ClInclude>
     <ClInclude Include="source\twinpad\Plugin\headers\Loading.h">
       <Filter>Header Files\Plugin</Filter>
     </ClInclude>

@@ -10,19 +10,11 @@ extern HWND hGSPUwnd;
 
 extern unsigned char KeyState[256], BufferKeyState[256];
 
-extern int lbutDown;
-extern int rbutDown;
-extern int mbutDown;
-extern bool inside;
-
-extern unsigned long confKeys[2][25];
-
 typedef struct {
 	u8 x,y;
 	u8 button;
 } Analog;
 
-extern unsigned int mousePAD;
 extern bool inside;  // if mouse inside the window..
 extern Analog lanalog[2];
 extern Analog ranalog[2];

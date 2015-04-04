@@ -24,15 +24,15 @@ void MouseInputMapper(int func)
 		static int RelativeX, RelativeY;
 		static int mouseX, mouseY;
 
-		if (GUI_Config.m_mouseSensitivity == 1)
+		if (Configurations.m_mouseSensitivity == 1)
 		{   // Accurate and Old mode.
 			mouseX = MousePt.x - WndRect.left;
 			mouseY = MousePt.y - WndRect.top;
 			// ScreenWidth or Height means screens or windows Width or Height..
 			RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255);
 			RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255);
-			lanalog[GUI_Config.m_mouseAsPad].x = RelativeX;
-			lanalog[GUI_Config.m_mouseAsPad].y = RelativeY;
+			lanalog[Configurations.m_mouseAsPad].x = RelativeX;
+			lanalog[Configurations.m_mouseAsPad].y = RelativeY;
 		}
 		else
 		{   // Trying to shrink the Dead Zone in the Center of the Window..
@@ -62,8 +62,8 @@ void MouseInputMapper(int func)
 			if ((RelativeY < 128) && (RelativeY < (Yfactor * 25.5)))
 				RelativeY = 0;
 
-			lanalog[GUI_Config.m_mouseAsPad].x = RelativeX;
-			lanalog[GUI_Config.m_mouseAsPad].y = RelativeY;
+			lanalog[Configurations.m_mouseAsPad].x = RelativeX;
+			lanalog[Configurations.m_mouseAsPad].y = RelativeY;
 		}
 	}
 
@@ -73,15 +73,15 @@ void MouseInputMapper(int func)
 		static int RelativeX, RelativeY;
 		static int mouseX, mouseY;
 
-		if (GUI_Config.m_mouseSensitivity == 1)
+		if (Configurations.m_mouseSensitivity == 1)
 		{   // Accurate and Old mode.
 			mouseX = MousePt.x - WndRect.left;
 			mouseY = MousePt.y - WndRect.top;
 			// ScreenWidth or Height means screen's or window's Width or Height..
 			RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255);
 			RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255);
-			ranalog[GUI_Config.m_mouseAsPad].x = RelativeX;
-			ranalog[GUI_Config.m_mouseAsPad].y = RelativeY;
+			ranalog[Configurations.m_mouseAsPad].x = RelativeX;
+			ranalog[Configurations.m_mouseAsPad].y = RelativeY;
 		}
 		else
 		{   // Trying to shrink the Dead Zone in the Center of the Window..
@@ -111,21 +111,21 @@ void MouseInputMapper(int func)
 			if ((RelativeY < 128) && (RelativeY < (Yfactor * 25.5)))
 				RelativeY = 0;
 
-			ranalog[GUI_Config.m_mouseAsPad].x = RelativeX;
-			ranalog[GUI_Config.m_mouseAsPad].y = RelativeY;
+			ranalog[Configurations.m_mouseAsPad].x = RelativeX;
+			ranalog[Configurations.m_mouseAsPad].y = RelativeY;
 		}
 	}
 	
 	// // /Pressing// // // // // // // // // // /
 	// L2, R2, L1, R1, Triangle, Circle, Cross, Square, Select, from 0 to 8 respectively.
 	if (func >= 0 && func <= 8)
-		status[GUI_Config.m_mouseAsPad] &= ~(1 << func);
+		status[Configurations.m_mouseAsPad] &= ~(1 << func);
 	// L3
 	if (func == 9)
-		lanalog[GUI_Config.m_mouseAsPad].button = 1;
+		lanalog[Configurations.m_mouseAsPad].button = 1;
 	// R3
 	if (func == 10)
-		ranalog[GUI_Config.m_mouseAsPad].button = 1;
+		ranalog[Configurations.m_mouseAsPad].button = 1;
 	// Start, Up, Right, Down, Left, from 11 to 15 respectively.
 	if (func >= 11 && func <= 15)
 		status[0] &= ~(1 << func);
@@ -140,14 +140,14 @@ void ProcMouseInput()
 
 	for (int mouseButton = 0; mouseButton < 8; ++mouseButton)
 	{
-		if ((MouseState.rgbButtons[mouseButton] & 0x80) && GUI_Config.m_mouse[mouseButton] != 36) // 36 is no button configured
-			MouseInputMapper(GUI_Config.m_mouse[mouseButton]);
+		if ((MouseState.rgbButtons[mouseButton] & 0x80) && Configurations.m_mouse[mouseButton] != 36) // 36 is no button configured
+			MouseInputMapper(Configurations.m_mouse[mouseButton]);
 	}
 
 	// Mouse wheel, scroll up/down
 	if (MouseState.lZ != 0)
 	{
-		if (GUI_Config.m_mouse[8] == 36 || GUI_Config.m_mouse[9] == 36)
+		if (Configurations.m_mouse[8] == 36 || Configurations.m_mouse[9] == 36)
 		{
 			short pressure_ = 255;
 			pressure_ += ((short)MouseState.lZ / 120) * 5;
@@ -162,12 +162,12 @@ void ProcMouseInput()
 			static long prevWheelPos = MouseState.lZ;
 
 			// Scroll Up
-			if (GUI_Config.m_mouse[8] != 36 && MouseState.lZ > prevWheelPos)
-				MouseInputMapper(GUI_Config.m_mouse[8]);
+			if (Configurations.m_mouse[8] != 36 && MouseState.lZ > prevWheelPos)
+				MouseInputMapper(Configurations.m_mouse[8]);
 
 			// Scroll Down
-			if (GUI_Config.m_mouse[9] != 36 && MouseState.lZ < prevWheelPos)
-				MouseInputMapper(GUI_Config.m_mouse[9]);
+			if (Configurations.m_mouse[9] != 36 && MouseState.lZ < prevWheelPos)
+				MouseInputMapper(Configurations.m_mouse[9]);
 
 			prevWheelPos = MouseState.lZ;
 		}
@@ -198,10 +198,10 @@ void InitRects()
 		ScreenWidth = rectMouseArea.right;
 		ScreenHeight = rectMouseArea.bottom;
 
-		if (GUI_Config.m_mouseSensitivity > 1)
+		if (Configurations.m_mouseSensitivity > 1)
 		{
-			int Xfactor = (GUI_Config.m_mouseSensitivity - 1) * ScreenWidth / 20;
-			int Yfactor = (GUI_Config.m_mouseSensitivity - 1) * ScreenHeight / 20;
+			int Xfactor = (Configurations.m_mouseSensitivity - 1) * ScreenWidth / 20;
+			int Yfactor = (Configurations.m_mouseSensitivity - 1) * ScreenHeight / 20;
 			
 			rectMouseArea.left   += Xfactor;
 			rectMouseArea.right  -= Xfactor;

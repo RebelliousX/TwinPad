@@ -342,13 +342,13 @@ void SaveGridToCombo(wxString &strUserInput)
 	// when saving, Check to see if the combo exist, if it does, use the same combo otherwise add a new one.
 
 	// Check to see if we are modifying the same COMBO, if yes, erase it so we can overwrite it or start a new one
-	for (std::vector<CCombo *>::iterator it = GUI_Controls.Combos.begin(); it != GUI_Controls.Combos.end(); ++it)
+	for (std::vector<CCombo *>::iterator it = Configurations.Combos.begin(); it != Configurations.Combos.end(); ++it)
 	{
 		// If the COMBO already exists, erase it. I know the container should be list instead of vector
 		// erase operation is expensive, I might change it later
 		if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
 		{
-			GUI_Controls.Combos.erase(it);
+			Configurations.Combos.erase(it);
 			// We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
 			// because ++it will be called and it will point to an empty container, so silently get out of the loop
 			break;
@@ -383,6 +383,6 @@ void SaveGridToCombo(wxString &strUserInput)
 			}
 			curCombo->AddAction(action);
 		}
-		GUI_Controls.Combos.push_back(curCombo);
+		Configurations.Combos.push_back(curCombo);
 	}
 }

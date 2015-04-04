@@ -6,20 +6,18 @@
 
 #include "Externals.h"
 
-using namespace std;	// for exceptions
-
 // I know I should not use globals and externs, but either that or passing pointers and references
 // to GUI controls all over the files and functions that want to use them or use a couple globals. I chose the latter.
 
 // Global Structurea that hold all vital GUI controls and their values
 CTwinPad_Gui GUI_Controls;
-GUI_Configurations GUI_Config;
+MainConfigurations Configurations;
 
 void OnNotebookChanging(wxCommandEvent &evt)
 {
 	if (evt.GetEventType() == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING)
 	{
-		GUI_Controls.noteBook->Freeze();
+		GUI_Controls.Notebook->Freeze();
 	}
 }
 
@@ -28,7 +26,7 @@ void OnNotebookChange(wxCommandEvent &evt)
 	if (evt.GetEventType() == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED)
 	{
 		wxSize curTabSize;
-		wxString label = GUI_Controls.noteBook->GetPageText(GUI_Controls.noteBook->GetSelection());
+		wxString label = GUI_Controls.Notebook->GetPageText(GUI_Controls.Notebook->GetSelection());
 
 		if ("Keyboard" == label)
 		{
@@ -56,11 +54,11 @@ void OnNotebookChange(wxCommandEvent &evt)
 			GUI_Controls.curTab = GAMEPAD_TAB;
 		}
 
-		GUI_Controls.noteBook->GetParent()->SetMinClientSize(curTabSize);
-		GUI_Controls.noteBook->GetParent()->SetClientSize(curTabSize);
-		GUI_Controls.noteBook->GetParent()->ClientToWindowSize(curTabSize);
+		GUI_Controls.Notebook->GetParent()->SetMinClientSize(curTabSize);
+		GUI_Controls.Notebook->GetParent()->SetClientSize(curTabSize);
+		GUI_Controls.Notebook->GetParent()->ClientToWindowSize(curTabSize);
 
-		GUI_Controls.noteBook->Thaw();
+		GUI_Controls.Notebook->Thaw();
 	}
 }
 
@@ -68,6 +66,7 @@ void CreateControls(TwinPad_Frame *window)
 {
 	// Clean some important stuff for subsequent calls to open twinpad (mainly for combo)
 	GUI_Controls.Clean();
+	Configurations.Clean();
 
 	// Save the pointer of the main frame to make access easier
 	GUI_Controls.mainFrame = window;
@@ -82,16 +81,16 @@ void CreateControls(TwinPad_Frame *window)
 	LoadTwinPadConfigurations();
 	LoadTwinPadComboConfigurations();
 
-	GUI_Controls.noteBook = new CNotebook(window, ID_NOTEBOOK);
-	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, ::OnNotebookChange);
-	GUI_Controls.noteBook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING, ::OnNotebookChanging);
+	GUI_Controls.Notebook = new CNotebook(window, ID_NOTEBOOK);
+	GUI_Controls.Notebook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, ::OnNotebookChange);
+	GUI_Controls.Notebook->Bind(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING, ::OnNotebookChanging);
 
-	AddKeyboardTab(GUI_Controls);
-	AddMouseTab(GUI_Controls);
-	AddCombosTab(GUI_Controls);
-	AddMiscTab(GUI_Controls);
+	AddKeyboardTab();
+	AddMouseTab();
+	AddCombosTab();
+	AddMiscTab();
 
-	// AddGamePadTab(GUI_Controls);	// TODO: Maybe..
+	// AddGamePadTab();	// TODO: Maybe..
 
 
 	// Populate the dialog with loaded configurations from file
@@ -101,10 +100,10 @@ void CreateControls(TwinPad_Frame *window)
 	for (int i = 0; i < 25; ++i)
 	{
 		wxString keyName;
-		if (GUI_Config.m_pad[0][i] != 0)
+		if (Configurations.m_pad[0][i] != 0)
 		{
 			for (int j = 0; j < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++j)
-				if (DIK_KEYCODES[j].keyValue == GUI_Config.m_pad[0][i])
+				if (DIK_KEYCODES[j].keyValue == Configurations.m_pad[0][i])
 				{
 					keyName = DIK_KEYCODES[j].name;
 					keyName = keyName.substr(4, keyName.length());
@@ -117,49 +116,49 @@ void CreateControls(TwinPad_Frame *window)
 		if (i < 24)
 		{
 			GUI_Controls.lblCtrl[i]->SetLabel(keyName);
-			GUI_Controls.lblCtrl[i]->SetKeyCode(GUI_Config.m_pad[0][i]);
+			GUI_Controls.lblCtrl[i]->SetKeyCode(Configurations.m_pad[0][i]);
 		}
 		else
 		{
 			GUI_Controls.lblWalkRun->SetLabel(keyName);
-			GUI_Controls.lblWalkRun->SetKeyCode(GUI_Config.m_pad[0][i]);
+			GUI_Controls.lblWalkRun->SetKeyCode(Configurations.m_pad[0][i]);
 		}
 	}
 
 	// Mouse tab:
 	for (int i = 0; i < 10; ++i)
 		for (int j = 0; j < (sizeof(MOUSE_CHOICES) / sizeof(*MOUSE_CHOICES)); ++j)
-			if (GUI_Config.m_mouse[i] == MOUSE_CHOICES[j].keyValue)
+			if (Configurations.m_mouse[i] == MOUSE_CHOICES[j].keyValue)
 			{
 				GUI_Controls.cmbMouseComboBox[i]->SetStringSelection(MOUSE_CHOICES[j].name);
 				break;
 			}
 
-	if (GUI_Config.m_mouseAsPad == 0)
+	if (Configurations.m_mouseAsPad == 0)
 		GUI_Controls.mousePad1radioButton->SetValue(true);
 	else
 		GUI_Controls.mousePad2radioButton->SetValue(true);
 
-	GUI_Controls.cmbMouseSensitivity->SetStringSelection(wxString::Format("%d", GUI_Config.m_mouseSensitivity));
+	GUI_Controls.cmbMouseSensitivity->SetStringSelection(wxString::Format("%d", Configurations.m_mouseSensitivity));
 
 	// Misc tab:
-	GUI_Controls.chkDisablePad1->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_PAD1] ? 1 : 0);
-	GUI_Controls.chkDisablePad2->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_PAD2] ? 1 : 0);
-	GUI_Controls.chkDisableKeyEvents->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_KEYEVENTS] ? 1 : 0);
-	GUI_Controls.chkDisableMouse->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_MOUSE] ? 1 : 0);
-	GUI_Controls.chkDisableCombos->SetValue(GUI_Config.m_extra[GUI_Config.DISABLE_COMBOS] ? 1 : 0);
+	GUI_Controls.chkDisablePad1->SetValue(Configurations.m_extra[Configurations.DISABLE_PAD1] ? 1 : 0);
+	GUI_Controls.chkDisablePad2->SetValue(Configurations.m_extra[Configurations.DISABLE_PAD2] ? 1 : 0);
+	GUI_Controls.chkDisableKeyEvents->SetValue(Configurations.m_extra[Configurations.DISABLE_KEYEVENTS] ? 1 : 0);
+	GUI_Controls.chkDisableMouse->SetValue(Configurations.m_extra[Configurations.DISABLE_MOUSE] ? 1 : 0);
+	GUI_Controls.chkDisableCombos->SetValue(Configurations.m_extra[Configurations.DISABLE_COMBOS] ? 1 : 0);
 
 	// Combo tab:
-	for (unsigned int combo = 0; combo < GUI_Controls.Combos.size(); ++combo)
-		GUI_Controls.cmbComboName->Append(GUI_Controls.Combos[combo]->GetName());
+	for (unsigned int combo = 0; combo < Configurations.Combos.size(); ++combo)
+		GUI_Controls.cmbComboName->Append(Configurations.Combos[combo]->GetName());
 
 }
 
-void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
+void AddKeyboardTab()
 {
 	// main panel will contain other controls, 
 	// this panel will be added to the notebook's first tab.
-	wxPanel *panel = new wxPanel(GUI_Controls.noteBook);
+	wxPanel *panel = new wxPanel(GUI_Controls.Notebook);
 
 	// Default tab colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
@@ -175,8 +174,8 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	wxStaticBoxSizer *stcPS2Controls = new wxStaticBoxSizer(wxVERTICAL, panel, "PS2 Buttons");
 	stcPS2Controls->Add(flexSizer, 1, wxEXPAND);
 
-	GUI_Controls.noteBook->AddPage(panel, "Keyboard", false);
-	GUI_Controls.noteBook->SetPageText(KEYBOARD_TAB, "Keyboard");
+	GUI_Controls.Notebook->AddPage(panel, "Keyboard", false);
+	GUI_Controls.Notebook->SetPageText(KEYBOARD_TAB, "Keyboard");
 
 	int animIndex = 0, psb_Index = 0, lblIndex = 0;
 	for (int r = 0; r < 8; r++)		// rows
@@ -311,14 +310,14 @@ void AddKeyboardTab(CTwinPad_Gui &GUI_Controls)
 	panel->SetSizerAndFit(parentSizer);
 	// Save current window size, to be used later when switching tabs and resize again
 	GUI_Controls.minWinSize[KEYBOARD_TAB] = parentSizer->GetSize();	// Save min size for Keyboard TAB
-	GUI_Controls.noteBook->SetSelection(KEYBOARD_TAB);	// Select keyboard tab
+	GUI_Controls.Notebook->SetSelection(KEYBOARD_TAB);	// Select keyboard tab
 }
 
-void AddMouseTab(CTwinPad_Gui &GUI_Controls)
+void AddMouseTab()
 {
-	wxPanel *panel = new wxPanel(GUI_Controls.noteBook, wxID_ANY, wxPoint(-1,-1), wxSize(-1,-1));
-	GUI_Controls.noteBook->AddPage(panel, "Mouse", false);
-	GUI_Controls.noteBook->SetPageText(MOUSE_TAB, "Mouse");
+	wxPanel *panel = new wxPanel(GUI_Controls.Notebook, wxID_ANY, wxPoint(-1,-1), wxSize(-1,-1));
+	GUI_Controls.Notebook->AddPage(panel, "Mouse", false);
+	GUI_Controls.Notebook->SetPageText(MOUSE_TAB, "Mouse");
 
 	// Default tab colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
@@ -402,11 +401,11 @@ void AddMouseTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.minWinSize[MOUSE_TAB] = parentSizer->GetSize();	// Mouse TAB
 }
 
-void AddCombosTab(CTwinPad_Gui &GUI_Controls)
+void AddCombosTab()
 {
-	wxPanel *panel = new wxPanel(GUI_Controls.noteBook, wxID_ANY, wxPoint(-1,-1), wxSize(-1,-1));
-	GUI_Controls.noteBook->AddPage(panel, "COMBOs", false);
-	GUI_Controls.noteBook->SetPageText(COMBOS_TAB, "COMBOs");
+	wxPanel *panel = new wxPanel(GUI_Controls.Notebook, wxID_ANY, wxPoint(-1,-1), wxSize(-1,-1));
+	GUI_Controls.Notebook->AddPage(panel, "COMBOs", false);
+	GUI_Controls.Notebook->SetPageText(COMBOS_TAB, "COMBOs");
 
 	// Default tabs' colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
@@ -415,11 +414,11 @@ void AddCombosTab(CTwinPad_Gui &GUI_Controls)
 	GUI_Controls.minWinSize[COMBOS_TAB] = panel->GetSize();	// COMBOs TAB
 }
 
-void AddMiscTab(CTwinPad_Gui &GUI_Controls)
+void AddMiscTab()
 {
-	wxPanel *panel = new wxPanel(GUI_Controls.noteBook, wxID_ANY, wxPoint(-1,-1), wxSize(-1,-1));
-	GUI_Controls.noteBook->AddPage(panel, "Misc", false);
-	GUI_Controls.noteBook->SetPageText(MISC_TAB, "Misc");
+	wxPanel *panel = new wxPanel(GUI_Controls.Notebook, wxID_ANY, wxPoint(-1,-1), wxSize(-1,-1));
+	GUI_Controls.Notebook->AddPage(panel, "Misc", false);
+	GUI_Controls.Notebook->SetPageText(MISC_TAB, "Misc");
 
 	// Default tab colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
@@ -460,13 +459,13 @@ void AddMiscTab(CTwinPad_Gui &GUI_Controls)
 }
 
 
-void AddGamePadTab(CTwinPad_Gui &GUI_Controls)
+void AddGamePadTab()
 {
 	// Not a priority 
 	/*
-	wxPanel *panel = new wxPanel(GUI_Controls.noteBook, wxID_ANY, wxPoint(-1,-1), wxSize(-1,-1));
-	GUI_Controls.noteBook->AddPage(panel, "GamePad", false);
-	GUI_Controls.noteBook->SetPageText(GAMEPAD_TAB, "GamePad");
+	wxPanel *panel = new wxPanel(GUI_Controls.Notebook, wxID_ANY, wxPoint(-1,-1), wxSize(-1,-1));
+	GUI_Controls.Notebook->AddPage(panel, "GamePad", false);
+	GUI_Controls.Notebook->SetPageText(GAMEPAD_TAB, "GamePad");
 	
 	// Default tab colors are ugly (pure white), so get color from the frame
 	panel->SetBackgroundColour(panel->GetParent()->GetBackgroundColour());
