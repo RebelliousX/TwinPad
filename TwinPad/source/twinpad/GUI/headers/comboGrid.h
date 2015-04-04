@@ -8,6 +8,9 @@
 
 #include "resources.h"
 
+// Column 0: for delay, 1-20 for buttons
+const int MAX_COLUMNS = 21;
+
 class CGridCellAttrProvider : public wxGridCellAttrProvider
 {
 public:
@@ -74,7 +77,7 @@ public:
 		rows += numRows;
 		wxGridTableMessage msg( this, wxGRIDTABLE_NOTIFY_ROWS_INSERTED, pos, numRows);
 		GetView()->ProcessTableMessage( msg );
-		std::vector<CCellValue> dummyAction(19, EmptyCell);
+		std::vector<CCellValue> dummyAction(MAX_COLUMNS, EmptyCell);
 		customCellValue.insert(customCellValue.begin() + pos, dummyAction);
 		return true;
 	}

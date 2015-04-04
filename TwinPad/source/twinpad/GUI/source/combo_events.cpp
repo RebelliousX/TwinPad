@@ -328,9 +328,9 @@ void OnClickNewCombo(wxMouseEvent &ev)
 	// Save current Combo (before making a new one) from grid to Combos container if we have at least 1 Combo
 	// It is very important that we use the cmbComboName to get the name of current Combo. If the same Combo
 	// name found in the container, it will be overwritten with this one.
-	if (Configurations.Combos.size() > 0)
-		SaveGridToCombo(GUI_Controls.cmbComboName->GetStringSelection());
-
+	
+	SaveGridToCombo(GUI_Controls.cmbComboName->GetStringSelection());
+	
 	// Clear grid - delete combo
 	// If we don't have any COMBOs or the table doesn't exist, skip. Otherwise subscript out of range in Grid TableBase
 	if (GUI_Controls.virtualGrid->GetNumberRows() > 0)
@@ -354,8 +354,12 @@ void OnClickNewCombo(wxMouseEvent &ev)
 	// Add first row for the new combo (minimum requirement for a combo is 1 action)
 	AddRow(GUI_Controls.virtualGrid, GUI_Controls.spnDefaultDelay->GetValue(), 0);
 
-	// We modified the new Combo, save it and overwrite the duplicate if there is one
-	SaveGridToCombo(strResponse);
+	// Create new combo
+	CCombo *curCombo = new CCombo;
+	curCombo->SetKey(0);
+	curCombo->SetName(strResponse);
+	curCombo->SetPad((GUI_Controls.cmbWhichPad->GetStringSelection() == "Pad 1") ? 0 : 1);
+	Configurations.Combos.push_back(curCombo);
 
 	Cell_Locator.SetLocation(0, 1);
 }
@@ -511,15 +515,8 @@ void OnClick_psComboButtons(int winID)
 	int curRow = coords.GetRow();
 
 	// verify button does not conflict with other buttons in current action
-	// e.g UP and DOWN at the same time. So, 6 if-clauses get rid of 6 unneeded
-	// columns in grid from 24 to 18, unlike before.
+	// e.g Left Analog UP and DOWN at the same time.
 	wxString errorMSG = "";
-	if ((button == (int)PS2BUTTON::UP && Has((int)PS2BUTTON::DOWN, curRow)) ||
-		(button == (int)PS2BUTTON::DOWN && Has((int)PS2BUTTON::UP, curRow)))
-		errorMSG = "Can't have both UP and DOWN in the same Action.";
-	if ((button == (int)PS2BUTTON::RIGHT && Has((int)PS2BUTTON::LEFT, curRow)) ||
-		(button == (int)PS2BUTTON::LEFT && Has((int)PS2BUTTON::RIGHT, curRow)))
-		errorMSG = "Can't have both LEFT and RIGHT in the same Action.";
 	if ((button == (int)PS2BUTTON::LANALOG_UP && Has((int)PS2BUTTON::LANALOG_DOWN, curRow)) ||
 		(button == (int)PS2BUTTON::LANALOG_DOWN && Has((int)PS2BUTTON::LANALOG_UP, curRow)))
 		errorMSG = "Can't have both Left Analog's UP and DOWN in the same Action.";

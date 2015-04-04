@@ -28,7 +28,6 @@ void SetupComboTab(wxPanel *panel)
 	}
 
 	// Creating Layout
-	const int MAX_COLUMNS = 19;
 	wxString strArrPadChoices[2] = { "Pad 1", "Pad 2" };
 	wxBoxSizer *parentSizer = new wxBoxSizer(wxVERTICAL);
 	wxStaticBoxSizer *topLevelSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "Key Combinations (COMBOs)");
@@ -86,7 +85,7 @@ void SetupComboTab(wxPanel *panel)
 	comboGrid->SetTable(tableBase, true);
 	// Setup attributes
 	wxGridCellAttr *attrReadOnly = new wxGridCellAttr, *attrDelayColumn = new wxGridCellAttr;
-	comboGrid->InsertCols(0, MAX_COLUMNS);		// 0: Delay, 1-18 Buttons (columns# fixed, rows# not)
+	comboGrid->InsertCols(0, MAX_COLUMNS);		// 0: Delay, 1-20 Buttons (columns# fixed, rows# not)
 	// Set Column 0 attr, the range of acceptable numbers from 1 to 99999 (delay values)
 	attrDelayColumn->SetEditor(new wxGridCellNumberEditor(1, 99999));
 	attrDelayColumn->SetBackgroundColour(wxColor(66, 66, 66));
@@ -94,12 +93,12 @@ void SetupComboTab(wxPanel *panel)
 	attrDelayColumn->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false));
 	attrDelayColumn->SetAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
 	attrDelayColumn->SetReadOnly(false); // only first column is editable
-	// Set ReadOnly attr to a column (from 1-18)
+	// Set ReadOnly attr to a column (from 1-20)
 	attrReadOnly->SetReadOnly(true);
 	// prevents overflow of text to next cell (just in case we use it to store hidden data)
 	attrReadOnly->SetOverflow(false);
 	comboGrid->SetColAttr(0, attrDelayColumn);					// column 0: Delay
-	for (int i = 1; i < comboGrid->GetNumberCols(); ++i)			// column 1-18, PS2 buttons images (no text)
+	for (int i = 1; i < comboGrid->GetNumberCols(); ++i)			// column 1-20, PS2 buttons images (no text)
 	{
 		comboGrid->SetColAttr(i, attrReadOnly);
 		// Bug in wxWidgets 2.9.4 and up!!?? Ticket #4401, it says fixed, but not here :/
