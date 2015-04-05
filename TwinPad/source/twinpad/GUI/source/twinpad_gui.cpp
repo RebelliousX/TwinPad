@@ -152,6 +152,7 @@ void CreateControls(TwinPad_Frame *window)
 	for (unsigned int combo = 0; combo < Configurations.Combos.size(); ++combo)
 		GUI_Controls.cmbComboName->Append(Configurations.Combos[combo]->GetName());
 
+	ShowFirstComboOnGrid();
 }
 
 void AddKeyboardTab()

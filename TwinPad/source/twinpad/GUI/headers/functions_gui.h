@@ -208,6 +208,8 @@ void GetImageData(void* &iData, unsigned int *length, const unsigned int index);
 void ModifySensitivity();
 // Save the Grid to the Combos container
 void SaveGridToCombo(wxString &strUserInput);
+// Show the first Combo to grid
+void ShowFirstComboOnGrid();
 // Save configurations on exit (clicked OK)
 void SaveTwinPadConfigurations();
 void SaveTwinPadComboConfigurations();

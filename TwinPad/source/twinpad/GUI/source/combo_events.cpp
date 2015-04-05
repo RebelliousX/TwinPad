@@ -363,42 +363,15 @@ void OnClickNewCombo(wxMouseEvent &ev)
 	Cell_Locator.SetLocation(0, 1);
 }
 
-// Clear current grid then delete combo and combo name from combo box
-void OnClickDeleteCombo(wxMouseEvent &ev)
+// This is called from OnClickDeleteCombo() and when starting TwinPad to show the first combo if available
+void ShowFirstComboOnGrid()
 {
-	// prevent deletion of none selected item (There are no COMBOs)
-	if (GUI_Controls.cmbComboName->GetSelection() < 0 || Configurations.Combos.size() == 0)
-		return;
-
-	// Clear grid - delete combo
-	GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
-
-	for (std::vector<CCombo *>::iterator it = Configurations.Combos.begin(); it != Configurations.Combos.end(); ++it)
-	{
-		if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
-		{
-			Configurations.Combos.erase(it);
-			// We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
-			// because ++it will be called and it will point to an empty container, so silently get out of the loop
-			break;
-		}
-	}
-
-	// Delete name from combo box
-	wxString strTemp = GUI_Controls.cmbComboName->GetValue();
-	GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
-	GUI_Controls.strPreviousComboSelection = "";
-
-	// After deletion, select the first combo by default
+	// Select the first combo by default
 	if (GUI_Controls.cmbComboName->GetCount() > 0)
 	{
 		GUI_Controls.cmbComboName->Select(0);
 		GUI_Controls.strPreviousComboSelection = GUI_Controls.cmbComboName->GetStringSelection();
 	}
-
-
-	// Delete all rows of grid
-	GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
 
 	// Refresh/redraw grid and set current combo to match the one in comboGrid/tableBase.
 	// Freeze grid to prevent flickering while adding buttons, and it is much faster this way. Thaw grid when we are done
@@ -429,6 +402,21 @@ void OnClickDeleteCombo(wxMouseEvent &ev)
 					Cell_Locator.MoveToNextButton();
 				}
 			}
+
+			for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
+			{
+				if (DIK_KEYCODES[i].keyValue == (*it)->GetKey())
+				{
+					GUI_Controls.lblComboKey->SetLabel(DIK_KEYCODES[i].name.substr(4, DIK_KEYCODES[i].name.length()));
+					break;
+				}
+			}
+
+			if ((*it)->GetPad() == 0)
+				GUI_Controls.cmbWhichPad->SetStringSelection("Pad 1");
+			else
+				GUI_Controls.cmbWhichPad->SetStringSelection("Pad 2");
+
 			break;	// No need to process other COMBOs
 		}
 	}
@@ -436,14 +424,41 @@ void OnClickDeleteCombo(wxMouseEvent &ev)
 	GUI_Controls.virtualGrid->Thaw();
 }
 
+// Clear current grid then delete combo and combo name from combo box
+void OnClickDeleteCombo(wxMouseEvent &ev)
+{
+	// prevent deletion of none selected item (There are no COMBOs)
+	if (GUI_Controls.cmbComboName->GetSelection() < 0 || Configurations.Combos.size() == 0)
+		return;
+
+	// Clear grid - delete combo
+	GUI_Controls.virtualGrid->GetTable()->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows());
+
+	for (std::vector<CCombo *>::iterator it = Configurations.Combos.begin(); it != Configurations.Combos.end(); ++it)
+	{
+		if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
+		{
+			Configurations.Combos.erase(it);
+			// We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
+			// because ++it will be called and it will point to an empty container, so silently get out of the loop
+			break;
+		}
+	}
+
+	// Delete name from combo box
+	wxString strTemp = GUI_Controls.cmbComboName->GetValue();
+	GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
+	GUI_Controls.strPreviousComboSelection = "";
+
+	// Delete all rows of grid
+	GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
+
+	ShowFirstComboOnGrid();
+}
+
 // Handles click event on Rename Combo button
 void OnClickRenameCombo(wxMouseEvent &ev)
 {
-	/*if (((wxKeyEvent&)ev).GetKeyCode() == WXK_RETURN || ((wxKeyEvent&)ev).GetKeyCode() == WXK_SPACE)
-	{
-		return;
-	}*/
-
 	if (GUI_Controls.cmbComboName->GetCount() == 0)
 	{
 		wxMessageBox("You didn't select a COMBO to rename!", "Rename Failed", wxICON_EXCLAMATION);
@@ -451,7 +466,7 @@ void OnClickRenameCombo(wxMouseEvent &ev)
 	}
 
 	wxString strResponse = wxGetTextFromUser("Enter a new name for the Combo:",
-		"New COMBO name", "I am a Combo!");
+		"New COMBO name", GUI_Controls.cmbComboName->GetStringSelection());
 
 	if (strResponse != wxEmptyString)
 	{
