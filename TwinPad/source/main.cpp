@@ -1,4 +1,8 @@
-// Test wxWidgets, TwinPad
+// TwinPad PAD plugin for PSX (PSEmu Pro specifications) and PS2 (PCSX2) emulators
+// Created by: Rebel_X
+// Based on the work of PADwin team of the PADwinKeyboard plugin.
+// As the original plugin, TwinPad is licensed under GPLv2 or higher.
+// Please see LINCENSE.TXT for more information.
 #include "fastCompile.h"
 #include "wx/app.h"
 
@@ -15,7 +19,7 @@
 
 namespace
 {
-	// Thanks to https:// stackoverflow.com/questions/1888863/how-to-get-main-window-handle-from-process-id
+	// Thanks to https://stackoverflow.com/questions/1888863/how-to-get-main-window-handle-from-process-id
 	struct handle_data 
 	{
 		unsigned long process_id;
@@ -104,7 +108,7 @@ public:
 	TwinPad_DLL() { }
 	bool OnInit() 
 	{
-		// Without this, Grid custom cell renderer will fail to load the GIF as a BMP
+		// Without this, Grid custom cell renderer will fail to load GIFs as a BMPs
 		wxImage::AddHandler(new wxGIFHandler);
 		return true; 
 	}

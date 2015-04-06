@@ -2,7 +2,7 @@
 #include "CALLBACKS.h"
 #include "DirectInput.h"
 #include "twinpad_gui.h"
-#include "main.h"			// for ConfigureTwinPad_Plugin()
+#include "main.h"				// for ConfigureTwinPad_Plugin()
 #include "Externals.h"
 #include "wx/filename.h"		// to check if directory exists or not
 
@@ -106,10 +106,8 @@ u8 CALLBACK PADstartPoll(int pad)
 	return 0xff;
 }
 
-void _PADclose() {
-	/*if (--padOpened == 0) 
-		return;*/
-
+void _PADclose() 
+{
 	TermDI();
 	
 	hGSPUwnd = hGFXwnd = NULL;
@@ -118,7 +116,8 @@ void _PADclose() {
 }
 
 // // // // // // // // // // // // // // // //PSX related functions// // // // // // // // // // // // // // /
-typedef struct {
+typedef struct 
+{
 	unsigned char controllerType;
 	unsigned short buttonStatus;
 	unsigned char rightJoyX, rightJoyY, leftJoyX, leftJoyY;

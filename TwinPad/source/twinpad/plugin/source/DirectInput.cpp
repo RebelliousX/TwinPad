@@ -3,9 +3,9 @@
 #include <dinput.h>
 
 // DirectInput Variables
-LPDIRECTINPUT8 g_DI = NULL;	// Root DirectInput Interface
+LPDIRECTINPUT8 g_DI = NULL;					// Root DirectInput Interface
 LPDIRECTINPUTDEVICE8 g_DIKeyboard = NULL;	// The keyboard device
-LPDIRECTINPUTDEVICE8 g_DIMouse = NULL;	// The mouse device
+LPDIRECTINPUTDEVICE8 g_DIMouse = NULL;		// The mouse device
 DIMOUSESTATE2 MouseState;					// this holds the mouse data
 
 // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // /

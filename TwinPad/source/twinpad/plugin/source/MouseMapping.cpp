@@ -17,9 +17,8 @@ void MouseInputMapper(int func)
 		return;
 	}
 
-
-	// Left-Analog Stick
-	if (func == 16)
+	// Left-Analog Stick 16, Right-Analog Stick 17
+	if (func == 16 || func == 17)
 	{
 		static int RelativeX, RelativeY;
 		static int mouseX, mouseY;
@@ -31,8 +30,6 @@ void MouseInputMapper(int func)
 			// ScreenWidth or Height means screens or windows Width or Height..
 			RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255);
 			RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255);
-			lanalog[Configurations.m_mouseAsPad].x = RelativeX;
-			lanalog[Configurations.m_mouseAsPad].y = RelativeY;
 		}
 		else
 		{   // Trying to shrink the Dead Zone in the Center of the Window..
@@ -61,56 +58,16 @@ void MouseInputMapper(int func)
 				RelativeY = 255;
 			if ((RelativeY < 128) && (RelativeY < (Yfactor * 25.5)))
 				RelativeY = 0;
+		}
 
+		if (func == 16)
+		{
 			lanalog[Configurations.m_mouseAsPad].x = RelativeX;
 			lanalog[Configurations.m_mouseAsPad].y = RelativeY;
 		}
-	}
 
-	// Right Analog Stick
-	if (func == 17)
-	{
-		static int RelativeX, RelativeY;
-		static int mouseX, mouseY;
-
-		if (Configurations.m_mouseSensitivity == 1)
-		{   // Accurate and Old mode.
-			mouseX = MousePt.x - WndRect.left;
-			mouseY = MousePt.y - WndRect.top;
-			// ScreenWidth or Height means screen's or window's Width or Height..
-			RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255);
-			RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255);
-			ranalog[Configurations.m_mouseAsPad].x = RelativeX;
-			ranalog[Configurations.m_mouseAsPad].y = RelativeY;
-		}
-		else
-		{   // Trying to shrink the Dead Zone in the Center of the Window..
-			if (MousePt.x < (ScreenWidth / 2))
-				mouseX = MousePt.x - WndRect.left - rectMouseArea.left;
-			else
-				mouseX = MousePt.x - WndRect.left + rectMouseArea.left;
-
-			if (MousePt.y < (ScreenHeight / 2))
-				mouseY = MousePt.y - WndRect.top - rectMouseArea.top;
-			else
-				mouseY = MousePt.y - WndRect.top + rectMouseArea.top;
-
-			float Xfactor = (float)rectMouseArea.right / ScreenWidth;
-			float Yfactor = (float)rectMouseArea.bottom / ScreenHeight;
-
-			RelativeX = (int)(((float)mouseX / rectMouseArea.right) * Xfactor * 255);
-			RelativeY = (int)(((float)mouseY / rectMouseArea.bottom) * Yfactor * 255);
-
-			if ((RelativeX > 128) && (RelativeX > (Xfactor * 255)))
-				RelativeX = 255;
-			if ((RelativeX < 128) && (RelativeX < (Xfactor * 25.5)))
-				RelativeX = 0;
-
-			if ((RelativeY > 128) && (RelativeY >(Yfactor * 255)))
-				RelativeY = 255;
-			if ((RelativeY < 128) && (RelativeY < (Yfactor * 25.5)))
-				RelativeY = 0;
-
+		if (func == 17)
+		{
 			ranalog[Configurations.m_mouseAsPad].x = RelativeX;
 			ranalog[Configurations.m_mouseAsPad].y = RelativeY;
 		}
