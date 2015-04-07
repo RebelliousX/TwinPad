@@ -116,17 +116,13 @@ void ProcMouseInput()
 		}
 		else
 		{
-			static long prevWheelPos = MouseState.lZ;
-
 			// Scroll Up
-			if (Configurations.m_mouse[8] != 36 && MouseState.lZ > prevWheelPos)
+			if (Configurations.m_mouse[8] != 36 && MouseState.lZ > 0)
 				MouseInputMapper(Configurations.m_mouse[8]);
 
 			// Scroll Down
-			if (Configurations.m_mouse[9] != 36 && MouseState.lZ < prevWheelPos)
+			if (Configurations.m_mouse[9] != 36 && MouseState.lZ < 0)
 				MouseInputMapper(Configurations.m_mouse[9]);
-
-			prevWheelPos = MouseState.lZ;
 		}
 	}
 }
