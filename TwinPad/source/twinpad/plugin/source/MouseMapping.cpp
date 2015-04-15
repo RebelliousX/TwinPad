@@ -5,20 +5,20 @@
 // // // // // // // // // // // // // // // /Mouse Mapping Functions // // // // // // // // // // // // // // // // // /
 // ---------------------------------------------------------------------------------------------------------------------/
 
-void MouseInputMapper(int func)
+void MouseInputMapper(int button)
 {
-	// Check func values, supported values between 0 and 17
-	if (func < 0 || func > 17)
+	// Check button values, supported values between 0 and 17
+	if (button < 0 || button > 17)
 	{
 		// Error!
-		wxString strError = wxString::Format("Invalid Value in MouseInputMapper(), Please Contact the Author.\nValue is: %d", func);
+		wxString strError = wxString::Format("Invalid Value in MouseInputMapper(), Please Contact the Author.\nValue is: %d", button);
 
 		wxMessageBox(strError, "TwinPad: Error", wxICON_ERROR);
 		return;
 	}
 
 	// Left-Analog Stick 16, Right-Analog Stick 17
-	if (func == 16 || func == 17)
+	if (button == 16 || button == 17)
 	{
 		static int RelativeX, RelativeY;
 		static int mouseX, mouseY;
@@ -60,13 +60,13 @@ void MouseInputMapper(int func)
 				RelativeY = 0;
 		}
 
-		if (func == 16)
+		if (button == 16)
 		{
 			lanalog[Configurations.m_mouseAsPad].x = RelativeX;
 			lanalog[Configurations.m_mouseAsPad].y = RelativeY;
 		}
 
-		if (func == 17)
+		if (button == 17)
 		{
 			ranalog[Configurations.m_mouseAsPad].x = RelativeX;
 			ranalog[Configurations.m_mouseAsPad].y = RelativeY;
@@ -75,19 +75,19 @@ void MouseInputMapper(int func)
 	
 	// // /Pressing// // // // // // // // // // /
 	// L2, R2, L1, R1, Triangle, Circle, Cross, Square, Select, from 0 to 8 respectively.
-	if (func >= 0 && func <= 8)
-		status[Configurations.m_mouseAsPad] &= ~(1 << func);
+	if (button >= 0 && button <= 8)
+		status[Configurations.m_mouseAsPad] &= ~(1 << button);
 	// L3
-	if (func == 9)
+	if (button == 9)
 		lanalog[Configurations.m_mouseAsPad].button = 1;
 	// R3
-	if (func == 10)
+	if (button == 10)
 		ranalog[Configurations.m_mouseAsPad].button = 1;
 	// Start, Up, Right, Down, Left, from 11 to 15 respectively.
-	if (func >= 11 && func <= 15)
-		status[0] &= ~(1 << func);
+	if (button >= 11 && button <= 15)
+		status[0] &= ~(1 << button);
 	// // /Releasing// // // // // // // // // // 
-	if (func >= 20 && func <= 28) return;
+	if (button >= 20 && button <= 28) return;
 }
 
 // // /This Function leads MouseInputMapper and tells him what to do.// // // // // // // // // // // // // // // // // 
