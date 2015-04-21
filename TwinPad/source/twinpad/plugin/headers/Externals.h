@@ -54,4 +54,6 @@ public:
 
 extern CPressure Pressure;
 
+extern unsigned int defaultPressure[2];
+
 #endif

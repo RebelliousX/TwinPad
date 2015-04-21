@@ -13,8 +13,9 @@ RECT WndRect, rectMouseArea;
 POINT MousePt;
 u16 status[2];
 CPressure Pressure;
+unsigned int defaultPressure[2] = { 255, 255 };			// Full pressure
 
-unsigned int pads=0;
+unsigned int pads = 0;
 
 int ScreenWidth = 0, ScreenHeight = 0;		// To handle Analog Coords correctly.
 
@@ -80,10 +81,6 @@ s32  _PADopen(HWND hDsp) {
 
 	PADsetMode(0, 0);
 	PADsetMode(1, 0);
-
-	// Fully pressed
-	Pressure = { 255, 255, 255, 255, 255, 255,
-				 255, 255, 255, 255, 255, 255, };
 
 	for (int i = 0; i < 2; ++i) 
 	{
@@ -189,7 +186,6 @@ u8 stdmodel[2][8] = { {0xff, 0x5a,
 
 
 u8  _PADpoll(u8 value) {
-	u8 button_check = 0, button_check2 = 0;
 	if (curByte[curPad] == 0) {
 		curByte[curPad]++;
 		curCmd = value;
@@ -232,73 +228,26 @@ u8  _PADpoll(u8 value) {
 						if (padID[curPad] == 0x41) // DualShock 1 or 2: Digital
 							cmdLen[curPad] = 4;
 
-				button_check2 = stdpar[curPad][2] >> 4;
-				
-				switch(stdpar[curPad][3])
+				if (padID[curPad] == 0x79)
 				{
-				
-				case 0xbf: // X
-					stdpar[curPad][14] = Pressure.Cross;
-					break;
-				case 0xdf: // Circle
-					stdpar[curPad][13] = Pressure.Circle;
-					break;
-				case 0xef: // Triangle
+					stdpar[curPad][8] = Pressure.Right;
+					stdpar[curPad][9] = Pressure.Left;
+					stdpar[curPad][10] = Pressure.Up;
+					stdpar[curPad][11] = Pressure.Down;
 					stdpar[curPad][12] = Pressure.Triangle;
-					break;
-				case 0x7f: // Square
+					stdpar[curPad][13] = Pressure.Circle;
+					stdpar[curPad][14] = Pressure.Cross;
 					stdpar[curPad][15] = Pressure.Square;
-					break;
-				case 0xfb: // L1
 					stdpar[curPad][16] = Pressure.L1;
-					break;
-				case 0xf7: // R1
 					stdpar[curPad][17] = Pressure.R1;
-					break;
-				case 0xfe: // L2
 					stdpar[curPad][18] = Pressure.L2;
-					break;
-				case 0xfd: // R2
 					stdpar[curPad][19] = Pressure.R2;
-					break;
-				default:
-					stdpar[curPad][14] = 0x00; // Not pressed
-					stdpar[curPad][13] = 0x00; // Not pressed
-					stdpar[curPad][12] = 0x00; // Not pressed
-					stdpar[curPad][15] = 0x00; // Not pressed
-					stdpar[curPad][16] = 0x00; // Not pressed
-					stdpar[curPad][17] = 0x00; // Not pressed
-					stdpar[curPad][18] = 0x00; // Not pressed
-					stdpar[curPad][19] = 0x00; // Not pressed
-					break;
-				}
-				switch(button_check2)
-				{
-				case 0xE: // UP
-					stdpar[curPad][10] = Pressure.Up; 
-					break;
-				case 0xB: // DOWN
-					stdpar[curPad][11] = Pressure.Down; 
-					break;
-				case 0x7: // LEFT
-					stdpar[curPad][9] = Pressure.Left; 
-					break;
-				case 0xD: // RIGHT
-					stdpar[curPad][8] = Pressure.Right; 
-					break;
-				default:
-					stdpar[curPad][8] = 0x00;  // Not pressed
-					stdpar[curPad][9] = 0x00;  // Not pressed
-					stdpar[curPad][10] = 0x00; // Not pressed
-					stdpar[curPad][11] = 0x00; // Not pressed
-					break;
 				}
 
 				curByte[curPad] = 0;
 				buf = stdpar[curPad];
 				return padID[curPad];
 
-			
 			case 0x43: // CONFIG_MODE
 				cmdLen[curPad] = 8;
 				buf = stdcfg[curPad];
@@ -413,7 +362,11 @@ void AllInOne(int pad)
 	status[pad] = 0xffff;
 	lanalog[pad].x = lanalog[pad].y = 0x80;
 	ranalog[pad].x = ranalog[pad].y = 0x80;
-	lanalog[pad].button = ranalog[pad].button;
+	lanalog[pad].button = ranalog[pad].button = 0;
+
+	// No pressure is the default, will be overridden when keys are pressed
+	Pressure = { 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, };
 
 	// Get Current Keyboard status, and save the old status.
 	GetKeyboardStatus();
@@ -442,38 +395,38 @@ void AllInOne(int pad)
 	// Process COMBO Buttons
 	if (Configurations.IsEnabled_COMBOS())
 		ExecuteCombo(pad);
-	
-	// // Process Special EmuKeys and Map DirectInput to VirtualKey
-	if (Configurations.IsEnabled_KeyEvents())
-		_EmuKeys();
-	
-	// Make a copy of old Keyboard state..
-	memcpy(BufferKeyState, KeyState, sizeof(KeyState));
 }
 
 void _PADEvent(int pad) {
 
 	int i;
-	if (pad == 0) {
-		_PADEventExtra(pad);
-		for (i=0; i<16; i++)
-			if ( DIKEYDOWN(KeyState, Configurations.m_pad[pad][i]) )
-				status[pad]&=~(1<<i);
-			// else /*release code became obsolete*/
-			// 	status[pad]|= (1<<i);
-	}
-	if (pad == 1) {
-		_PADEventExtra(pad);
-		for (i=0; i<16; i++)
-			if ( DIKEYDOWN(KeyState, Configurations.m_pad[pad][i]) )
-				status[pad]&=~(1<<i);
-			// else /*release code became obsolete*/
-			// 	status[pad]|= (1<<i);
+	_PADEventExtra(pad);
+	for (i=0; i<16; i++)
+		if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][i]))
+		{
+			status[pad] &= ~(1 << i);
 
-	}
+			switch (i)
+			{
+			case 0: Pressure.L2 = defaultPressure[pad]; break;
+			case 1: Pressure.R2 = defaultPressure[pad]; break;
+			case 2: Pressure.L1 = defaultPressure[pad]; break;
+			case 3: Pressure.R1 = defaultPressure[pad]; break;
+			case 4: Pressure.Triangle = defaultPressure[pad]; break;
+			case 5: Pressure.Circle = defaultPressure[pad]; break;
+			case 6: Pressure.Cross = defaultPressure[pad]; break;
+			case 7: Pressure.Square = defaultPressure[pad]; break;
+			case 12: Pressure.Up = defaultPressure[pad]; break;
+			case 13: Pressure.Right = defaultPressure[pad]; break;
+			case 14: Pressure.Down = defaultPressure[pad]; break;
+			case 15: Pressure.Left = defaultPressure[pad]; break;
+			default: break;
+			}
+		}
+		// else /*release code became obsolete*/
+			//status[pad] |= (1 << i);
 }
 
-// // // // // // // // // // // // // // // // // // // Added Functions// // // // // // // // // // // // // // // // // // // // // // // // 
 void _PADEventExtra( int pad )
 {
 	// Left Analog stick as Keyboard..
@@ -579,109 +532,31 @@ void _PADEventExtra( int pad )
 				ranalog[pad].button = 0;
 			}
 
-	// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
 	// Special Keys to TOGGLE between Sensitivity of Analog controls, (Walk/Run)
-	if ( DIKEYDOWN(BufferKeyState, Configurations.m_pad[pad][24]) && // was pressed before
-		 !DIKEYDOWN(KeyState, Configurations.m_pad[pad][24]))        // but it's NOT pressed now, there is KEYRELEASE
+	static bool toggle[2] = { false, false };
+
+	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][24]))							// Walk/Run is pressed now
+		toggle[pad] = true;
+
+	if (!DIKEYDOWN(KeyState, Configurations.m_pad[pad][24]) && toggle[pad] == true)	// Walk/Run is released (was pressed before)
+	{
+		toggle[pad] = false;
+
+		if (minXY[pad] == 0)
 		{
-			if (minXY[pad] == 0)
-			{
-				// Walk
-				minXY[pad] = 64;   // Average between Center and the Edges. for UP and LEFT
-				maxXY[pad] = 192;  // Average between Center and the Edges. for DOWN and RIGHT			
-			}
-			else
-				{
-					// Run
-					minXY[pad] = 0;   // The Most value for UP and LEFT
-					maxXY[pad] = 255;  // The Most value for DOWN and RIGHT	
-				}
-		}
-}
-
-static int SHIFTKEY  = KEYRELEASE;
-static int SHIFTFLAG = 0;
-
-void _EmuKeys()
-{
-	// First handle some DIK_* that can't be mapped to VK_* through MapVirtualKey()
-	// The list has more, but these what matters, maybe GSdx?? but Pete's GPUs uses them.. to record or show FPS..etc!
-	if (DIKEYDOWN(KeyState, DIK_DELETE)) {
-		curEvent.evt = KEYPRESS;
-		curEvent.key = VK_DELETE;
-		return;
-	}
-	else
-		if (DIKEYDOWN(KeyState, DIK_INSERT)) {
-			curEvent.evt = KEYPRESS;
-			curEvent.key = VK_INSERT;
-			return;
+			// Walk
+			minXY[pad] = 64;   // Average between Center and the Edges. for UP and LEFT
+			maxXY[pad] = 192;  // Average between Center and the Edges. for DOWN and RIGHT
+			defaultPressure[pad] = 128;
 		}
 		else
-			if (DIKEYDOWN(KeyState, DIK_HOME)) {
-				curEvent.evt = KEYPRESS;
-				curEvent.key = VK_HOME;
-				return;
-			}
-			else
-				if (DIKEYDOWN(KeyState, DIK_PRIOR)) {
-					curEvent.evt = KEYPRESS;
-					curEvent.key = VK_PRIOR;
-					return;
-				}
-				else
-					if (DIKEYDOWN(KeyState, DIK_END)) {
-						curEvent.evt = KEYPRESS;
-						curEvent.key = VK_END;
-						return;
-					}
-					else
-						if (DIKEYDOWN(KeyState, DIK_NEXT)) {
-							curEvent.evt = KEYPRESS;
-							curEvent.key = VK_NEXT;
-							return;
-						}
-	// Compare between current status (KeyState) and old status (BufferKeyState)
-	// And to Determine the Event Occurred using MapVirtualKey function..
-	// Also this will handle EmuKeys like ESCAPE, F1,...F12, ..etc!
-	int i = 0;
-	while( i++ < 256)
-	{
-		// if it's not pressed now, but was before, there is KeyRelease..
-		if (DIKEYDOWN(KeyState, i)) // KeyPress
-		{	
-			if (VK_SHIFT == MapVirtualKey(i,1))
-				if (SHIFTKEY != KEYPRESS)
-				{
-					SHIFTKEY = KEYPRESS;
-					SHIFTFLAG = 1;
-					return;
-				}
-				else
-					continue;
-
-			curEvent.evt = KEYPRESS;
-			curEvent.key = MapVirtualKey(i,1);
-			return;
+		{
+			// Run
+			minXY[pad] = 0;   // The Most value for UP and LEFT
+			maxXY[pad] = 255;  // The Most value for DOWN and RIGHT	
+			defaultPressure[pad] = 255;
 		}
-		else 
-			if (DIKEYDOWN(BufferKeyState,i)) // KeyRelease
-			{	
-				if (VK_SHIFT == MapVirtualKey(i,1))
-					if (SHIFTKEY != KEYRELEASE)
-					{
-						SHIFTKEY = KEYRELEASE;
-						SHIFTFLAG = 1;
-						return;
-					}
-					else
-						continue;
-
-				curEvent.evt = KEYRELEASE;
-				curEvent.key = MapVirtualKey(i,1);
-				return;
-			}
-	} 
+	}
 }
 
 // PADkeyEvent is called every vsync (return NULL if no event)
@@ -690,29 +565,14 @@ keyEvent* CALLBACK PADkeyEvent() {
 	if (!Configurations.IsEnabled_KeyEvents())
 		return NULL;
 
-	// Shift Key test..
-	if (SHIFTFLAG == 1)
-	{
-		SHIFTFLAG = 0;
-		if (SHIFTKEY == KEYPRESS)
-		{
-			curEvent.evt = KEYPRESS;
-			curEvent.key = VK_SHIFT;
-		}
-		else
-		{
-			curEvent.evt = KEYRELEASE;
-			curEvent.key = VK_SHIFT;
-		}
+	for (int i = 0; i < 256; ++i)
+		if (BufferKeyState[i] != KeyState[i])
+			{
+				curEvent.evt = DIKEYDOWN(KeyState, i) ? KEYPRESS : KEYRELEASE;
+				curEvent.key = MapVirtualKey(i, 1);
+				memcpy(BufferKeyState, KeyState, sizeof(KeyState));
+				return &curEvent;
+			}
 
-		oldEvent = curEvent;
-		return &curEvent;
-	}
-	// If no events occured, return null..
-	if (oldEvent.evt == curEvent.evt &&
-		oldEvent.key == curEvent.key )
-		return NULL;
-
-	oldEvent = curEvent;
-	return &curEvent;
+	return 0;
 }
