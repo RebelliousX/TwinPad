@@ -219,11 +219,14 @@ public:
 		memcpy(buffer, data, length);
 
 		wxMemoryInputStream iStream(buffer, length);
-
+		
 		wxImage bmp;
 		bmp.LoadFile(iStream, wxBITMAP_TYPE_GIF);
 		
 		dc.DrawBitmap(bmp, wxPoint(rect.x, rect.y));
+
+		delete[] buffer;
+		buffer = 0;
 	}
 };
 

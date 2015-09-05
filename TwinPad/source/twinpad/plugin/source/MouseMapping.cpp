@@ -106,11 +106,12 @@ void ProcMouseInput()
 	{
 		if (Configurations.m_mouse[8] == 36 || Configurations.m_mouse[9] == 36)
 		{
-			short pressure_ = 255;
-			pressure_ += ((short)MouseState.lZ / 120) * 5;
-			if (pressure_ >= 255) pressure_ = 255;
-			if (pressure_ <= 0) pressure_ = 0;
+			short prs = 255;
+			prs += ((short)MouseState.lZ / 120) * 5;
+			if (prs >= 255) prs = 255;
+			if (prs <= 0) prs = 0;
 
+			u8 pressure_ = prs;	//VS2015 complains about conversion from short to u8
 			Pressure = { pressure_, pressure_, pressure_, pressure_, pressure_, pressure_,
 				pressure_, pressure_, pressure_, pressure_, pressure_, pressure_ };
 		}
