@@ -69,13 +69,13 @@
     <ClInclude Include="source\main.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="source\fastCompile.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="source\twinpad\GUI\headers\timers_functions.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="source\twinpad\GUI\headers\events_functions.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\stdafx.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>

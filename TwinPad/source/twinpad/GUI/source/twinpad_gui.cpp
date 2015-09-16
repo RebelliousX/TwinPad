@@ -1,8 +1,7 @@
-
+#include "stdafx.h"
 #include "main.h"
 #include "twinpad_gui.h"
 #include "events_functions.h"
-#include "labels.h"
 
 #include "Externals.h"
 

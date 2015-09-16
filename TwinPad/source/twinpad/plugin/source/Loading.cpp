@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Loading.h"
 #include "twinpad_gui.h"
 

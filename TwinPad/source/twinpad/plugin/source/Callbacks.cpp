@@ -1,10 +1,8 @@
-#include "fastCompile.h"
-#include "CALLBACKS.h"
+#include "stdafx.h"
 #include "DirectInput.h"
 #include "twinpad_gui.h"
 #include "main.h"				// for ConfigureTwinPad_Plugin()
 #include "Externals.h"
-#include "wx/filename.h"		// to check if directory exists or not
 
 // Name of this plugin and the version number
 char *libraryName      = "TwinPad";

@@ -4,8 +4,7 @@
 // As the original plugin, TwinPad is licensed under GPLv2 or higher.
 // Please see LINCENSE.TXT for more information.
 
-#include "fastCompile.h"
-//#include "wx/app.h"
+#include "stdafx.h"
 
 #ifndef __WINDOWS__
 	#error "Currently TwinPad is Windows-only"
@@ -13,28 +12,22 @@
 
 #include "main.h"
 #include "twinpad_gui.h"
-
 #include "DirectInput.h"
 
-#include "wx/dynlib.h"
-//#include "wx/msw/wrapwin.h"
-
-#include <process.h> // for _beginthreadex()
-
-HMODULE hDI = NULL;							// DLL handle, passed to DirectInput
+HMODULE hDLL = NULL;						// DLL handle, passed to DirectInput
 HWND hGFXwnd = NULL, hGSPUwnd = NULL;		// Both for getting HWND from GPU/GS window
 HWND hEmuWnd = NULL;						// Hackish, get handle to emulator, since wxDialog can't have win32 parent
 
-// ----------------------------------------------------------------------------
-// GUI classes
-// ----------------------------------------------------------------------------
+											// ----------------------------------------------------------------------------
+											// GUI classes
+											// ----------------------------------------------------------------------------
 TwinPad_Frame::TwinPad_Frame(wxString title) : wxDialog(0, wxID_ANY, title, wxDefaultPosition, wxDefaultSize,
 	wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxSTAY_ON_TOP)
 {
-	tmrAnimate		= new CReAnimate(this);
+	tmrAnimate = new CReAnimate(this);
 	tmrAutoNavigate = new CAutoNav(this);
-	tmrGetKey		= new CGetKey(this);
-	tmrGetComboKey	= new CGetComboKey(this);
+	tmrGetKey = new CGetKey(this);
+	tmrGetComboKey = new CGetComboKey(this);
 
 	CreateControls(this);
 
@@ -60,19 +53,24 @@ void TwinPad_Frame::OnClose(wxCloseEvent &event)
 {
 	SetForegroundWindow(hEmuWnd);
 	ShowWindow(hEmuWnd, SW_RESTORE);
-	event.Skip();
+	Destroy();
 }
 
 static const int CMD_SHOW_WINDOW = wxNewId();
-static const int CMD_TERMINATE = wxNewId();
-
-void wx_dll_cleanup();
 
 class TwinPad_DLL : public wxApp
 {
 public:
-	TwinPad_DLL() 
+	TwinPad_DLL()
 	{
+		// Note: wx_dll_cleanup() is removed, most emus (like PCSX2) don't call
+		// PADshutdown() callback function anymore to cleanup the dll. Thus, I can't
+		// do thread terminating/restarting. And for some odd reason, when PCSX2 switched
+		// to using wxWidgets 3.0, TwinPad's DllMain function stopped working *correctly*.
+		// Despite that both link to wx3.0 statically and shouldn't interfere with each other.
+		//
+		// -- Taken from dll sample of wxWidgets ----------------------------------------------
+		//
 		// Keep the wx "main" thread running even without windows. This greatly
 		// simplifies threads handling, because we don't have to correctly
 		// implement wx-thread restarting.
@@ -88,27 +86,22 @@ public:
 		// by shutting the thread down when it's no longer needed, though.
 		SetExitOnFrameDelete(false);
 
-		Connect(CMD_SHOW_WINDOW,
-			wxEVT_THREAD,
-			wxThreadEventHandler(TwinPad_DLL::OnShowWindow));
-		Connect(CMD_TERMINATE,
-			wxEVT_THREAD,
-			wxThreadEventHandler(TwinPad_DLL::OnTerminate));
+		Connect(CMD_SHOW_WINDOW, wxEVT_THREAD, wxThreadEventHandler(TwinPad_DLL::OnShowWindow));
 	}
 
-	bool OnInit() 
+	bool OnInit()
 	{
 		// Without this, Grid custom cell renderer will fail to load GIFs as a BMPs
 		wxImage::AddHandler(new wxGIFHandler);
-		return true; 
+		return true;
 	}
 
 	int FilterEvent(wxEvent& event)
 	{
-		if ( (((wxKeyEvent&)event).GetKeyCode() == WXK_LEFT) ||
-			 (((wxKeyEvent&)event).GetKeyCode() == WXK_RIGHT) ||
-			 (((wxKeyEvent&)event).GetKeyCode() == WXK_TAB) )
-				return 1;
+		if ((((wxKeyEvent&)event).GetKeyCode() == WXK_LEFT) ||
+			(((wxKeyEvent&)event).GetKeyCode() == WXK_RIGHT) ||
+			(((wxKeyEvent&)event).GetKeyCode() == WXK_TAB))
+			return 1;
 
 		// To prevent navigation of controls using arrow keys and tab, ignore all key down events
 		if (event.GetEventType() == wxEVT_KEY_DOWN ||
@@ -121,20 +114,8 @@ public:
 
 	void OnShowWindow(wxThreadEvent& event)
 	{
-		// Switch between GS/GPU handle window and TwinPap Config handle window
-		// to be used for DirectInput which uses only hGFXwnd. This is just a precaution, because
-		// user might want to summon TwinPad Config window using the HOT key and InitDI() would be called again.
-		// the only needed things to do are to assign a new hGFXwnd from TwinPad_Frame before calling InitDI()
-		// and make sure if DI is initialized, terminated it then reinitialize it. When done with the TwinPad window
-		// again terminate DI and reinitialize it for GS/GPU window. NOTE: the emu will assign a new handle when 
-		// PADopen is called and GS/GPU window is running.
-		HWND hGFXwnd_temp = hGFXwnd;
 		TwinPad_Frame *twinPad_Frame = new TwinPad_Frame("TwinPad Configuration Utility");
-		hGFXwnd = (HWND)twinPad_Frame->GetHWND();
 #ifdef __WINDOWS__
-		// Terminate DI, if successfully terminated, then it was running before and user called TwinPad
-		// Config using the Hot key
-		bool wasDI_Running = TermDI();
 		if (!InitDI())
 		{
 			wxMessageBox("Can't Initialize DirectInput!", "Failure...", wxICON_ERROR);
@@ -144,41 +125,14 @@ public:
 			return;
 		}
 #endif
-		
+
 		twinPad_Frame->ShowModal();
 
 #ifdef __WINDOWS__
 		// Terminate DirectInput for TwinPad Config window
 		TermDI();
-		// If DI was running before, reinitialize it again but with hGFXwnd handle, if it was running
-		// and interrupted using the Hot key
-		if (wasDI_Running)
-		{
-			hGFXwnd = hGFXwnd_temp;
-			if (!InitDI())
-			{
-				wxMessageBox("Failed to reinitialize DirectInput", "Oops!", wxICON_ERROR);
-			}
-		}
 #endif
-		// Restore original hGFXwnd
-		hGFXwnd = hGFXwnd_temp;
-
-		delete twinPad_Frame;
-		twinPad_Frame = 0;
 		GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
-		OnTerminate(wxThreadEvent(wxEVT_THREAD, -1));
-	}
-
-	void OnTerminate(wxThreadEvent& WXUNUSED(event))
-	{
-		ExitMainLoop();
-	}
-
-	int OnExit()
-	{
-		wx_dll_cleanup();
-		return wxApp::OnExit();
 	}
 };
 
@@ -186,7 +140,7 @@ public:
 // application startup
 // ----------------------------------------------------------------------------
 
-void run_wx_gui_from_dll();
+void Run_wxGUI_From_DLL();
 
 void ConfigureTwinPad()
 {
@@ -197,26 +151,23 @@ void ConfigureTwinPad()
 	// This will fool the host app if it was using wxWidgets by creating faux 
 	// main thread to run the GUI from the plugin. TwinPad_DLL::OnShowWindow() will be called
 	// due to the DLL's main thread and create our frame and controls
-	run_wx_gui_from_dll();
-	//wx_dll_cleanup();
+	Run_wxGUI_From_DLL();
 }
-
 
 // we can't have WinMain() in a DLL and want to start the app ourselves
 IMPLEMENT_APP_NO_MAIN(TwinPad_DLL)
 
 namespace
 {
-
-	// Critical section that guards everything related to wxWidgets "main" thread
-	// startup or shutdown.
-	wxCriticalSection gs_wxStartupCS;
 	// Handle of wx "main" thread if running, NULL otherwise
 	HANDLE gs_wxMainThread = NULL;
 
+	std::mutex gs_mtx;
+	std::condition_variable gs_cnd;
+	bool gs_canContinue = false;
 
 	//  wx application startup code -- runs from its own thread
-	unsigned wxSTDCALL MyAppLauncher(void* event)
+	unsigned wxSTDCALL TwinPad_DLL_Launcher()
 	{
 		// Note: The thread that called run_wx_gui_from_dll() holds gs_wxStartupCS
 		//       at this point and won't release it until we signal it.
@@ -227,16 +178,15 @@ namespace
 		// not needed/used as we retrieve the DLL handle from an address inside it
 		// but you do need to use the correct name for this code to work with older
 		// systems as well.
-		const HINSTANCE
-			hInstance = wxDynamicLibrary::MSWGetModuleHandle("padTwinPad",
-				&gs_wxMainThread);
+		const HINSTANCE	hInstance = wxDynamicLibrary::MSWGetModuleHandle("padTwinPad", &gs_wxMainThread);
+		
 		if (!hInstance)
 			return 0; // failed to get DLL's handle
 
 		// Save the handle of this DLL to be used for DirectInput
-		hDI = hInstance;
+		hDLL = hInstance;
 
-		 // IMPLEMENT_WXWIN_MAIN does this as the first thing
+		// IMPLEMENT_WXWIN_MAIN does this as the first thing
 		wxDISABLE_DEBUG_SUPPORT();
 
 		// We do this before wxEntry() explicitly, even though wxEntry() would
@@ -246,12 +196,11 @@ namespace
 		if (!wxinit.IsOk())
 			return 0; // failed to init wx
 
-					  // Signal run_wx_gui_from_dll() that it can continue
-		HANDLE hEvent = *(static_cast<HANDLE*>(event));
-		if (!SetEvent(hEvent))
-			return 0; // failed setting up the mutex
+		// Signal Run_wxGUI_From_DLL() that it can continue
+		gs_canContinue = true;
+		gs_cnd.notify_one();
 
-					  // Run the app:
+		// Run the app main's loop:
 		wxEntry(hInstance);
 
 		return 1;
@@ -259,8 +208,7 @@ namespace
 
 } // anonymous namespace
 
-
-void run_wx_gui_from_dll()
+void Run_wxGUI_From_DLL()
 {
 	// In order to prevent conflicts with hosting app's event loop, we
 	// launch wx app from the DLL in its own thread.
@@ -273,69 +221,20 @@ void run_wx_gui_from_dll()
 	//
 	// Note that we cannot use wxThread here, because the wx library wasn't
 	// initialized yet. wxCriticalSection is safe to use, though.
-
-	wxCriticalSectionLocker lock(gs_wxStartupCS);
-
-	const char *title = "TwinPad Configuration Utility";
+	std::unique_lock<std::mutex> uLocker(gs_mtx);
 
 	if (!gs_wxMainThread)
 	{
-		HANDLE hEvent = CreateEvent
-			(
-				NULL,  // default security attributes
-				FALSE, // auto-reset
-				FALSE, // initially non-signaled
-				NULL   // anonymous
-				);
-		if (!hEvent)
-			return; // error
+		std::thread tMainThread(TwinPad_DLL_Launcher);
+		gs_wxMainThread = (HANDLE)tMainThread.native_handle();
+		gs_cnd.wait(uLocker, []() { return gs_canContinue; });
+		gs_canContinue = false;
 
-					// NB: If your compiler doesn't have _beginthreadex(), use CreateThread()
-		gs_wxMainThread = (HANDLE)_beginthreadex
-			(
-				NULL,           // default security
-				0,              // default stack size
-				&MyAppLauncher,
-				&hEvent,        // arguments
-				0,              // create running
-				NULL
-				);
-
-		if (!gs_wxMainThread)
-		{
-			CloseHandle(hEvent);
-			return; // error
-		}
-
-		// Wait until MyAppLauncher signals us that wx was initialized. This
-		// is because we use wxMessageQueue<> and wxString later and so must
-		// be sure that they are in working state.
-		WaitForSingleObject(hEvent, INFINITE);
-		CloseHandle(hEvent);
+		// Run it as daemon, it will loop (similar to DllMain) until the calling process exits
+		tMainThread.detach();
 	}
-
+	
 	// Send a message to wx thread to show a new frame:
-	wxThreadEvent *event =
-		new wxThreadEvent(wxEVT_THREAD, CMD_SHOW_WINDOW);
-	event->SetString(title);
+	wxThreadEvent *event = new wxThreadEvent(wxEVT_THREAD, CMD_SHOW_WINDOW);
 	wxQueueEvent(wxApp::GetInstance(), event);
-}
-
-void wx_dll_cleanup()
-{
-	wxCriticalSectionLocker lock(gs_wxStartupCS);
-
-	if (!gs_wxMainThread)
-		return;
-
-	// If wx main thread is running, we need to stop it. To accomplish this,
-	// send a message telling it to terminate the app.
-	wxThreadEvent *event =
-		new wxThreadEvent(wxEVT_THREAD, CMD_TERMINATE);
-	wxQueueEvent(wxApp::GetInstance(), event);
-
-	// We must then wait for the thread to actually terminate.
-	//WaitForSingleObject(gs_wxMainThread, INFINITE);
-	CloseHandle(gs_wxMainThread);
-	gs_wxMainThread = NULL;
 }

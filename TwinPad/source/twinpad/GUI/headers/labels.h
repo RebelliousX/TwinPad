@@ -1,6 +1,6 @@
 #pragma once
 
-#include "fastCompile.h"
+#include "stdafx.h"
 
 class CPS_Label
 {

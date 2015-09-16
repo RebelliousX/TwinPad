@@ -1,6 +1,6 @@
 #pragma once
 
-#include "fastCompile.h"
+#include "stdafx.h"
 #include "timers_functions.h"
 
 // Called from PADconfigure() callback function

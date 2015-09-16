@@ -7,3 +7,5 @@
 *.idb
 *.iobj
 *.ipdb
+*.ipch
+*.enc

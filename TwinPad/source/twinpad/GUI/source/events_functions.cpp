@@ -1,8 +1,7 @@
-#include "fastCompile.h"
+#include "stdafx.h"
 #include "events_functions.h"
 #include "twinpad_gui.h"
 #include "functions_gui.h"
-#include "labels.h"
 
 // This function handles the click event for both keyboard tab and combo tab
 void CPS_Anim::OnClickAnimInKeyboardTab(wxMouseEvent &event)

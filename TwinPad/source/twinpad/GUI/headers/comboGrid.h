@@ -1,12 +1,6 @@
 #pragma once
 
-#include "fastCompile.h"
-#include "wx/grid.h"
-#include "wx/mstream.h"		// for wxMemoryInputStream
-
-#include <vector>
-
-#include "resources.h"
+#include "stdafx.h"
 
 // Column 0: for delay, 1-20 for buttons
 const int MAX_COLUMNS = 21;

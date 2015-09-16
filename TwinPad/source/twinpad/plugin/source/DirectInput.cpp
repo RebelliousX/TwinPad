@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "DirectInput.h"
 #include "twinpad_gui.h"
-#include <dinput.h>
 
 // DirectInput Variables
 LPDIRECTINPUT8 g_DI = NULL;					// Root DirectInput Interface
@@ -19,7 +19,7 @@ bool InitDI()
 	if (g_DI == NULL)
 	{
 		DirectInput8Create(
-			hDI,
+			hDLL,
 			DIRECTINPUT_VERSION,
 			IID_IDirectInput8,
 			(void**)&g_DI,

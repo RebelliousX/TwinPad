@@ -1,12 +1,6 @@
 #pragma once
 
-#include "fastCompile.h"
-
-#include "wx/notebook.h"
-#include "wx/animate.h"
-#include <wx/spinctrl.h>
-
-#include <vector>
+#include "stdafx.h"
 
 #include "main.h"
 // -----Don't change the Include's order for these two 

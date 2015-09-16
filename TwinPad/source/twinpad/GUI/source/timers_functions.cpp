@@ -1,5 +1,5 @@
 #pragma once
-
+#include "stdafx.h"
 #include "timers_functions.h"
 #include "DirectInput.h"
 #include "Externals.h"

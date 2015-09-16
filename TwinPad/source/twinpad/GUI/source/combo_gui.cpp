@@ -1,8 +1,7 @@
-#include "fastCompile.h"
+#include "stdafx.h"
 #include "twinpad_gui.h"
 #include "functions_gui.h"
 #include "events_functions.h"
-#include "labels.h"
 
 // // // // // // // // // // // // // // // // Combo  Tab // // // // // // // // // // // // // // // // 
 

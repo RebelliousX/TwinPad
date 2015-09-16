@@ -1,10 +1,9 @@
 #ifndef __EXTERNALS_H_
 #define __EXTERNALS_H_
 
-#include "DI_Globals.h"
-#include "PS2Etypes.h"
+#include "stdafx.h"
 
-extern HMODULE hDI;
+extern HMODULE hDLL;
 extern HWND hGFXwnd;
 extern HWND hGSPUwnd;
 

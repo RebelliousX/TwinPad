@@ -1,4 +1,4 @@
-#include "fastCompile.h"
+#include "stdafx.h"
 #include "Externals.h"
 #include "twinpad_gui.h"
 

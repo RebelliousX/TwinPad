@@ -1,8 +1,6 @@
 #pragma once
 
-#include "fastCompile.h"
-#include <vector>
-
+#include "stdafx.h"
 
 class CCellValue
 {

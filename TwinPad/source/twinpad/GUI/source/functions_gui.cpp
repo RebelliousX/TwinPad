@@ -1,16 +1,8 @@
-#include "fastCompile.h"
+#include "stdafx.h"
 #include "twinpad_gui.h"
 #include "timers_functions.h"
 #include "events_functions.h"
 #include "DirectInput.h"
-#include "labels.h"
-#include "resources.h"		// All GIFs and resources for TwinPad stored in arrays
-
-#include "wx/textfile.h"
-#include "wx/tokenzr.h"
-#include "wx/grid.h"
-
-#include "wx/mstream.h"		// for wxMemoryInputStream
 
 // Globals defined in TwinPad_Gui.cpp
 extern CTwinPad_Gui GUI_Controls;

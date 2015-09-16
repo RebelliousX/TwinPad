@@ -1,7 +1,6 @@
 #pragma once
 
-#include "fastCompile.h"
-#include "wx/grid.h"
+#include "stdafx.h"
 
 const int IMG_WIDTH = 40;	// 40 pixels
 
