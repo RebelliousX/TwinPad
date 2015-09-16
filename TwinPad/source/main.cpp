@@ -115,6 +115,7 @@ public:
 	void OnShowWindow(wxThreadEvent& event)
 	{
 		TwinPad_Frame *twinPad_Frame = new TwinPad_Frame("TwinPad Configuration Utility");
+		hGFXwnd = (HWND)twinPad_Frame->GetHWND();
 #ifdef __WINDOWS__
 		if (!InitDI())
 		{
