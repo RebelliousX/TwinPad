@@ -158,11 +158,11 @@ void ConfigureTwinPad()
 // we can't have WinMain() in a DLL and want to start the app ourselves
 IMPLEMENT_APP_NO_MAIN(TwinPad_DLL)
 
+// Handle of wx "main" thread if running, NULL otherwise
+HANDLE gwxMainThread = NULL;
+
 namespace
 {
-	// Handle of wx "main" thread if running, NULL otherwise
-	HANDLE gs_wxMainThread = NULL;
-
 	std::mutex gs_mtx;
 	std::condition_variable gs_cnd;
 	bool gs_canContinue = false;
@@ -179,13 +179,16 @@ namespace
 		// not needed/used as we retrieve the DLL handle from an address inside it
 		// but you do need to use the correct name for this code to work with older
 		// systems as well.
-		const HINSTANCE	hInstance = wxDynamicLibrary::MSWGetModuleHandle("padTwinPad", &gs_wxMainThread);
-		
+
+		// The dll could be loaded from PADopen() without showing any GUI. Don't load DLL twice!
+		const HINSTANCE	hInstance = wxDynamicLibrary::MSWGetModuleHandle("padTwinPad", &gwxMainThread);
+
 		if (!hInstance)
 			return 0; // failed to get DLL's handle
 
 		// Save the handle of this DLL to be used for DirectInput
 		hDLL = hInstance;
+		wxSetInstance(hDLL);
 
 		// IMPLEMENT_WXWIN_MAIN does this as the first thing
 		wxDISABLE_DEBUG_SUPPORT();
@@ -202,7 +205,7 @@ namespace
 		gs_cnd.notify_one();
 
 		// Run the app main's loop:
-		wxEntry(hInstance);
+		wxEntry((HINSTANCE)hDLL);
 
 		return 1;
 	}
@@ -224,17 +227,20 @@ void Run_wxGUI_From_DLL()
 	// initialized yet. wxCriticalSection is safe to use, though.
 	std::unique_lock<std::mutex> uLocker(gs_mtx);
 
-	if (!gs_wxMainThread)
+	static bool bRunOnce = false;	// Do not create more than 1 daemon thread
+
+	if (!bRunOnce)
 	{
 		std::thread tMainThread(TwinPad_DLL_Launcher);
-		gs_wxMainThread = (HANDLE)tMainThread.native_handle();
+		gwxMainThread = (HANDLE)tMainThread.native_handle();
 		gs_cnd.wait(uLocker, []() { return gs_canContinue; });
 		gs_canContinue = false;
+		bRunOnce = true;
 
 		// Run it as daemon, it will loop (similar to DllMain) until the calling process exits
 		tMainThread.detach();
 	}
-	
+
 	// Send a message to wx thread to show a new frame:
 	wxThreadEvent *event = new wxThreadEvent(wxEVT_THREAD, CMD_SHOW_WINDOW);
 	wxQueueEvent(wxApp::GetInstance(), event);

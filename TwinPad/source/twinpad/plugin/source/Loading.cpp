@@ -1,13 +1,12 @@
 #include "stdafx.h"
-#include "Loading.h"
-#include "twinpad_gui.h"
+#include "functions_gui.h"
 
-void LoadCombos()
+bool LoadCombos()
 {
-	LoadTwinPadComboConfigurations();
+	return LoadTwinPadComboConfigurations();
 }
 
-void LoadConfig()
+bool LoadConfig()
 {
-	LoadTwinPadConfigurations();
+	return LoadTwinPadConfigurations();
 }

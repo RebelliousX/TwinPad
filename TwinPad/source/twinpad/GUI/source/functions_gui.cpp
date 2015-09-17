@@ -99,7 +99,7 @@ bool IsFileOkAndFix(const wxString &fileName, const wxString &header)
 	else
 	{
 		wxMessageBox("Unknown header passed to IsFileOkAndFix()", "Fatal error! Exiting.", wxICON_ERROR);
-		::exit(0);
+		return false;
 	}
 
 	wxTextFile file(fileName);
@@ -184,7 +184,7 @@ bool IsFileOkAndFix(const wxString &fileName, const wxString &header)
 	return true;
 }
 
-void LoadTwinPadConfigurations()
+bool LoadTwinPadConfigurations()
 {
 	wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
 	wxTextFile file(fileName);
@@ -193,7 +193,7 @@ void LoadTwinPadConfigurations()
 		wxMessageBox("Couldn't open configuration files from the specified location!"
 			"\nMake sure 'inis' folder exists in the same directory with the emu."
 			"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
-		::exit(0);
+		return false;
 	}
 
 	wxStringTokenizer token;
@@ -265,14 +265,21 @@ void LoadTwinPadConfigurations()
 	}
 
 	file.Close();
+	return true;
 }
 
 // Load TwinPad Combos configurations
-void LoadTwinPadComboConfigurations()
+bool LoadTwinPadComboConfigurations()
 {
 	wxString fileName = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
 	wxTextFile file(fileName);
-	file.Open(fileName);
+	if (!file.Open(fileName))
+	{
+		wxMessageBox("Couldn't open configuration files from the specified location!"
+			"\nMake sure 'inis' folder exists in the same directory with the emu."
+			"\nAnd that you have at least permission to read/write in that directory.", "Open files failed!", wxICON_ERROR);
+		return false;
+	}
 
 	// Erase contents of COMBOs vector
 	for (unsigned int i = 0; i < Configurations.Combos.size(); ++i)
@@ -385,6 +392,7 @@ void LoadTwinPadComboConfigurations()
 		Configurations.Combos.push_back(tempCombo);
 	}
 	file.Close();
+	return true;
 }
 
 // Save TwinPad configurations (Keyboard, Mouse and the options in Misc tab)

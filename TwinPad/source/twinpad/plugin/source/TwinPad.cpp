@@ -4,6 +4,8 @@
 #include "main.h"
 #include "Externals.h"
 #include "COMBOs.h"
+#include "Loading.h"
+#include "DirectInput.h"
 
 // The following data types will be used as global externs.
 Analog lanalog[2], ranalog[2];
@@ -68,10 +70,26 @@ void PADsetMode(int pad, int mode) {
 }
 
 // int padOpened = 0;
-s32  _PADopen(HWND hDsp) {
+s32  _PADopen(HWND hDsp) 
+{
+	wxInitializer wxinit;
+	if(!hDLL)	// Was DLL previosly loaded?
+	{
+		const HINSTANCE	hInstance = wxDynamicLibrary::MSWGetModuleHandle("padTwinPad", &gwxMainThread);
 
-	/*if (++padOpened == 2) 
-		return 0;*/
+		if (!wxinit.IsOk())
+			return -1;	// At this point, we can't even display a messagebox, exit.
+
+		if (!hInstance)
+		{
+			wxMessageBox("Failed to load the DLL!", "Fatal Error", wxICON_ERROR);
+			return -1; // failed to get DLL's handle
+		}
+
+		// Save the handle of this DLL to be used for DirectInput
+		hDLL = hInstance;
+		wxSetInstance(hDLL);
+	}
 	
 	memset(&curEvent, 0, sizeof(curEvent));
 	oldEvent = curEvent;
@@ -89,13 +107,26 @@ s32  _PADopen(HWND hDsp) {
 	}
 
 	Configurations.Clean();
-	LoadConfig();
-	LoadCombos();
+
+	{
+		// Check to see if configuration files are present, otherwise create null ones
+		// Also validate the versions of files (compare headers), shouldn't continue if there is error!
+		wxString file1, file2;
+		file1 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_FileName();
+		IsFileOkAndFix(file1, GUI_Controls.GetTwinPad_Header());
+		file2 = GUI_Controls.GetSettingsPath() + GUI_Controls.GetTwinPad_ComboFileName();
+		IsFileOkAndFix(file2, GUI_Controls.GetTwinPad_ComboHeader());
+	}
+
+	if (!LoadConfig() || !LoadCombos())
+	{
+		wxMessageBox("Failed to load configuration files, please configure TwinPad.", "Fatal Error", wxICON_ERROR);
+		return -1; // failed to load TwinPad.ini or TwinPad_COMBOs.ini
+	}
 
 	// If DirectInput Fails, return error..
 	if (g_DI == NULL)
 	{
-		
 		if (!IsWindow (hDsp) && !IsBadReadPtr ((u32*)hDsp, 4))
                 hGSPUwnd = *(HWND*)hDsp;
         if (!IsWindow (hGSPUwnd))

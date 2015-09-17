@@ -119,5 +119,8 @@
     <ClCompile Include="source\twinpad\GUI\source\combo_events.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="source\stdafx.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

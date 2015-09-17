@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Externals.h"
-
-void LoadCombos(void);
-void LoadConfig(void);
+// return true if configs loaded successfully
+bool LoadCombos(void);
+// return true if configs loaded successfully
+bool LoadConfig(void);
 

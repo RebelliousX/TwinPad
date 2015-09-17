@@ -4,6 +4,7 @@
 #include "stdafx.h"
 
 extern HMODULE hDLL;
+extern HANDLE gwxMainThread;
 extern HWND hGFXwnd;
 extern HWND hGSPUwnd;
 

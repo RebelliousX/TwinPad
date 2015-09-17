@@ -182,18 +182,30 @@ public:
 		DISABLE_COMBOS
 	};
 
-	bool IsEnabled_PAD1() { return !m_extra[DISABLE_PAD1]; };				// Is PAD 1 Enabled
-	bool IsEnabled_PAD2() { return !m_extra[DISABLE_PAD2]; };				// Is PAD 2 Enabled
-	bool IsEnabled_MOUSE() { return !m_extra[DISABLE_MOUSE]; }				// Is Mouse Enabled
-	bool IsEnabled_COMBOS() { return !m_extra[DISABLE_COMBOS]; }			// Is COMBOs Enabled
-	bool IsEnabled_KeyEvents() { return !m_extra[DISABLE_KEYEVENTS]; };		// Is KeyEvents Enabled
+	// Is PAD 1 Enabled
+	bool IsEnabled_PAD1()
+		{ return !m_extra[DISABLE_PAD1]; }
+	// Is PAD 2 Enabled
+	bool IsEnabled_PAD2()
+		{ return !m_extra[DISABLE_PAD2]; }
+	// Is Mouse Enabled
+	bool IsEnabled_MOUSE()
+		{ return !m_extra[DISABLE_MOUSE]; }
+	// Is COMBOs Enabled
+	bool IsEnabled_COMBOS()
+		{ return !m_extra[DISABLE_COMBOS]; }
+	// Is KeyEvents Enabled
+	bool IsEnabled_KeyEvents()
+		{ return !m_extra[DISABLE_KEYEVENTS]; }
 };
 
 bool IsFileOkAndFix(const wxString &file, const wxString &header);
 void CreateNullFile();
 void CreateNullComboFile();
-void LoadTwinPadConfigurations();
-void LoadTwinPadComboConfigurations();
+// return true if configs loaded successfully
+bool LoadTwinPadConfigurations();
+// return true if configs loaded successfully
+bool LoadTwinPadComboConfigurations();
 
 // Forward declaration is necessary, to avoid problems
 class CPS_Anim;
