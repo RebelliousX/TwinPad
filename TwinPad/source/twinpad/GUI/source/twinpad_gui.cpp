@@ -40,6 +40,13 @@ void OnNotebookChange(wxCommandEvent &evt)
 			return;
 		}
 
+		if (GUI_Controls.mainFrame->tmrAutoNavigate->IsRunning() && GUI_Controls.curTab == KEYBOARD_TAB)
+		{
+			GUI_Controls.Notebook->SetSelection(GUI_Controls.curTab);
+			GUI_Controls.Notebook->Thaw();
+			return;
+		}
+
 		// Save some information about the current page (the one we switched to) to adjust window size
 		if ("Keyboard" == label)
 		{
