@@ -6,6 +6,9 @@
 // This function handles the click event for both keyboard tab and combo tab
 void CPS_Anim::OnClickAnimInKeyboardTab(wxMouseEvent &event)
 {
+	if (GUI_Controls.mainFrame->tmrGetKey->IsRunning())
+		return;
+
 	int winID = event.GetId();
 
 	if (winID >= 1000 && winID < 1024)	// Keyboard tab
@@ -24,10 +27,6 @@ void CPS_Anim::OnClickAnimInKeyboardTab(wxMouseEvent &event)
 // Change between pad 1 and 2 for keyboard tab, save and reload configured keys
 void OnRadBtnPadChange(wxCommandEvent &ev)
 {
-	/*if ((((wxKeyEvent &)ev).GetKeyCode() == WXK_LEFT) ||
-		(((wxKeyEvent &)ev).GetKeyCode() == WXK_RIGHT))
-		return;*/
-
 	int switchToPad = 0, curPad = 0;
 	if (ev.GetId() == ID_PAD1_RADIOBTN)
 	{
@@ -38,6 +37,15 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 	{
 		curPad = 0;
 		switchToPad = 1;
+	}
+
+	if (GUI_Controls.mainFrame->tmrGetKey->IsRunning())
+	{
+		if (ev.GetId() == ID_PAD1_RADIOBTN)
+			GUI_Controls.pad2RadioBtn->SetValue(true);
+		if (ev.GetId() == ID_PAD2_RADIOBTN)
+			GUI_Controls.pad1RadioBtn->SetValue(true);
+		return;
 	}
 
 	// Save current config for the current pad
@@ -115,6 +123,9 @@ void OnClickMouseNullifiesAll(wxMouseEvent &ev)
 // Also, prevent the context menu (right-click menu) from showing up
 void OnLblCtrlRightClick(wxMouseEvent &ev)
 {
+	if (GUI_Controls.mainFrame->tmrGetKey->IsRunning())
+		return;
+
 	int id = ev.GetId();
 	// Which id? lblCtrl or animCtrl?
 	if (ev.GetId() >= ID_TXT && ev.GetId() <= 2023)
@@ -131,6 +142,9 @@ void OnLblCtrlRightClick(wxMouseEvent &ev)
 // Handle Left-Click to assign a key to Walk/Run, Right-Clcik to remove assigned key
 void OnClickWalkRun(wxMouseEvent &ev)
 {
+	if (GUI_Controls.mainFrame->tmrGetKey->IsRunning())
+		return;
+
 	if (ev.LeftUp())
 	{
 		// Start the timer to get one key
@@ -158,6 +172,9 @@ void OnClickKeyboardNullifiesAll(wxMouseEvent &ev)
 	}
 	GUI_Controls.lblWalkRun->SetLabel("NONE");
 	GUI_Controls.lblWalkRun->SetKeyCode(0);
+	// Another bug in wxWidgets! without the skip event, the window freezes, 
+	// until it loses focus by another app (hides behind it) then set focused again.
+	ev.Skip();
 }
 
 // This function handles the click event for Cancel button

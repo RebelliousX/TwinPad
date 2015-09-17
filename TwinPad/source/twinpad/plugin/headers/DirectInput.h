@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Externals.h"
+//#include "Externals.h"
 
 bool InitDI();
 bool TermDI();

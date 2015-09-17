@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DirectInput.h"
 #include "twinpad_gui.h"
+#include "Externals.h"
 
 // DirectInput Variables
 LPDIRECTINPUT8 g_DI = NULL;					// Root DirectInput Interface

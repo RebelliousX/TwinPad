@@ -1,8 +1,6 @@
 #ifndef __EXTERNALS_H_
 #define __EXTERNALS_H_
 
-#include "stdafx.h"
-
 extern HMODULE hDLL;
 extern HANDLE gwxMainThread;
 extern HWND hGFXwnd;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stdafx.h"
-
 #include "main.h"
 // -----Don't change the Include's order for these two 
 #include "functions_gui.h"

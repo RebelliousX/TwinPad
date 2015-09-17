@@ -1,9 +1,6 @@
 #pragma once
 
-#include "stdafx.h"
-
 const int IMG_WIDTH = 40;	// 40 pixels
-
 
 // To handle right click on configured button's Name (delete configuration)
 void OnLblCtrlRightClick(wxMouseEvent &ev);

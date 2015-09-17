@@ -1,8 +1,6 @@
 #include "stdafx.h"
-#include "main.h"
 #include "twinpad_gui.h"
 #include "events_functions.h"
-
 #include "Externals.h"
 
 // I know I should not use globals and externs, but either that or passing pointers and references
@@ -27,6 +25,22 @@ void OnNotebookChange(wxCommandEvent &evt)
 		wxSize curTabSize;
 		wxString label = GUI_Controls.Notebook->GetPageText(GUI_Controls.Notebook->GetSelection());
 
+		// Do not change notebook page while polling the keyboard for input via timers
+		if (GUI_Controls.mainFrame->tmrGetKey->IsRunning() && GUI_Controls.curTab == KEYBOARD_TAB)
+		{
+			GUI_Controls.Notebook->SetSelection(GUI_Controls.curTab);
+			GUI_Controls.Notebook->Thaw();
+			return;
+		}
+
+		if (GUI_Controls.mainFrame->tmrGetComboKey->IsRunning() && GUI_Controls.curTab == COMBOS_TAB)
+		{
+			GUI_Controls.Notebook->SetSelection(GUI_Controls.curTab);
+			GUI_Controls.Notebook->Thaw();
+			return;
+		}
+
+		// Save some information about the current page (the one we switched to) to adjust window size
 		if ("Keyboard" == label)
 		{
 			curTabSize = GUI_Controls.minWinSize[KEYBOARD_TAB];

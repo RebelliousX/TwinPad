@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stdafx.h"
-
 // Column 0: for delay, 1-20 for buttons
 const int MAX_COLUMNS = 21;
 
