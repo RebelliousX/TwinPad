@@ -10,7 +10,7 @@ void ConfigureTwinPad();
 class CReAnimate : public wxTimer
 {
 public:
-	CReAnimate(wxWindow *win) : wxTimer(), win(win) { }
+	explicit CReAnimate(wxWindow *win) : wxTimer(), win(win) { }
 
 	virtual void Notify()
 	{
@@ -34,7 +34,7 @@ private:
 class CGetComboKey : public wxTimer
 {
 public:
-	CGetComboKey(wxWindow *win) : wxTimer(), win(win) { }
+	explicit CGetComboKey(wxWindow *win) : wxTimer(), win(win) { }
 
 	virtual void Notify()
 	{
@@ -58,7 +58,7 @@ private:
 class CGetKey : public wxTimer
 {
 public:
-	CGetKey(wxWindow *win) : wxTimer(), win(win) { }
+	explicit CGetKey(wxWindow *win) : wxTimer(), win(win) { }
 
 	virtual void Notify()
 	{
@@ -81,7 +81,7 @@ private:
 class CAutoNav : public wxTimer
 {
 public:
-	CAutoNav(wxWindow *win) : wxTimer(), win(win) { }
+	explicit CAutoNav(wxWindow *win) : wxTimer(), win(win) { }
 
 	virtual void Notify()
 	{
@@ -107,7 +107,7 @@ private:
 class TwinPad_Frame : public wxDialog
 {
 public:
-	TwinPad_Frame(wxString title);
+	explicit TwinPad_Frame(wxString title);
 	~TwinPad_Frame();
 	void OnClose(wxCloseEvent &event);
 	void TwinPad_Configuration();

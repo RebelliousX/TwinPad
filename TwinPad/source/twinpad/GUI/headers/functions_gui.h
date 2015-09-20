@@ -3,26 +3,32 @@
 class CCellValue
 {
 public:
-	wxString buttonName;	// Button name (from column 1-18). Delay value column 0
-	int buttonValue;		// for buttons, 0-23
-	int buttonSensitivity;	// button sensitivity, from column 1-18
+	wxString buttonName;	// Button name
+	int buttonValue;		// Buttons or analog stick direction
+	int buttonSensitivity;	// Button sensitivity
 };
 
 class CAction
 {
 public:
-	CAction() { }
+	CAction() : m_delay(0), m_buttons(0) { }
 	~CAction()
 	{
 		for (std::vector<CCellValue *>::iterator it = m_buttons.begin(); it != m_buttons.end(); ++it)
 			if (*it)
+			{
 				delete *it;
+				*it = 0;
+			}
 		m_buttons.clear();
 
 		// C++11 comes handy in this situation, I might use this later instead.
-		/* for (auto button : m_buttons)
-			if (button)
-				delete button;
+		 /*for (auto button : m_buttons)
+			 if (button)
+			 {
+				 delete button;
+				 button = 0;
+			 }
 		m_buttons.clear(); */
 	}
 
@@ -32,7 +38,9 @@ public:
 	void SetDelay(int delay) { m_delay = delay; }
 	// Returns the Delay value of current Action
 	int  GetDelay() { return m_delay; }
-	// Add a Button to the current Action
+	// Add a Button to the current Action,, it doesn't take ownership of the passed pointer.
+	// You have to delete it yourself. It makes a copy of the passed data, so it
+	// is safe to pass a reference of object on stack.
 	void AddButton(CCellValue *button) 
 	{
 		// Note that the destructor will delete tempButton, we pushed the pointer of CCellValue into a vector
@@ -52,34 +60,31 @@ public:
 
 private:
 	unsigned int m_delay;						// Delay value of the Action
-	std::vector<CCellValue *> m_buttons;		// vector for buttons (up to 18 elements)
+	std::vector<CCellValue *> m_buttons;		// vector for buttons, type CCellValue
 };
 
 class CCombo
 {
 public:
-	CCombo() { }
-	// new combo consists of 1 action which has 1 delay value and 0 buttons
-	CCombo(int numActions, int defaultDelay)
-	{
-		m_key = 0;
-		CAction *action = new CAction;
-		action->SetDelay(defaultDelay);
-		for (int i = 0; i < numActions; ++i)
-			AddAction(action);
-	}
+	CCombo() : m_actions(0), m_comboName(""), m_key(0), m_pad(0) { }
 
 	~CCombo()
 	{
 		for (std::vector<CAction *>::iterator it = m_actions.begin(); it != m_actions.end(); ++it)
 			if (*it)
+			{
 				delete *it;
+				*it = 0;
+			}
 		m_actions.clear();
 
 		// C++11 comes handy in this situation, I might use this later instead.
-		/* for (auto action : m_actions)
+		/*for (auto action : m_actions)
+		{
 			delete action;
-			m_actions.clear(); */
+			action = 0;
+		}
+		m_actions.clear(); */
 	}
 
 	CAction * GetAction(int number) const { return m_actions[number]; }	// caller have to check for valid number
@@ -91,10 +96,12 @@ public:
 	void SetPad(int pad) { m_pad = pad; }
 	int GetPad() { return m_pad; }
 
-	// Add Action at the end
+	// Add Action at the end, it doesn't take ownership of the passed pointer.
+	// You have to delete it yourself. It makes a copy of the passed data, so it
+	// is safe to pass a reference of object on stack.
 	void AddAction(CAction *action)
 	{
-		CAction *tempAction = new CAction();
+		CAction *tempAction = new CAction;
 		tempAction->SetDelay(action->GetDelay());
 		for (int i = 0; i < action->GetNumberOfButtons(); ++i)
 			tempAction->AddButton(action->GetButton(i));
@@ -137,21 +144,30 @@ public:
 		// Note that CCombo destructor will call CAction's destructor, which in turn will delete all buttons.
 		for (std::vector<CCombo *>::iterator it = Combos.begin(); it != Combos.end(); ++it)
 			if (*it)
+			{
 				delete *it;
+				*it = 0;
+			}
 		Combos.clear();
 
 		// C++11 comes handy in this situation, I might use this later instead.
-		/* for (auto oneCombo : Combo)
-		if (oneCombo)
-		delete oneCombo;
-		Combo.clear(); */
+		/*for (auto aCombo : Combos)
+			if (aCombo)
+			{
+				delete aCombo;
+				aCombo = 0;
+			}
+		Combos.clear(); */
 	}
 
 	void Clean()
 	{
 		for (std::vector<CCombo *>::iterator it = Combos.begin(); it != Combos.end(); ++it)
 			if (*it)
+			{
 				delete *it;
+				*it = 0;
+			}
 		Combos.clear();
 
 		for (int pad = 0; pad < 2; ++pad)

@@ -357,8 +357,8 @@ bool LoadTwinPadComboConfigurations()
 
 			for (int button = 0; button < buttonCount; ++button)
 			{
-				CCellValue tempButton;
-				wxString subSubStr = "";
+				CCellValue *tempButton = new CCellValue;
+				wxString subSubStr;
 				
 				int trimNumChar = 0;
 
@@ -371,19 +371,21 @@ bool LoadTwinPadComboConfigurations()
 				token.SetString(subSubStr, ",", wxTOKEN_STRTOK);
 				subSubStr = token.GetNextToken();		// Get 'nn'
 				subSubStr.ToLong(&val, 10);
-				tempButton.buttonValue = (int)val;
+				tempButton->buttonValue = (int)val;
 
 				token.SetString(subStr, " ", wxTOKEN_STRTOK);
 				token.GetNextToken();							// skip '(nn, '
 				subSubStr = token.GetNextToken();				// Get 'mmm'
 				subSubStr.ToLong(&val, 10);
-				tempButton.buttonSensitivity = (int)val;
+				tempButton->buttonSensitivity = (int)val;
 
-				tempButton.buttonName = PS_LABEL[tempButton.buttonValue].name;
+				tempButton->buttonName = PS_LABEL[tempButton->buttonValue].name;
 
 				line = line.substr(trimNumChar, line.length());
 				
-				tempAction->AddButton(&tempButton);
+				tempAction->AddButton(tempButton);
+				delete tempButton;
+				tempButton = 0;
 			}
 			tempCombo->AddAction(tempAction);
 			delete tempAction;
@@ -413,7 +415,7 @@ void SaveTwinPadConfigurations()
 
 	wxStringTokenizer token;
 	wxString line, subStr;
-	long val = 0;
+	
 	// Get header and skip it
 	file.AddLine(GUI_Controls.GetTwinPad_Header());
 	// Read the two pads configurations and Walk/Run key
@@ -492,8 +494,7 @@ void SaveTwinPadComboConfigurations()
 			
 			for (int button = 0; button < Configurations.Combos[combo]->GetAction(action)->GetNumberOfButtons(); ++button)
 			{
-				wxString buttonNumber = "";
-				wxString buttonSensitivity = "";
+				wxString buttonNumber, buttonSensitivity;
 
 				buttonNumber = wxString::Format("(%d, ", Configurations.Combos[combo]->GetAction(action)->GetButton(button)->buttonValue);
 				buttonSensitivity = wxString::Format("%d) ", Configurations.Combos[combo]->GetAction(action)->GetButton(button)->buttonSensitivity);

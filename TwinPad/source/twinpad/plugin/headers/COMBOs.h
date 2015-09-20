@@ -1,4 +1,3 @@
 #pragma once
 
-void ComboAnalog(int analogKey, int pad);
-void ExecuteCombo(int pad);
+void ExecuteCombo(const int pad);

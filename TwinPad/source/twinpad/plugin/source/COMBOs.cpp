@@ -2,17 +2,15 @@
 #include "COMBOs.h"
 #include "twinpad_gui.h"
 #include "Externals.h"
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
-// // // // // // // // // // // // // // // // // // // // // // /Combo Functions// // // // // // // // // // // // // // // // // // // // // /
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 
-void ExecuteCombo(int pad)
+
+// Execute a Combo for pad 1 or 2 (could be both at the same time)
+void ExecuteCombo(const int pad)
 {
 	static bool ComboStatusPad1 = false;
 	static bool ComboStatusPad2 = false;
 	bool *ComboStatus = (pad == 0) ? &ComboStatusPad1 : &ComboStatusPad2;
 
-	static int counterPad1 = 0, counterPad2 = 0, delayPad1 = 0, delayPad2 = 0, activeComboPad1 = -1, activeComboPad2 = -1;
-	int *counter = (pad == 0) ? &counterPad1 : &counterPad2;
+	static int delayPad1 = 0, delayPad2 = 0, activeComboPad1 = -1, activeComboPad2 = -1;
 	int *delay = (pad == 0) ? &delayPad1 : &delayPad2;
 	int *activeCombo = (pad == 0) ? &activeComboPad1 : &activeComboPad2;
 
@@ -41,54 +39,85 @@ void ExecuteCombo(int pad)
 				for (int button = 0; button < numOfButtonsInAction; ++button)
 				{
 					int curButton = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonValue;
+					u8 buttonSensitivity = (u8)Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
 					if (curButton < 16 && curButton >= 0)
 					{
 						status[pad] &= ~(1 << curButton);
 						switch ((PS2BUTTON)curButton)
 						{
 						case PS2BUTTON::CIRCLE:
-							Pressure.Circle = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Circle = buttonSensitivity;
 							break;
 						case PS2BUTTON::SQUARE:
-							Pressure.Square = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Square = buttonSensitivity;
 							break;
 						case PS2BUTTON::TRIANGLE:
-							Pressure.Triangle = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Triangle = buttonSensitivity;
 							break;
 						case PS2BUTTON::CROSS:
-							Pressure.Cross = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Cross = buttonSensitivity;
 							break;
 						case PS2BUTTON::L1:
-							Pressure.L1 = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.L1 = buttonSensitivity;
 							break;
 						case PS2BUTTON::L2:
-							Pressure.L2 = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.L2 = buttonSensitivity;
 							break;
 						case PS2BUTTON::R1:
-							Pressure.R1 = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.R1 = buttonSensitivity;
 							break;
 						case PS2BUTTON::R2:
-							Pressure.R2 = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.R2 = buttonSensitivity;
 							break;
 						case PS2BUTTON::UP:
-							Pressure.Up = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Up = buttonSensitivity;
 							break;
 						case PS2BUTTON::RIGHT:
-							Pressure.Right = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Right = buttonSensitivity;
 							break;
 						case PS2BUTTON::DOWN:
-							Pressure.Down = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Down = buttonSensitivity;
 							break;
 						case PS2BUTTON::LEFT:
-							Pressure.Left = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+							Pressure.Left = buttonSensitivity;
 							break;
 						}
 					}
-					else
-						if (curButton >= 16)
-							ComboAnalog((int)curButton, pad);
+					else if (curButton >= 16)
+					{
+						switch (curButton)
+						{
+						case 16:
+							lanalog[pad].y = buttonSensitivity;
+							break;
+						case 17:
+							lanalog[pad].x = buttonSensitivity;
+							break;
+						case 18:
+							lanalog[pad].y = buttonSensitivity;
+							break;
+						case 19:
+							lanalog[pad].x = buttonSensitivity;
+							break;
+						case 20:
+							ranalog[pad].y = buttonSensitivity;
+							break;
+						case 21:
+							ranalog[pad].x = buttonSensitivity;
+							break;
+						case 22:
+							ranalog[pad].y = buttonSensitivity;
+							break;
+						case 23:
+							ranalog[pad].x = buttonSensitivity;
+							break;
+						default:
+							break;
+						}
+					}
 				}
 			}
+
 			if (++(*delay) >= Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetDelay())
 			{
 				(*curAction)++;
@@ -100,37 +129,3 @@ void ExecuteCombo(int pad)
 		}
 	}
 }
-
-void ComboAnalog(int analogKey, int pad)
-{
-	switch(analogKey)
-	{
-	case 16:
-		lanalog[pad].y = minXY[pad];
-		break;
-	case 17:
-		lanalog[pad].x = maxXY[pad];
-		break;
-	case 18:
-		lanalog[pad].y = maxXY[pad];
-		break;
-	case 19:
-		lanalog[pad].x = minXY[pad];
-		break;
-	case 20:
-		ranalog[pad].y = minXY[pad];
-		break;
-	case 21:
-		ranalog[pad].x = maxXY[pad];
-		break;
-	case 22:
-		ranalog[pad].y = maxXY[pad];
-		break;
-	case 23:
-		ranalog[pad].x = minXY[pad];
-		break;
-	default:
-		break;
-	}
-}
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // 

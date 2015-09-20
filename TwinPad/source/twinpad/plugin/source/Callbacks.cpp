@@ -81,7 +81,7 @@ void CALLBACK PADconfigure()
 
 void CALLBACK PADabout()
 {
-	wxMessageBox("Based on PadWinKeyb by: Linuzappz, rewritten by Asadr.. 2004\nRewrittenby: Rebel_X",
+	wxMessageBox("Based on PadWinKeyb by: Linuzappz and Asadr.. 2004\nRewritten as TwinPad by: Rebel_X 2006-2015",
 		"TwinPad Plugin ;)", wxICON_INFORMATION);
 }
 

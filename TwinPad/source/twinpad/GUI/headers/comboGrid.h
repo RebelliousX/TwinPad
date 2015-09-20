@@ -264,8 +264,8 @@ public:
 			grid->SetGridCursor(wxGridCellCoords(curRow, curCol));
 			ModifySensitivity();
 		}
-			
 	}
+
 	void MoveToNextAction(bool setFocus = true)
 	{
 		setCurrentBGColor(grid->GetDefaultCellBackgroundColour());

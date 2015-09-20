@@ -192,15 +192,16 @@ void AddKeyboardTab()
 	wxFlexGridSizer *flexSizer = new wxFlexGridSizer(8, 7, 10, 10);
 
 	// Wrap the flex sizer with nice borders
-	wxStaticBoxSizer *stcPS2Controls = new wxStaticBoxSizer(wxVERTICAL, panel, "PS2 Buttons");
+	wxStaticBoxSizer *stcPS2Controls = new wxStaticBoxSizer(wxVERTICAL, panel, "PSX/PS2 Buttons");
 	stcPS2Controls->Add(flexSizer, 1, wxEXPAND);
 
 	GUI_Controls.Notebook->AddPage(panel, "Keyboard", false);
 	GUI_Controls.Notebook->SetPageText(KEYBOARD_TAB, "Keyboard");
 
-	int animIndex = 0, psb_Index = 0, lblIndex = 0;
+	int lblIndex = 0;
 	for (int r = 0; r < 8; r++)		// rows
 	{
+		int animIndex, psb_Index;
 		animIndex = psb_Index = r;
 		for (int c = 0; c < 7; c++)	// columns
 		{
@@ -230,7 +231,7 @@ void AddKeyboardTab()
 				flexSizer->Add(GUI_Controls.lblCtrl[psb_Index], 1, wxALIGN_CENTER);
 				GUI_Controls.lblCtrl[psb_Index]->SetWindowStyle(wxTE_CENTER);
 				GUI_Controls.lblCtrl[psb_Index]->SetBackgroundColour(wxColor(66,66,66));		// Dark Grey
-				GUI_Controls.lblCtrl[psb_Index]->SetForegroundColour(wxColor("White"));
+				GUI_Controls.lblCtrl[psb_Index]->SetForegroundColour(wxColor(255,255,255));
 				GUI_Controls.lblCtrl[psb_Index]->SetIndex(psb_Index); // Same index as the animation control
 				GUI_Controls.lblCtrl[psb_Index]->Bind(wxEVT_RIGHT_UP, ::OnLblCtrlRightClick);
 				GUI_Controls.lblCtrl[psb_Index]->SetToolTip(wxString::Format(
@@ -276,7 +277,7 @@ void AddKeyboardTab()
 	walkRunSizer->Add(GUI_Controls.lblWalkRun, 0, wxLEFT | wxRIGHT, 50);
 	GUI_Controls.lblWalkRun->SetWindowStyle(wxTE_CENTER);
 	GUI_Controls.lblWalkRun->SetBackgroundColour(wxColor(66,66,66));	// Dark Grey
-	GUI_Controls.lblWalkRun->SetForegroundColour(wxColor("White"));
+	GUI_Controls.lblWalkRun->SetForegroundColour(wxColor(255,255,255));
 	GUI_Controls.lblWalkRun->Bind(wxEVT_LEFT_UP, ::OnClickWalkRun);		// Assign a key to Walk/Run
 	GUI_Controls.lblWalkRun->Bind(wxEVT_RIGHT_UP, ::OnClickWalkRun);	// Remove assigned key
 	GUI_Controls.lblWalkRun->SetToolTip("This shows the current Key assigned to Walk or Run toggle button.\n\n"

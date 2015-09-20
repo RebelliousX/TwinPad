@@ -438,9 +438,8 @@ void OnClickDeleteCombo(wxMouseEvent &ev)
 	{
 		if ((*it)->GetName() == GUI_Controls.cmbComboName->GetStringSelection())
 		{
+			delete *it;
 			Configurations.Combos.erase(it);
-			// We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
-			// because ++it will be called and it will point to an empty container, so silently get out of the loop
 			break;
 		}
 	}
@@ -717,9 +716,8 @@ void OnChangeComboName(wxCommandEvent &ev)
 			// erase operation is expensive, I might change it later
 			if ((*it)->GetName() == strPrevious)
 			{
+				delete *it;
 				Configurations.Combos.erase(it);
-				// We changed the iterator. If size is 0, there will be an error/exception if we continue the loop
-				// because ++it will be called and it will point to an empty container, so silently get out of the loop
 				break;
 			}
 		}
@@ -748,6 +746,8 @@ void OnChangeComboName(wxCommandEvent &ev)
 						action->AddButton(val);
 				}
 				curCombo->AddAction(action);
+				delete action;
+				action = 0;
 			}
 			Configurations.Combos.push_back(curCombo);
 		}

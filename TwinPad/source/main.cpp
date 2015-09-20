@@ -53,7 +53,7 @@ void TwinPad_Frame::OnClose(wxCloseEvent &event)
 {
 	SetForegroundWindow(hEmuWnd);
 	ShowWindow(hEmuWnd, SW_RESTORE);
-	Destroy();
+	event.Skip();
 }
 
 static const int CMD_SHOW_WINDOW = wxNewId();
@@ -114,26 +114,25 @@ public:
 
 	void OnShowWindow(wxThreadEvent& event)
 	{
-		TwinPad_Frame *twinPad_Frame = new TwinPad_Frame("TwinPad Configuration Utility");
-		hGFXwnd = (HWND)twinPad_Frame->GetHWND();
+		TwinPad_Frame twinPad_Frame("TwinPad Configuration Utility");
+		hGFXwnd = (HWND)twinPad_Frame.GetHWND();
 #ifdef __WINDOWS__
 		if (!InitDI())
 		{
 			wxMessageBox("Can't Initialize DirectInput!", "Failure...", wxICON_ERROR);
-			delete twinPad_Frame;
-			twinPad_Frame = 0;
 			GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
 			return;
 		}
 #endif
 
-		twinPad_Frame->ShowModal();
+		twinPad_Frame.ShowModal();
 
 #ifdef __WINDOWS__
 		// Terminate DirectInput for TwinPad Config window
 		TermDI();
 #endif
 		GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
+		Configurations.Clean();
 	}
 };
 
@@ -170,7 +169,7 @@ namespace
 	//  wx application startup code -- runs from its own thread
 	unsigned wxSTDCALL TwinPad_DLL_Launcher()
 	{
-		// Note: The thread that called run_wx_gui_from_dll() holds gs_wxStartupCS
+		// Note: The thread that called Run_wxGUI_From_DLL() holds gs_mtx
 		//       at this point and won't release it until we signal it.
 
 		// We need to pass correct HINSTANCE to wxEntry() and the right value is
@@ -179,8 +178,6 @@ namespace
 		// not needed/used as we retrieve the DLL handle from an address inside it
 		// but you do need to use the correct name for this code to work with older
 		// systems as well.
-
-		// The dll could be loaded from PADopen() without showing any GUI. Don't load DLL twice!
 		const HINSTANCE	hInstance = wxDynamicLibrary::MSWGetModuleHandle("padTwinPad", &gwxMainThread);
 
 		if (!hInstance)
