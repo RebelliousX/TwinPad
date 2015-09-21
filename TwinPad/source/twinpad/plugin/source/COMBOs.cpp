@@ -15,11 +15,12 @@ void ExecuteCombo(const int pad)
 	int *activeCombo = (pad == 0) ? &activeComboPad1 : &activeComboPad2;
 
 	if (*ComboStatus == false)
-		for (unsigned int i = 0; i < Configurations.Combos.size(); i++)
+		for (size_t i = 0; i < Configurations.Combos.size(); i++)
 		{
-			if (Configurations.Combos[i]->GetPad() == pad)
+			CCombo *thisCombo = Configurations.Combos[i];
+			if (thisCombo->GetPad() == pad)
 			{
-				if (DIKEYDOWN(KeyState, Configurations.Combos[i]->GetKey()) && Configurations.Combos[i]->GetKey() != 0)
+				if (DIKEYDOWN(KeyState, thisCombo->GetKey()) && thisCombo->GetKey() != 0)
 				{
 					*ComboStatus = true;
 					*activeCombo = i;
@@ -33,13 +34,14 @@ void ExecuteCombo(const int pad)
 		{
 			static int curActionPad1 = 0, curActionPad2 = 0;
 			int *curAction = (pad == 0) ? &curActionPad1 : &curActionPad2;
-			int numOfButtonsInAction = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetNumberOfButtons();
+			CAction *thisAction = Configurations.Combos[*activeCombo]->GetAction(*curAction);
+			int numOfButtonsInAction = thisAction->GetNumberOfButtons();
 			if (numOfButtonsInAction > 0)
 			{
 				for (int button = 0; button < numOfButtonsInAction; ++button)
 				{
-					int curButton = Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonValue;
-					u8 buttonSensitivity = (u8)Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetButton(button)->buttonSensitivity;
+					int curButton = thisAction->GetButton(button)->buttonValue;
+					u8 buttonSensitivity = (u8)thisAction->GetButton(button)->buttonSensitivity;
 					if (curButton < 16 && curButton >= 0)
 					{
 						status[pad] &= ~(1 << curButton);
@@ -118,13 +120,14 @@ void ExecuteCombo(const int pad)
 				}
 			}
 
-			if (++(*delay) >= Configurations.Combos[*activeCombo]->GetAction(*curAction)->GetDelay())
+			CCombo *thisCombo = Configurations.Combos[*activeCombo];
+			if (++(*delay) >= (int) thisCombo->GetAction(*curAction)->GetDelay())
 			{
 				(*curAction)++;
 				*delay = 0;
 			}
 
-			if (*curAction >= Configurations.Combos[*activeCombo]->GetNumberActions())
+			if (*curAction >= thisCombo->GetNumberActions())
 				*delay = *curAction = *ComboStatus = 0;
 		}
 	}
