@@ -74,9 +74,10 @@ void OnNotebookChange(wxCommandEvent &evt)
 			GUI_Controls.curTab = GAMEPAD_TAB;
 		}
 
-		GUI_Controls.Notebook->GetParent()->SetMinClientSize(curTabSize);
-		GUI_Controls.Notebook->GetParent()->SetClientSize(curTabSize);
-		GUI_Controls.Notebook->GetParent()->ClientToWindowSize(curTabSize);
+		wxWindow *parent = GUI_Controls.Notebook->GetParent();
+		parent->SetMinClientSize(curTabSize);
+		parent->SetClientSize(curTabSize);
+		parent->ClientToWindowSize(curTabSize);
 
 		GUI_Controls.Notebook->Thaw();
 	}

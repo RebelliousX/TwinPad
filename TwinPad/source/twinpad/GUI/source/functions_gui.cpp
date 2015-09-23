@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "twinpad_gui.h"
 #include "timers_functions.h"
 #include "events_functions.h"
@@ -43,14 +43,14 @@ void CreateNullFile()
 			file.AddLine(wxString::Format("[%d][%d]) = 0x%X", pad, button, null_config.m_pad[pad][button]));
 	}
 
-	file.AddLine("{--Mouse Options--}");
+	file.AddLine("{-- Mouse Options --}");
 
 	for (int mouseButton = 0; mouseButton < 10; ++mouseButton)
 		file.AddLine(wxString::Format("[%d] = %d", mouseButton, null_config.m_mouse[mouseButton]));
 
 	file.AddLine(wxString::Format("Mouse as pad 1/2  (0/1) = %d", null_config.m_mouseAsPad));
 	file.AddLine(wxString::Format("Mouse Sensitivity 	= %d", null_config.m_mouseSensitivity));
-	file.AddLine("{ --Extra Options-- }");
+	file.AddLine("{-- Extra Options --}");
 
 	file.AddLine(wxString::Format("Disable Pad 1 \t\t= %d", null_config.m_extra[null_config.DISABLE_PAD1]));
 	file.AddLine(wxString::Format("Disable Pad 2 \t\t= %d", null_config.m_extra[null_config.DISABLE_PAD2]));
@@ -128,10 +128,8 @@ bool IsFileOkAndFix(const wxString &fileName, const wxString &header)
 		}
 	}
 
-	wxString str	= "";
-	wxString strMsg = "";
-
 	// Check the Header if version is compatible
+	wxString str	= "";
 	if (file.Open(fileName))
 	{
 		str = file.GetFirstLine();
@@ -414,7 +412,7 @@ void SaveTwinPadConfigurations()
 	file.Clear();
 
 	wxStringTokenizer token;
-	wxString line, subStr;
+	wxString line;
 	
 	// Get header and skip it
 	file.AddLine(GUI_Controls.GetTwinPad_Header());
@@ -479,25 +477,27 @@ void SaveTwinPadComboConfigurations()
 
 	for (unsigned int combo = 0; combo < Configurations.Combos.size(); ++combo)
 	{
-		file.AddLine(wxString::Format("{-- %s --}", Configurations.Combos[combo]->GetName()));
-		file.AddLine(wxString::Format("ActionCount \t= %d", Configurations.Combos[combo]->GetNumberActions()));
-		file.AddLine(wxString::Format("ComboAsPad \t= %d", Configurations.Combos[combo]->GetPad()));
-		file.AddLine(wxString::Format("ComboKey \t= 0x%X", Configurations.Combos[combo]->GetKey()));
+		CCombo *thisCombo = Configurations.Combos[combo];
+		file.AddLine(wxString::Format("{-- %s --}", thisCombo->GetName()));
+		file.AddLine(wxString::Format("ActionCount \t= %d", thisCombo->GetNumberActions()));
+		file.AddLine(wxString::Format("ComboAsPad \t= %d", thisCombo->GetPad()));
+		file.AddLine(wxString::Format("ComboKey \t= 0x%X", thisCombo->GetKey()));
 		file.AddLine("-===================-");
 
 		for (int action = 0; action < Configurations.Combos[combo]->GetNumberActions(); ++action)
 		{
-			file.AddLine(wxString::Format("ActionDelay \t\t= %d", Configurations.Combos[combo]->GetAction(action)->GetDelay()));
-			file.AddLine(wxString::Format("NumOfButtons \t\t= %d", Configurations.Combos[combo]->GetAction(action)->GetNumberOfButtons()));
+			CAction *thisAction = thisCombo->GetAction(action);
+			file.AddLine(wxString::Format("ActionDelay \t\t= %d", thisAction->GetDelay()));
+			file.AddLine(wxString::Format("NumOfButtons \t\t= %d", thisAction->GetNumberOfButtons()));
 			
 			wxString line_action = "";
 			
-			for (int button = 0; button < Configurations.Combos[combo]->GetAction(action)->GetNumberOfButtons(); ++button)
+			for (int button = 0; button < thisAction->GetNumberOfButtons(); ++button)
 			{
 				wxString buttonNumber, buttonSensitivity;
 
-				buttonNumber = wxString::Format("(%d, ", Configurations.Combos[combo]->GetAction(action)->GetButton(button)->buttonValue);
-				buttonSensitivity = wxString::Format("%d) ", Configurations.Combos[combo]->GetAction(action)->GetButton(button)->buttonSensitivity);
+				buttonNumber = wxString::Format("(%d, ", thisAction->GetButton(button)->buttonValue);
+				buttonSensitivity = wxString::Format("%d) ", thisAction->GetButton(button)->buttonSensitivity);
 
 				line_action += (buttonNumber + buttonSensitivity);
 			}

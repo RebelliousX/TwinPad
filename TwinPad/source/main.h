@@ -4,6 +4,7 @@
 
 // Called from PADconfigure() callback function
 void ConfigureTwinPad();
+void Cleanup_TwinPad_DLL();
 
 // -----Timer classes
 // Timer to re-animate Analog sticks to fix out of sync animation

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "events_functions.h"
 #include "twinpad_gui.h"
 #include "functions_gui.h"
@@ -295,7 +295,7 @@ void OnClickDeleteButton(wxMouseEvent &ev)
 	Cell_Locator.GetLocation(coords);
 	val.buttonValue = -1;			// -1 is empty button, since 0 means L2
 	val.buttonSensitivity = -1;		// Illegal value
-	val.buttonName = "";			// empty button
+	val.buttonName.Clear();			// empty button
 
 	GUI_Controls.spnSensitivity->SetValue(0);
 	GUI_Controls.virtualGrid->GetTable()->SetValueAsCustom(coords.GetRow(), coords.GetCol(), wxGRID_VALUE_STRING, &val);
@@ -445,9 +445,8 @@ void OnClickDeleteCombo(wxMouseEvent &ev)
 	}
 
 	// Delete name from combo box
-	wxString strTemp = GUI_Controls.cmbComboName->GetValue();
 	GUI_Controls.cmbComboName->Delete(GUI_Controls.cmbComboName->GetSelection());
-	GUI_Controls.strPreviousComboSelection = "";
+	GUI_Controls.strPreviousComboSelection.Clear();
 
 	// Delete all rows of grid
 	GUI_Controls.virtualGrid->DeleteRows(0, GUI_Controls.virtualGrid->GetNumberRows(), true);
@@ -545,7 +544,7 @@ void OnClick_psComboButtons(int winID)
 	if (Has(button, curRow))
 		errorMSG = "The same button already exists in this Action.";
 
-	if (errorMSG != "")
+	if (!errorMSG.IsEmpty())
 	{
 		wxMessageBox(errorMSG, "Not Allowed!", wxICON_INFORMATION);
 		GUI_Controls.virtualGrid->SetFocus();
@@ -656,7 +655,7 @@ void OnChangeSensitivity(wxSpinEvent &ev)
 	val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
 
 	// avoid changing sensitivity to empty cells
-	if (val->buttonName == "")
+	if (val->buttonName.IsEmpty())
 		return;
 
 	// avoid changing sensitivity fo SELECT, START, L3, R3 as they are not pressure sensitive
@@ -722,7 +721,7 @@ void OnChangeComboName(wxCommandEvent &ev)
 			}
 		}
 
-		if (strPrevious != "")
+		if (!strPrevious.IsEmpty())
 		{
 			CCombo *curCombo = new CCombo;
 			curCombo->SetKey((int)keyValue);
@@ -742,7 +741,7 @@ void OnChangeComboName(wxCommandEvent &ev)
 				{
 					val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
 					// if button is not empty, add it
-					if (val->buttonName != "")
+					if (!val->buttonName.IsEmpty())
 						action->AddButton(val);
 				}
 				curCombo->AddAction(action);

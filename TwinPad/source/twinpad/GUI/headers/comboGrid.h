@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // Column 0: for delay, 1-20 for buttons
 const int MAX_COLUMNS = 21;
@@ -29,7 +29,7 @@ public:
 		// Initializing EmptyCell, will be used to create empty grid cells  - or -
 		// We use this to return a poninter to it if requesting data outside of grid, 
 		// that is, negative row and column numbers
-		EmptyCell.buttonName = "";
+		EmptyCell.buttonName.Clear();
 		EmptyCell.buttonSensitivity = -1;
 		EmptyCell.buttonValue = -1;
 	}

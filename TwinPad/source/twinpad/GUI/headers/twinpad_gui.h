@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "main.h"
 // -----Don't change the Include's order for these two 
@@ -141,7 +141,7 @@ public:
 	{
 		indexOfButton = -1;
 		curTab = 0;
-		strPreviousComboSelection = "";
+		strPreviousComboSelection.Clear();
 	}
 
 	TwinPad_Frame *mainFrame;

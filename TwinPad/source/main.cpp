@@ -57,6 +57,9 @@ void TwinPad_Frame::OnClose(wxCloseEvent &event)
 }
 
 static const int CMD_SHOW_WINDOW = wxNewId();
+static const int CMD_TERMINATE = wxNewId();
+
+static bool gsbMainLoopRunning = false;
 
 class TwinPad_DLL : public wxApp
 {
@@ -87,6 +90,7 @@ public:
 		SetExitOnFrameDelete(false);
 
 		Connect(CMD_SHOW_WINDOW, wxEVT_THREAD, wxThreadEventHandler(TwinPad_DLL::OnShowWindow));
+		Connect(CMD_TERMINATE, wxEVT_THREAD, wxThreadEventHandler(TwinPad_DLL::OnTerminate));
 	}
 
 	bool OnInit()
@@ -112,7 +116,7 @@ public:
 		return -1;
 	}
 
-	void OnShowWindow(wxThreadEvent& event)
+	void OnShowWindow(wxThreadEvent &event)
 	{
 		TwinPad_Frame twinPad_Frame("TwinPad Configuration Utility");
 		hGFXwnd = (HWND)twinPad_Frame.GetHWND();
@@ -133,6 +137,12 @@ public:
 #endif
 		GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
 		Configurations.Clean();
+	}
+
+	void OnTerminate(wxThreadEvent &event)
+	{
+		ExitMainLoop();
+		gsbMainLoopRunning = false;
 	}
 };
 
@@ -202,8 +212,9 @@ namespace
 		gs_cnd.notify_one();
 
 		// Run the app main's loop:
+		gsbMainLoopRunning = true;
 		wxEntry((HINSTANCE)hDLL);
-
+		
 		return 1;
 	}
 
@@ -234,11 +245,30 @@ void Run_wxGUI_From_DLL()
 		gs_canContinue = false;
 		bRunOnce = true;
 
-		// Run it as daemon, it will loop (similar to DllMain) until the calling process exits
+		// Run it as daemon, it will loop (similar to DllMain) until we call ExitMainLoop()
 		tMainThread.detach();
 	}
 
 	// Send a message to wx thread to show a new frame:
 	wxThreadEvent *event = new wxThreadEvent(wxEVT_THREAD, CMD_SHOW_WINDOW);
 	wxQueueEvent(wxApp::GetInstance(), event);
+}
+
+void Cleanup_TwinPad_DLL()
+{
+	std::unique_lock<std::mutex> uLocker(gs_mtx);
+
+	if (!gsbMainLoopRunning)
+		return;
+
+	// Send event to TwinPad_DLL to ExitMainLoop() and put gsbMainLoopRunning to false
+	wxThreadEvent *event = new wxThreadEvent(wxEVT_THREAD, CMD_TERMINATE);
+	wxQueueEvent(wxApp::GetInstance(), event);
+
+	std::thread tWaitThread( [](){ 
+		do {
+			std::this_thread::sleep_for(std::chrono::microseconds(50));
+	} while (gsbMainLoopRunning);} );
+
+	tWaitThread.join();
 }

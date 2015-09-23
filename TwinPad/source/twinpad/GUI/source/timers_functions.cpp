@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "stdafx.h"
 #include "timers_functions.h"
 #include "DirectInput.h"
@@ -45,7 +45,7 @@ keyInformation GetKey()
 	static bool gotKey = false;
 
 	keyInformation keyInfo;
-	keyInfo.keyName = "";
+	keyInfo.keyName.Clear();
 	keyInfo.keyValue = 0;
 
 	if (!gotKey)
@@ -90,7 +90,7 @@ keyInformation GetKey()
 void OnTimeGetKeyForKeyboard()
 {
 	keyInformation keyInfo = GetKey();
-	if (keyInfo.keyName != "")
+	if (!keyInfo.keyName.IsEmpty())
 	{
 		if (GUI_Controls.indexOfButton < 24)				// 0 to 23 are PSX/PS2 buttons
 		{
@@ -183,7 +183,7 @@ void OnTimeGetKeyForCombo()
 
 	keyInformation keyInfo;
 	keyInfo = GetKey();
-	if (keyInfo.keyName != "")
+	if (!keyInfo.keyName.IsEmpty())
 	{
 		GUI_Controls.mainFrame->tmrGetComboKey->Stop();
 		GUI_Controls.lblComboKey->SetLabel(keyInfo.keyName);

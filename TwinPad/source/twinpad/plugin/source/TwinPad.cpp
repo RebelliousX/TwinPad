@@ -216,11 +216,14 @@ u8 stdmodel[2][8] = { {0xff, 0x5a,
 					   0x00} };
 
 
-u8  _PADpoll(u8 value) {
-	if (curByte[curPad] == 0) {
+u8  _PADpoll(u8 value) 
+{
+	if (curByte[curPad] == 0) 
+	{
 		curByte[curPad]++;
 		curCmd = value;
-		switch (value) {
+		switch (value) 
+		{
 			case 0x40: // DUALSHOCK2 ENABLER 
 				cmdLen[curPad] = 8;
 				buf = cmd40[curPad];
@@ -235,13 +238,13 @@ u8  _PADpoll(u8 value) {
 				// Read PAD status.
 				AllInOne(curPad);
 
-				if(lanalog[curPad].button) status[curPad] &= ~(1<<9);
-				else status[curPad] |= (1<<9);
-				if(ranalog[curPad].button) status[curPad] &= ~(1<<10);
-				else status[curPad] |= (1<<10);
+				//if(lanalog[curPad].button) status[curPad] &= ~(1<<9);
+				//else status[curPad] |= (1<<9);
+				//if(ranalog[curPad].button) status[curPad] &= ~(1<<10);
+				//else status[curPad] |= (1<<10);
 
-				lanalog[curPad].button = 0; // reset them :p (l3)
-				ranalog[curPad].button = 0; // reset them :p (r3)
+				//lanalog[curPad].button = 0; // reset them :p (l3)
+				//ranalog[curPad].button = 0; // reset them :p (r3)
 
 				stdpar[curPad][2] = status[curPad] >> 8;
 				stdpar[curPad][3] = status[curPad] & 0xff;
@@ -282,8 +285,10 @@ u8  _PADpoll(u8 value) {
 			case 0x43: // CONFIG_MODE
 				cmdLen[curPad] = 8;
 				buf = stdcfg[curPad];
-				if (stdcfg[curPad][3] == 0xff) return 0xf3;
-				else return padID[curPad];
+				if (stdcfg[curPad][3] == 0xff) 
+					return 0xf3;
+				else 
+					return padID[curPad];
 
 			case 0x44: // SET_MODE_AND_LOCK
 				cmdLen[curPad] = 8;
@@ -328,49 +333,54 @@ u8  _PADpoll(u8 value) {
 		}
 	}
 
-	switch (curCmd) {
+	switch (curCmd) 
+	{
 		case 0x43:
 			if(curByte[curPad] == 2)
 			{
-				switch(value){
-				case 0:
-					buf[2] = 0;
-					buf[3] = 0;
-					break;
-				case 1:
-					buf[2] = 0xff;
-					buf[3] = 0xff;
-					break;
+				switch(value)
+				{
+					case 0:
+						buf[2] = 0;
+						buf[3] = 0;
+						break;
+					case 1:
+						buf[2] = 0xff;
+						buf[3] = 0xff;
+						break;
 				}
 			}
 			break;
 
 		case 0x44:
-			if (curByte[curPad] == 2) {
+			if (curByte[curPad] == 2) 
 				PADsetMode(curPad, value);
-			}
 			break;
 
 		case 0x46:
-			if(curByte[curPad] == 2) {
-				switch(value) {
-				case 0: // default
-					buf[5] = 0x2;
-					buf[6] = 0x0;
-					buf[7] = 0xA;
-					break;
-				case 1: // Param std conf change
-					buf[5] = 0x1;
-					buf[6] = 0x1;
-					buf[7] = 0x14;
-					break;
+			if(curByte[curPad] == 2) 
+			{
+				switch(value) 
+				{
+					case 0: // default
+						buf[5] = 0x2;
+						buf[6] = 0x0;
+						buf[7] = 0xA;
+						break;
+					case 1: // Param std conf change
+						buf[5] = 0x1;
+						buf[6] = 0x1;
+						buf[7] = 0x14;
+						break;
 				}
 			}
 			break;
 
 		case 0x4c:
-			if (curByte[curPad] == 2) {
-				switch (value) {
+			if (curByte[curPad] == 2) 
+			{
+				switch (value) 
+				{
 					case 0: // mode 0 - digital mode
 						buf[5] = 0x4;
 						break;

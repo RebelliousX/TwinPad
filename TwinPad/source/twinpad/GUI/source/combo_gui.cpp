@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "twinpad_gui.h"
 #include "functions_gui.h"
 #include "events_functions.h"
@@ -435,7 +435,7 @@ void SaveGridToCombo(wxString &strUserInput)
 			{
 				val = (CCellValue *)GUI_Controls.virtualGrid->GetTable()->GetValueAsCustom(row, col, "");
 				// if button is not empty, add it
-				if (val->buttonName != "")
+				if (!val->buttonName.IsEmpty())
 					action->AddButton(val);
 			}
 			curCombo->AddAction(action);

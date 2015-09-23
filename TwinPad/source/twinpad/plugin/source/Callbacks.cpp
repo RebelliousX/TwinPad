@@ -34,7 +34,10 @@ void CALLBACK PADsetSettingsDir(const char* dir)
 	GUI_Controls.SetSettingsPath(path);
 }
 
-void CALLBACK PADshutdown() { }
+void CALLBACK PADshutdown() 
+{
+	Cleanup_TwinPad_DLL();
+}
 
 s32 CALLBACK PADopen(HWND hDsp)
 { 
