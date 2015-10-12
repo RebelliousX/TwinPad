@@ -15,8 +15,7 @@
 #include "DirectInput.h"
 
 HMODULE hDLL = NULL;						// DLL handle, passed to DirectInput
-HWND hGFXwnd = NULL, hGSPUwnd = NULL;		// Both for getting HWND from GPU/GS window
-HWND hEmuWnd = NULL;						// Hackish, get handle to emulator, since wxDialog can't have win32 parent
+HWND hGFXwnd = NULL, hGSPUwnd = NULL;		// Both for getting HWND from GPU/GS/TwinPad window
 
 											// ----------------------------------------------------------------------------
 											// GUI classes
@@ -51,9 +50,8 @@ TwinPad_Frame::~TwinPad_Frame()
 
 void TwinPad_Frame::OnClose(wxCloseEvent &event)
 {
-	SetForegroundWindow(hEmuWnd);
-	ShowWindow(hEmuWnd, SW_RESTORE);
-	event.Skip();
+	this->Hide();	// Otherwise, the emu would be minimized too when TwinPad closes!
+	event.Skip();	// Pass the event to base class (wxDialog)
 }
 
 static const int CMD_SHOW_WINDOW = wxNewId();
@@ -64,6 +62,7 @@ static bool gsbMainLoopRunning = false;
 class TwinPad_DLL : public wxApp
 {
 public:
+	bool bRunOnce;	// Do not create more than 1 daemon thread
 	TwinPad_DLL()
 	{
 		// Note: wx_dll_cleanup() is removed, most emus (like PCSX2) don't call
@@ -91,11 +90,22 @@ public:
 
 		Connect(CMD_SHOW_WINDOW, wxEVT_THREAD, wxThreadEventHandler(TwinPad_DLL::OnShowWindow));
 		Connect(CMD_TERMINATE, wxEVT_THREAD, wxThreadEventHandler(TwinPad_DLL::OnTerminate));
+
+		bRunOnce = false;
+	}
+
+	~TwinPad_DLL()
+	{
+		OutputDebugStringW(L"\n\nExiting TwinPad!!!\n\n");
+		// OnExit isn't called by CleanUp so must be called explicitly.
+		wxApp::OnExit();
+		wxApp::CleanUp();
 	}
 
 	bool OnInit()
 	{
-		// Without this, Grid custom cell renderer will fail to load GIFs as a BMPs
+		// Without this, Grid custom cell renderer will fail to load GIFs as a BMPs, if we want
+		// all image types, then use wxInitAllImageHandlers() instead
 		wxImage::AddHandler(new wxGIFHandler);
 		return true;
 	}
@@ -120,21 +130,25 @@ public:
 	{
 		TwinPad_Frame twinPad_Frame("TwinPad Configuration Utility");
 		hGFXwnd = (HWND)twinPad_Frame.GetHWND();
-#ifdef __WINDOWS__
+
 		if (!InitDI())
 		{
 			wxMessageBox("Can't Initialize DirectInput!", "Failure...", wxICON_ERROR);
 			GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
 			return;
 		}
-#endif
 
+		// Show window as modal, wait until it closes, although it is not real modal since the parent
+		// window is not disabled. We can disable it by creating dummy window in the ctor and reparent
+		// Then disable the window and re-enable it at the destructor. But, I would like not to use MS
+		// functions to get the top window's handle for that, I am trying to get rid of them,
+		// (with the exception being the use of DirectInput). Currently, even if the parent is enabled, 
+		// and if the user calls for another window, it will not show up. See ConfigureTwinPad() below.
 		twinPad_Frame.ShowModal();
 
-#ifdef __WINDOWS__
 		// Terminate DirectInput for TwinPad Config window
 		TermDI();
-#endif
+		
 		GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
 		Configurations.Clean();
 	}
@@ -188,8 +202,10 @@ namespace
 		// not needed/used as we retrieve the DLL handle from an address inside it
 		// but you do need to use the correct name for this code to work with older
 		// systems as well.
+		
+		// When wxWidgetd v3.1 gets released, use GetModuleFromAddress() which is portable to Mac and Linux
 		const HINSTANCE	hInstance = wxDynamicLibrary::MSWGetModuleHandle("padTwinPad", &gwxMainThread);
-
+		
 		if (!hInstance)
 			return 0; // failed to get DLL's handle
 
@@ -215,10 +231,12 @@ namespace
 		gsbMainLoopRunning = true;
 		wxEntry((HINSTANCE)hDLL);
 		
-		return 1;
+		return  1;
 	}
 
 } // anonymous namespace
+
+static bool gsbRunOnce = false;	// Do not create more than 1 daemon thread
 
 void Run_wxGUI_From_DLL()
 {
@@ -235,15 +253,13 @@ void Run_wxGUI_From_DLL()
 	// initialized yet. wxCriticalSection is safe to use, though.
 	std::unique_lock<std::mutex> uLocker(gs_mtx);
 
-	static bool bRunOnce = false;	// Do not create more than 1 daemon thread
-
-	if (!bRunOnce)
+	if (!gsbRunOnce)
 	{
 		std::thread tMainThread(TwinPad_DLL_Launcher);
 		gwxMainThread = (HANDLE)tMainThread.native_handle();
 		gs_cnd.wait(uLocker, []() { return gs_canContinue; });
 		gs_canContinue = false;
-		bRunOnce = true;
+		gsbRunOnce = true;
 
 		// Run it as daemon, it will loop (similar to DllMain) until we call ExitMainLoop()
 		tMainThread.detach();
@@ -271,4 +287,5 @@ void Cleanup_TwinPad_DLL()
 	} while (gsbMainLoopRunning);} );
 
 	tWaitThread.join();
+	gsbRunOnce = false;
 }

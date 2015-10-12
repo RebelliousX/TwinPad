@@ -297,7 +297,7 @@ void AddKeyboardTab()
 	GUI_Controls.btnAutoNavigate = new CButton(panel, ID_BTN_AUTO, "Auto Navigate");
 	GUI_Controls.btnNullifiesAll = new CButton(panel, ID_BTN_NULL, "Nullifies All");
 	GUI_Controls.btnOK = new CButton(panel, ID_BTN_OK, "Ok");				// Don't use wxID_OK, will cause trouble with Return key
-	GUI_Controls.btnCancel = new CButton(panel, ID_BTN_CANCEL, "Cancel");	// Don't use wxID_CANCEL
+	GUI_Controls.btnCancel = new CButton(panel, ID_BTN_CANCEL, "Cancel");	// Don't use wxID_CANCEL, disables ESC to close dialog
 
 	GUI_Controls.btnCancel->Bind(wxEVT_LEFT_UP, OnClickCancel);
 	GUI_Controls.btnOK->Bind(wxEVT_LEFT_UP, OnClickOk);

@@ -324,7 +324,7 @@ private:
 	wxColor bgColor;
 	CComboGrid *grid;
 
-	void setCurrentBGColor(wxColor color)
+	void setCurrentBGColor(const wxColor &color)
 	{
 		grid->SetCellBackgroundColour(color, curRow, curCol);
 	}

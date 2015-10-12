@@ -208,12 +208,12 @@ public:
 	wxSize minWinSize[5];
 
 	// Files header names, Files names and Settings directory
-	void SetSettingsPath(wxString dir) { PATH_DIR = dir; }
-	wxString GetTwinPad_Header() { return HEADER_TWINPAD; }
-	wxString GetTwinPad_ComboHeader() { return HEADER_TWINPAD_COMBO; }
-	wxString GetTwinPad_FileName()	{ return TWIN_PAD; }
-	wxString GetTwinPad_ComboFileName() { return TWIN_PAD_COMBOS; }
-	wxString GetSettingsPath() { return PATH_DIR; }
+	void SetSettingsPath(const wxString &dir) { PATH_DIR = dir; }
+	const wxString &GetTwinPad_Header() { return HEADER_TWINPAD; }
+	const wxString &GetTwinPad_ComboHeader() { return HEADER_TWINPAD_COMBO; }
+	const wxString &GetTwinPad_FileName()	{ return TWIN_PAD; }
+	const wxString &GetTwinPad_ComboFileName() { return TWIN_PAD_COMBOS; }
+	const wxString &GetSettingsPath() { return PATH_DIR; }
 private:
 	// Some strings
 	wxString HEADER_TWINPAD;
