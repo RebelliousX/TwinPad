@@ -65,12 +65,6 @@ public:
 	bool bRunOnce;	// Do not create more than 1 daemon thread
 	TwinPad_DLL()
 	{
-		// Note: wx_dll_cleanup() is removed, most emus (like PCSX2) don't call
-		// PADshutdown() callback function anymore to cleanup the dll. Thus, I can't
-		// do thread terminating/restarting. And for some odd reason, when PCSX2 switched
-		// to using wxWidgets 3.0, TwinPad's DllMain function stopped working *correctly*.
-		// Despite that both link to wx3.0 statically and shouldn't interfere with each other.
-		//
 		// -- Taken from dll sample of wxWidgets ----------------------------------------------
 		//
 		// Keep the wx "main" thread running even without windows. This greatly
@@ -96,7 +90,6 @@ public:
 
 	~TwinPad_DLL()
 	{
-		OutputDebugStringW(L"\n\nExiting TwinPad!!!\n\n");
 		// OnExit isn't called by CleanUp so must be called explicitly.
 		wxApp::OnExit();
 		wxApp::CleanUp();
