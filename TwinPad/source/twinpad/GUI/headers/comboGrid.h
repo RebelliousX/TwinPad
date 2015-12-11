@@ -3,16 +3,6 @@
 // Column 0: for delay, 1-20 for buttons
 const int MAX_COLUMNS = 21;
 
-class CGridCellAttrProvider : public wxGridCellAttrProvider
-{
-public:
-	CGridCellAttrProvider() { m_attrCell = new wxGridCellAttr; }
-	virtual ~CGridCellAttrProvider() { m_attrCell->DecRef(); } // See functions_gui.cpp, SetupComboTab() about IncRef
-
-private:
-    wxGridCellAttr *m_attrCell;
-};
-
 class CTableBase : public wxGridTableBase
 {
 	// -----------Note------------------

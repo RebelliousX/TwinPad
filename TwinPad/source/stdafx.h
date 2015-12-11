@@ -33,3 +33,16 @@
 
 #include "DI_Globals.h"
 #include <dinput.h>
+
+// For handling memory leaks, show the culprit line of code in VS output window
+// When debugging, it changes all "new" operator to call "DEBUG_NEW" allowing for memory leaks to
+// give you the file name and line number where it occurred.
+// For more  informations, visit: https://msdn.microsoft.com/library/x98tx3cf%28v=vs.110%29.aspx
+
+#ifdef _DEBUG
+#	include <crtdbg.h>
+#	ifndef DBG_NEW
+#		define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#		define new DBG_NEW
+#	endif
+#endif  // _DEBUG

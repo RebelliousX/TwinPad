@@ -1,6 +1,6 @@
 // TwinPad PAD plugin for PSX (PSEmu Pro specifications) and PS2 (PCSX2) emulators
 // Created by: Rebel_X
-// Based on the work of PADwin team of the PADwinKeyboard plugin.
+// Based on the work of PADwin team of the PADwinKeyboard plugin in 2004.
 // As the original plugin, TwinPad is licensed under GPLv2 or higher.
 // Please see LINCENSE.TXT for more information.
 
@@ -182,7 +182,7 @@ namespace
 	std::mutex gs_mtx;
 	std::condition_variable gs_cnd;
 	bool gs_canContinue = false;
-
+	
 	//  wx application startup code -- runs from its own thread
 	unsigned wxSTDCALL TwinPad_DLL_Launcher()
 	{
@@ -219,6 +219,8 @@ namespace
 		// Signal Run_wxGUI_From_DLL() that it can continue
 		gs_canContinue = true;
 		gs_cnd.notify_one();
+
+		std::atexit(Cleanup_TwinPad_DLL);
 
 		// Run the app main's loop:
 		gsbMainLoopRunning = true;
@@ -257,7 +259,7 @@ void Run_wxGUI_From_DLL()
 		// Run it as daemon, it will loop (similar to DllMain) until we call ExitMainLoop()
 		tMainThread.detach();
 	}
-
+	
 	// Send a message to wx thread to show a new frame:
 	wxThreadEvent *event = new wxThreadEvent(wxEVT_THREAD, CMD_SHOW_WINDOW);
 	wxQueueEvent(wxApp::GetInstance(), event);
@@ -265,20 +267,5 @@ void Run_wxGUI_From_DLL()
 
 void Cleanup_TwinPad_DLL()
 {
-	std::unique_lock<std::mutex> uLocker(gs_mtx);
-
-	if (!gsbMainLoopRunning)
-		return;
-
-	// Send event to TwinPad_DLL to ExitMainLoop() and put gsbMainLoopRunning to false
-	wxThreadEvent *event = new wxThreadEvent(wxEVT_THREAD, CMD_TERMINATE);
-	wxQueueEvent(wxApp::GetInstance(), event);
-
-	std::thread tWaitThread( [](){ 
-		do {
-			std::this_thread::sleep_for(std::chrono::milliseconds(50));
-	} while (gsbMainLoopRunning);} );
-
-	tWaitThread.join();
-	gsbRunOnce = false;
+	wxEntryCleanup();
 }

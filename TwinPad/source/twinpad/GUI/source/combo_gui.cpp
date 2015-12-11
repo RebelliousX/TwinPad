@@ -92,13 +92,13 @@ void SetupComboTab(wxPanel *panel)
 				comboGrid = new CComboGrid(panel, wxID_ANY, wxPoint(1, 1), wxSize(665, 390));
 				// Complex table holds various data in a cell accessed via grid
 				CTableBase *tableBase = new CTableBase();
-				tableBase->SetAttrProvider(new CGridCellAttrProvider);
 				// We need pointers to the grid and table so we can read/save their values
 				GUI_Controls.virtualGrid = comboGrid;
 				GUI_Controls.tableBaseGrid = tableBase;
 				comboGrid->SetTable(tableBase, true);
 				// Setup attributes
-				wxGridCellAttr *attrReadOnly = new wxGridCellAttr, *attrDelayColumn = new wxGridCellAttr;
+				
+				wxGridCellAttr *attrDelayColumn = new wxGridCellAttr;
 				comboGrid->InsertCols(0, MAX_COLUMNS);		// 0: Delay, 1-20 Buttons (columns# fixed, rows# not)
 															// Set Column 0 attr, the range of acceptable numbers from 1 to 99999 (delay values)
 				attrDelayColumn->SetEditor(new wxGridCellNumberEditor(1, 99999));
@@ -108,17 +108,14 @@ void SetupComboTab(wxPanel *panel)
 				attrDelayColumn->SetAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
 				attrDelayColumn->SetReadOnly(false); // only first column is editable
 													 // Set ReadOnly attr to a column (from 1-20)
-				attrReadOnly->SetReadOnly(true);
-				// prevents overflow of text to next cell (just in case we use it to store hidden data)
-				attrReadOnly->SetOverflow(false);
 				comboGrid->SetColAttr(0, attrDelayColumn);					// column 0: Delay
-				for (int i = 1; i < comboGrid->GetNumberCols(); ++i)			// column 1-20, PS2 buttons images (no text)
+				for (int i = 1; i < comboGrid->GetNumberCols(); ++i)		// column 1-20, PS2 buttons images (no text)
 				{
+					wxGridCellAttr *attrReadOnly = new wxGridCellAttr;
+					attrReadOnly->SetReadOnly(true);
+					// prevents overflow of text to next cell (just in case we use it to store hidden data)
+					attrReadOnly->SetOverflow(false);
 					comboGrid->SetColAttr(i, attrReadOnly);
-					// Bug in wxWidgets 2.9.4 and up!!?? Ticket #4401, it says fixed, but not here :/
-					// Otherwise, a crash when exiting TwinPad, Assert about DecRef.
-					// See: http:// forums.wxwidgets.org/viewtopic.php?t=36159&p=147976
-					attrReadOnly->IncRef();		// Also, added DecRef in the virtual destructor
 				}
 				comboGrid->SetSelectionBackground(wxColor("#990000"));	// Crimson -bloody red- :)
 				comboGridSizer->Add(comboGrid, 0, 0, 5);
