@@ -316,6 +316,6 @@ private:
 
 	void setCurrentBGColor(const wxColor &color)
 	{
-		grid->SetCellBackgroundColour(color, curRow, curCol);
+		grid->SetCellBackgroundColour(curRow, curCol, color);
 	}
 };

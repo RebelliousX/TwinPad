@@ -1,7 +1,29 @@
 #pragma once
 
+////////// Library files	/////////////////////////////////////////
+#ifdef _WIN32
+#	pragma comment(lib, "dxguid.lib")
+#	pragma comment(lib, "dinput8.lib")
+#	pragma comment(lib, "rpcrt4.lib")
+#	pragma comment(lib, "wsock32.lib")
+#	pragma comment(lib, "winmm.lib")
+#	pragma comment(lib, "comctl32.lib")
+#endif
+
+#ifdef _DEBUG
+#	pragma comment(lib, "wxmsw31ud_core.lib")
+#	pragma comment(lib, "wxbase31ud.lib")
+#	pragma comment(lib, "wxjpegd.lib")
+#	pragma comment(lib, "wxpngd.lib")
+#else
+#	pragma comment(lib, "wxmsw31u_core.lib")
+#	pragma comment(lib, "wxbase31u.lib")
+#	pragma comment(lib, "wxjpeg.lib")
+#	pragma comment(lib, "wxpng.lib")
+#endif
+/////////////////////////////////////////////////////////////////////
+
 // Set to 0 if you want to use wx.h instead of precompiled header
-#define WX_PRECOM 1
 
 #ifndef WX_PRECOM
 	#include "wx/wx.h"

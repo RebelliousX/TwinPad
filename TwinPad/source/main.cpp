@@ -6,7 +6,7 @@
 
 #include "stdafx.h"
 
-#ifndef __WINDOWS__
+#ifndef _WIN32
 	#error "Currently TwinPad is Windows-only"
 #endif
 
@@ -57,12 +57,9 @@ void TwinPad_Frame::OnClose(wxCloseEvent &event)
 static const int CMD_SHOW_WINDOW = wxNewId();
 static const int CMD_TERMINATE = wxNewId();
 
-static bool gsbMainLoopRunning = false;
-
 class TwinPad_DLL : public wxApp
 {
 public:
-	bool bRunOnce;	// Do not create more than 1 daemon thread
 	TwinPad_DLL()
 	{
 		// -- Taken from dll sample of wxWidgets ----------------------------------------------
@@ -80,12 +77,11 @@ public:
 		// Also note that this is efficient, because if there are no windows, the
 		// thread will sleep waiting for a new event. We could safe some memory
 		// by shutting the thread down when it's no longer needed, though.
-		SetExitOnFrameDelete(false);
+		/*SetExitOnFrameDelete(false);*/
+		SetExitOnFrameDelete(true);
 
 		Connect(CMD_SHOW_WINDOW, wxEVT_THREAD, wxThreadEventHandler(TwinPad_DLL::OnShowWindow));
 		Connect(CMD_TERMINATE, wxEVT_THREAD, wxThreadEventHandler(TwinPad_DLL::OnTerminate));
-
-		bRunOnce = false;
 	}
 
 	~TwinPad_DLL()
@@ -149,7 +145,6 @@ public:
 	void OnTerminate(wxThreadEvent &event)
 	{
 		ExitMainLoop();
-		gsbMainLoopRunning = false;
 	}
 };
 
@@ -164,7 +159,7 @@ void ConfigureTwinPad()
 	// Don't show more than one configuration window
 	if (GUI_Controls.mainFrame)
 		return;
-
+	
 	// This will fool the host app if it was using wxWidgets by creating faux 
 	// main thread to run the GUI from the plugin. TwinPad_DLL::OnShowWindow() will be called
 	// due to the DLL's main thread and create our frame and controls
@@ -173,6 +168,7 @@ void ConfigureTwinPad()
 
 // we can't have WinMain() in a DLL and want to start the app ourselves
 IMPLEMENT_APP_NO_MAIN(TwinPad_DLL)
+DECLARE_APP(TwinPad_DLL)	// So we can use wxGetApp() which is a macro too
 
 // Handle of wx "main" thread if running, NULL otherwise
 HANDLE gwxMainThread = NULL;
@@ -196,8 +192,8 @@ namespace
 		// but you do need to use the correct name for this code to work with older
 		// systems as well.
 		
-		// When wxWidgetd v3.1 gets released, use GetModuleFromAddress() which is portable to Mac and Linux
-		const HINSTANCE	hInstance = wxDynamicLibrary::MSWGetModuleHandle("padTwinPad", &gwxMainThread);
+		// When wxWidgets v3.1 gets released, use GetModuleFromAddress() which is portable to Mac and Linux
+		const HINSTANCE hInstance = (HINSTANCE) wxDynamicLibrary::GetModuleFromAddress(&gwxMainThread, &wxString("padTwinPad"));
 		
 		if (!hInstance)
 			return 0; // failed to get DLL's handle
@@ -220,52 +216,72 @@ namespace
 		gs_canContinue = true;
 		gs_cnd.notify_one();
 
-		std::atexit(Cleanup_TwinPad_DLL);
-
 		// Run the app main's loop:
-		gsbMainLoopRunning = true;
 		wxEntry((HINSTANCE)hDLL);
-		
+		wxGetApp().CleanUp();
+		wxEntryCleanup();
+#if _WIN32
+		wxToolTip::ResetToolTipCtrlHWND();	// See Readme.md for this unofficially added function to wxWidgets
+#endif
 		return  1;
 	}
 
-} // anonymous namespace
+	void Show_GUI()
+	{
+		// In order to prevent conflicts with hosting app's event loop, we
+		// launch wx app from the DLL in its own thread.
+		//
+		// We can't even use wxInitializer: it initializes wxModules and one of
+		// the modules it handles is wxThread's private module that remembers
+		// ID of the main thread. But we need to fool wxWidgets into thinking that
+		// the thread we are about to create now is the main thread, not the one
+		// from which this function is called.
+		//
+		// Note that we cannot use wxThread here, because the wx library wasn't
+		// initialized yet. wxCriticalSection is safe to use, though.
+		std::unique_lock<std::mutex> uLocker(gs_mtx);
 
-static bool gsbRunOnce = false;	// Do not create more than 1 daemon thread
+		// Do not create more than 1 main thread if we are already running
+		if (!wxTheApp->IsMainLoopRunning())
+		{
+			std::thread tMainThread(TwinPad_DLL_Launcher);
+			gwxMainThread = (HANDLE)tMainThread.native_handle();
+			gs_cnd.wait(uLocker, []() { return gs_canContinue; });
+			gs_canContinue = false;
+
+			// Run it as daemon, it will loop (similar to DllMain) until we call ExitMainLoop()
+			tMainThread.detach();
+		}
+
+		// Send a message to wx thread to show a new frame:
+		wxThreadEvent *event = new wxThreadEvent(wxEVT_THREAD, CMD_SHOW_WINDOW);
+		wxQueueEvent(wxApp::GetInstance(), event);
+	}
+} // anonymous namespace
 
 void Run_wxGUI_From_DLL()
 {
-	// In order to prevent conflicts with hosting app's event loop, we
-	// launch wx app from the DLL in its own thread.
-	//
-	// We can't even use wxInitializer: it initializes wxModules and one of
-	// the modules it handles is wxThread's private module that remembers
-	// ID of the main thread. But we need to fool wxWidgets into thinking that
-	// the thread we are about to create now is the main thread, not the one
-	// from which this function is called.
-	//
-	// Note that we cannot use wxThread here, because the wx library wasn't
-	// initialized yet. wxCriticalSection is safe to use, though.
-	std::unique_lock<std::mutex> uLocker(gs_mtx);
-
-	if (!gsbRunOnce)
-	{
-		std::thread tMainThread(TwinPad_DLL_Launcher);
-		gwxMainThread = (HANDLE)tMainThread.native_handle();
-		gs_cnd.wait(uLocker, []() { return gs_canContinue; });
-		gs_canContinue = false;
-		gsbRunOnce = true;
-
-		// Run it as daemon, it will loop (similar to DllMain) until we call ExitMainLoop()
-		tMainThread.detach();
-	}
-	
-	// Send a message to wx thread to show a new frame:
-	wxThreadEvent *event = new wxThreadEvent(wxEVT_THREAD, CMD_SHOW_WINDOW);
-	wxQueueEvent(wxApp::GetInstance(), event);
+	::Show_GUI();
 }
 
 void Cleanup_TwinPad_DLL()
 {
+	std::unique_lock<std::mutex> uLocker(gs_mtx);
+	
+	if ( !wxApp::IsMainLoopRunning() )
+		return;
+	
+	// Send event to TwinPad_DLL to ExitMainLoop() and put gsbMainLoopRunning to false
+	wxThreadEvent *event = new wxThreadEvent(wxEVT_THREAD, CMD_TERMINATE);
+	wxQueueEvent(wxApp::GetInstance(), event);
+
+	std::thread tWaitThread([]() {
+		do {
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));
+			if (!wxApp::IsMainLoopRunning())
+				break;
+		} while (true);
+		return; });	// true == running main loop, true == wait
+	tWaitThread.join();								// false != running main loop, false == continue
 	wxEntryCleanup();
 }

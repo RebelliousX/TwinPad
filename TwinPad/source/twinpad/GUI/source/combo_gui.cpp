@@ -79,7 +79,7 @@ void SetupComboTab(wxPanel *panel)
 
 			topLevelSizer->Add(stcComboEditorSizer, 0, wxALIGN_CENTER, 5);
 			topLevelSizer->AddSpacer(10);
-			topLevelSizer->Add(stcComboNameSizer, 1, wxALIGN_CENTER | wxEXPAND | wxLEFT | wxRIGHT, 5);
+			topLevelSizer->Add(stcComboNameSizer, 1, wxALIGN_CENTER | wxLEFT | wxRIGHT, 5);
 			topLevelSizer->Add(stcDefaultDelaySizer, 0, wxALIGN_CENTER, 5);
 			topLevelSizer->AddSpacer(10);
 			topLevelSizer->Add(stcComboKeySizer, 0, wxALIGN_CENTER, 5);
@@ -130,10 +130,14 @@ void SetupComboTab(wxPanel *panel)
 					GUI_Controls.btnInsertInbetweenAction = new CButton(panel, wxID_ANY, "Insert Inbetween Actions");
 					GUI_Controls.btnDeleteSelectedActions = new CButton(panel, wxID_ANY, "Delete Selected Actions");
 					GUI_Controls.btnDeleteButton = new CButton(panel, wxID_ANY, "Delete Selected Button");
+					
 					largestButtonSize = GUI_Controls.btnInsertInbetweenAction->GetSize();
 					GUI_Controls.btnNewAction->SetMinSize(largestButtonSize);
 					GUI_Controls.btnDeleteLastAction->SetMinSize(largestButtonSize);
-					GUI_Controls.btnInsertInbetweenAction->SetMinSize(largestButtonSize);
+					GUI_Controls.btnInsertActions->SetMinSize(largestButtonSize);
+					GUI_Controls.btnDeleteSelectedActions->SetMinSize(largestButtonSize);
+					GUI_Controls.btnDeleteButton->SetMinSize(largestButtonSize);
+
 					GUI_Controls.btnNewAction->Bind(wxEVT_LEFT_UP, OnClickNewAction);
 					GUI_Controls.btnDeleteLastAction->Bind(wxEVT_LEFT_UP, OnClickDeleteLastAction);
 					GUI_Controls.btnInsertInbetweenAction->Bind(wxEVT_LEFT_UP, OnClickInsertInbetweenAction);
@@ -141,17 +145,17 @@ void SetupComboTab(wxPanel *panel)
 					GUI_Controls.btnDeleteSelectedActions->Bind(wxEVT_LEFT_UP, OnClickDeleteSelectedActions);
 					GUI_Controls.btnDeleteButton->Bind(wxEVT_LEFT_UP, OnClickDeleteButton);
 
-					editComboSizer->Add(GUI_Controls.btnNewAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->Add(GUI_Controls.btnNewAction, 0, wxALL | wxALIGN_CENTER, 5);
 					editComboSizer->AddSpacer(5);
-					editComboSizer->Add(GUI_Controls.btnDeleteLastAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->Add(GUI_Controls.btnDeleteLastAction, 0, wxALL | wxALIGN_CENTER, 5);
 					editComboSizer->AddSpacer(5);
-					editComboSizer->Add(GUI_Controls.btnInsertActions, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->Add(GUI_Controls.btnInsertActions, 0, wxALL | wxALIGN_CENTER, 5);
 					editComboSizer->AddSpacer(5);
-					editComboSizer->Add(GUI_Controls.btnInsertInbetweenAction, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->Add(GUI_Controls.btnInsertInbetweenAction, 0, wxALL | wxALIGN_CENTER, 5);
 					editComboSizer->AddSpacer(5);
-					editComboSizer->Add(GUI_Controls.btnDeleteSelectedActions, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->Add(GUI_Controls.btnDeleteSelectedActions, 0, wxALL | wxALIGN_CENTER, 5);
 					editComboSizer->AddSpacer(5);
-					editComboSizer->Add(GUI_Controls.btnDeleteButton, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					editComboSizer->Add(GUI_Controls.btnDeleteButton, 0, wxALL | wxALIGN_CENTER, 5);
 				}
 				wxStaticBoxSizer *whichPadSizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Which Pad?");
 				{
@@ -160,7 +164,7 @@ void SetupComboTab(wxPanel *panel)
 					GUI_Controls.cmbWhichPad->SetBackgroundColour(wxColor(66, 66, 66));	// Dark Grey
 					GUI_Controls.cmbWhichPad->SetForegroundColour(wxColor("White"));
 					GUI_Controls.cmbWhichPad->SetMinSize(largestButtonSize);
-					whichPadSizer->Add(GUI_Controls.cmbWhichPad, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					whichPadSizer->Add(GUI_Controls.cmbWhichPad, 0, wxALL | wxALIGN_CENTER, 5);
 				}
 				wxStaticBoxSizer *sensitivitySizer = new wxStaticBoxSizer(wxVERTICAL, panel, "Button Sensitivity");
 				{
@@ -171,7 +175,7 @@ void SetupComboTab(wxPanel *panel)
 					GUI_Controls.spnSensitivity->SetForegroundColour(wxColor("White"));
 					GUI_Controls.spnSensitivity->SetMinSize(largestButtonSize);
 					GUI_Controls.spnSensitivity->Bind(wxEVT_SPINCTRL, ::OnChangeSensitivity);
-					sensitivitySizer->Add(GUI_Controls.spnSensitivity, 0, wxEXPAND | wxALL | wxALIGN_CENTER, 5);
+					sensitivitySizer->Add(GUI_Controls.spnSensitivity, 0, wxALL | wxALIGN_CENTER, 5);
 				}
 				actionAndButtonSizer->Add(editComboSizer);
 				actionAndButtonSizer->Add(whichPadSizer);
@@ -179,7 +183,7 @@ void SetupComboTab(wxPanel *panel)
 			}
 
 			midLevelSizer->Add(comboGridSizer);
-			midLevelSizer->Add(actionAndButtonSizer, 1, wxEXPAND | wxALIGN_CENTER, 5);
+			midLevelSizer->Add(actionAndButtonSizer, 1, wxALIGN_CENTER, 5);
 		}
 		wxStaticBoxSizer *lowLevelSizer = new wxStaticBoxSizer(wxHORIZONTAL, panel, "PSX/PS2 Buttons");
 		{
@@ -304,7 +308,7 @@ void SetupComboTab(wxPanel *panel)
 			lowLevelSizer->Add(lowLevelContainerSizer);
 		}
 		parentSizer->Add(topLevelSizer, 0, wxEXPAND | wxLEFT | wxRIGHT, 5);
-		parentSizer->Add(midLevelSizer, 1, wxEXPAND | wxALIGN_CENTER, 5);
+		parentSizer->Add(midLevelSizer, 1, wxALIGN_CENTER, 5);
 		parentSizer->Add(lowLevelSizer, 0, wxALIGN_CENTER, 2);
 		parentSizer->AddSpacer(30);
 
@@ -351,7 +355,7 @@ void SetupComboTab(wxPanel *panel)
 	{
 		wxString str = wxString::Format("#%d", i);
 		comboGrid->SetColLabelValue(i, str);
-		comboGrid->SetColumnWidth(i, IMG_WIDTH);
+		comboGrid->SetColSize(i, IMG_WIDTH);
 		comboGrid->SetColLabelValue(i, wxString::Format("#%d", i));
 	}
 

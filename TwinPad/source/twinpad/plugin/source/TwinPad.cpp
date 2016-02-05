@@ -73,9 +73,10 @@ void PADsetMode(int pad, int mode) {
 s32  _PADopen(HWND hDsp) 
 {
 	wxInitializer wxinit;
+
 	if(!hDLL)	// Was DLL previosly loaded?
 	{
-		const HINSTANCE	hInstance = wxDynamicLibrary::MSWGetModuleHandle("padTwinPad", &gwxMainThread);
+		const HINSTANCE	hInstance = (HINSTANCE) wxDynamicLibrary::GetModuleFromAddress(&gwxMainThread);
 
 		if (!wxinit.IsOk())
 			return -1;	// At this point, we can't even display a messagebox, exit.

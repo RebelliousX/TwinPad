@@ -10,7 +10,7 @@ char *libraryName      = "TwinPad";
 const unsigned char version  = 0x02; // PS2E_PAD_VERSION
 const unsigned char revision = 0;    // vN.-.-
 const unsigned char build    = 9;    // v-.N.-
-const unsigned char subversion = 2;  // v-.-.N
+const unsigned char subversion = 25;  // v-.-.N
 
 u32 CALLBACK PS2EgetLibType()
 {	

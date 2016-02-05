@@ -33,7 +33,7 @@ void AddRow(CComboGrid *grid, unsigned int defaultDelay, unsigned int rowPos)
 	// Resize column width and change label
 	for (int i = 1; i < grid->GetNumberCols(); ++i)
 	{
-		grid->SetColumnWidth(i, IMG_WIDTH);
+		grid->SetColSize(i, IMG_WIDTH);
 		grid->SetColLabelValue(i, wxString::Format("#%d", i));
 	}
 	grid->SetRowSize(rowPos, IMG_WIDTH);
@@ -66,7 +66,7 @@ void OnClickNewAction(wxMouseEvent &ev)
 		GUI_Controls.virtualGrid->GetNumberRows());
 
 	for (int c = 0; c < GUI_Controls.virtualGrid->GetNumberRows(); ++c)
-		GUI_Controls.virtualGrid->SetRowHeight(c, IMG_WIDTH);
+		GUI_Controls.virtualGrid->SetRowSize(c, IMG_WIDTH);
 
 	// Adding new action, set cursor to the last action and first button
 	Cell_Locator.SetLocation(GUI_Controls.virtualGrid->GetNumberRows() - 1, 1);

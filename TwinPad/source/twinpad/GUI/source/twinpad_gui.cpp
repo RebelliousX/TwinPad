@@ -248,7 +248,7 @@ void AddKeyboardTab()
 				else
 					GUI_Controls.lblLabel[lblIndex] = new wxStaticText(panel, ID_LBL + lblIndex, "R");
 
-				GUI_Controls.lblLabel[lblIndex]->SetFont(wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD));
+				GUI_Controls.lblLabel[lblIndex]->SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
 				flexSizer->Add(GUI_Controls.lblLabel[lblIndex], 1, wxALIGN_CENTER);
 
 				lblIndex++;
