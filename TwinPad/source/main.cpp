@@ -62,22 +62,6 @@ class TwinPad_DLL : public wxApp
 public:
 	TwinPad_DLL()
 	{
-		// -- Taken from dll sample of wxWidgets ----------------------------------------------
-		//
-		// Keep the wx "main" thread running even without windows. This greatly
-		// simplifies threads handling, because we don't have to correctly
-		// implement wx-thread restarting.
-		//
-		// Note that this only works if you don't explicitly call ExitMainLoop(),
-		// except in reaction to wx_dll_cleanup()'s message. wx_dll_cleanup()
-		// relies on the availability of wxApp instance and if the event loop
-		// terminated, wxEntry() would return and wxApp instance would be
-		// destroyed.
-		//
-		// Also note that this is efficient, because if there are no windows, the
-		// thread will sleep waiting for a new event. We could safe some memory
-		// by shutting the thread down when it's no longer needed, though.
-		/*SetExitOnFrameDelete(false);*/
 		SetExitOnFrameDelete(true);
 
 		Connect(CMD_SHOW_WINDOW, wxEVT_THREAD, wxThreadEventHandler(TwinPad_DLL::OnShowWindow));
@@ -186,12 +170,7 @@ namespace
 		//       at this point and won't release it until we signal it.
 
 		// We need to pass correct HINSTANCE to wxEntry() and the right value is
-		// HINSTANCE of this DLL, not of the main .exe, use this MSW-specific wx
-		// function to get it. Notice that under Windows XP and later the name is
-		// not needed/used as we retrieve the DLL handle from an address inside it
-		// but you do need to use the correct name for this code to work with older
-		// systems as well.
-		
+		// HINSTANCE of this DLL, not of the main .exe.
 		// When wxWidgets v3.1 gets released, use GetModuleFromAddress() which is portable to Mac and Linux
 		const HINSTANCE hInstance = (HINSTANCE) wxDynamicLibrary::GetModuleFromAddress(&gwxMainThread, &wxString("padTwinPad"));
 		
@@ -207,7 +186,7 @@ namespace
 
 		// We do this before wxEntry() explicitly, even though wxEntry() would
 		// do it too, so that we know when wx is initialized and can signal
-		// run_wx_gui_from_dll() about it *before* starting the event loop.
+		// Run_wxGUI_From_DLL() about it *before* starting the event loop.
 		wxInitializer wxinit;
 		if (!wxinit.IsOk())
 			return 0; // failed to init wx
@@ -221,7 +200,7 @@ namespace
 		wxGetApp().CleanUp();
 		wxEntryCleanup();
 #if _WIN32
-		wxToolTip::ResetToolTipCtrlHWND();	// See Readme.md for this unofficially added function to wxWidgets
+		wxToolTip::DeleteToolTipCtrlWindow();	// See Readme.md for this unofficially added function to wxWidgets
 #endif
 		return  1;
 	}

@@ -13,7 +13,7 @@ Before you compile wxWidgets library, there are some modifications need to
 be done beforehand.
 
 First we need a small modification to how tooltips work, so add the following
-to `tooltip.h` file in the public section of the class at the end, and before the private section starts. The file located in`\wxWidgets\include\wx\msw\tooltip.h` and as you can see it is for Microsoft Windows build.
+to `tooltip.h` files in the public section of the class at the end, and before the private section starts. The file located in`\wxWidgets\include\wx\msw\tooltip.h` and as you can see it is for Microsoft Windows build.
 ```
 // Call this *ONLY* if you want to ExitMainLoop() and re-enter again.
 // If you do SetExitOnFrameDelete(true) then tooltips will fail to be
@@ -21,7 +21,15 @@ to `tooltip.h` file in the public section of the class at the end, and before th
 // one static wxToolTip Control, we need to reset it if we want tooltips to 
 // show if we re-enter mainloop again (by displaying a new window or frame)
 // call this after exiting wxEntry()
-static void ResetToolTipCtrlHWND() { ms_hwndTT = (WXHWND)NULL; }
+static void DeleteToolTipCtrlWindow();
+```
+And `tooltip.cpp` for the implementation of this function, add the following at the end of the static section (where there are static function definitions) the file is located in `\wxWidgets\src\msw\tooltip.cpp`
+```
+void wxToolTip::DeleteToolTipCtrlWindow() 
+{ 
+	DestroyWindow((HWND)ms_hwndTT);
+	ms_hwndTT = (WXHWND)NULL;
+}
 ```
 Now we need to setup wxWidgets and tell it how to compile:
 - Open `setup.h` from `_custome_build` project under `Setup Headers` and change the defined `wxUSE_COMPILER_TLS` value from 1 to 2.
