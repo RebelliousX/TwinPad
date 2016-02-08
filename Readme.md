@@ -7,7 +7,7 @@ The plugin features a unique function to record macros and replay them when need
 ---
 ### Dependencies
 TwinPad uses wxWidgets library, and it uses the latest development build of
-wxWidgets v3.1.0 (at the time of writing this, commit [d66289d](https://github.com/wxWidgets/wxWidgets/commit/d66289dc9573533248e8dc6636fd77e8993c0083).
+wxWidgets v3.1.0 (at the time of writing this, commit [f844b45](https://github.com/wxWidgets/wxWidgets/commit/f844b45815b33b944387f74a0d6b8190441f6c5a).
 
 Before you compile wxWidgets library, there are some modifications need to
 be done beforehand.
@@ -31,7 +31,9 @@ void wxToolTip::DeleteToolTipCtrlWindow()
 	ms_hwndTT = (WXHWND)NULL;
 }
 ```
-Now we need to setup wxWidgets and tell it how to compile:
+>**Note**: I already submitted bug in wxWidgets tracking system about tooltips' wrong behavior, it was confirmed. And created a pull request, if it gets approved, and you are using wxWidgets with the applied patch, then you don't need to modify any sources. For more information about wxToolTip bug report, or you can download patch file and apply it yourself then [click here](http://trac.wxwidgets.org/ticket/17360). The code for the patch is slightly different with the same effect, except the user don't have to manually call the deletion of wxToolTip control window after exiting the mainloop.
+
+Now we need to setup wxWidgets and tell Visual Studio how to compile it:
 - Open `setup.h` from `_custome_build` project under `Setup Headers` and change the defined `wxUSE_COMPILER_TLS` value from 1 to 2.
 - Select and highlight all the other projects from Solution Explorer and click properties. Choose `Debug` configuration and change the platform toolset to use **Visual Studio 2015 - Windows XP (v140_XP)**. Click apply then change the configuration to `Release` and do the same.
 - Go to `C/C++` section and choose `Command Line` and under Additional Options, put `Z/c:threadSafeInit-` for both Debug and Release configurations.
@@ -39,7 +41,9 @@ Now we need to setup wxWidgets and tell it how to compile:
 
 **Note:** This compiler keyword was introduced in Visual Studio 2014 CTP to fix the buggy and remaining TLS issues in Windows XP, since it is out of support, it can't be fixed. Newer versions of Windows (Vista +) don't have these issues. For more information see this [bug report](https://connect.microsoft.com/VisualStudio/feedback/details/1789709/visual-c-2015-runtime-broken-on-windows-server-2003-c-11-magic-statics), or [here](http://www.btday.com/access-violation-on-static-initialization/) for the same issue but with code.
 
-> Note: If you are using Visual Studio 2013, there is no need for this. Except you might have to change the platform toolset to use **Visual Studio 2013 - Windows XP (v120_XP)** instead. For both TwinPad and wxWidgets. This is necessary to make TwinPad work under Windows XP! The plugin will throw Access Denied with error 998 for inaccessible memory location. wxWidgets have an issue with Thread Local Storage (TLS) when the library is used in a DLL (Dynamic Link Library) as you might have read in the `Setup.h` file when changing wxUSE_COMPILER_TLS value. See this bug [ticket](trac.wxwidgets.org/ticket/13116). They fixed it for earlier versions of Visual Studio (v11) and when using Windows SDK v7.1, but it remains for newer Visual Studio v14 (2015) and newer Windows SDK v8.1
+> **Note:** If you are using Visual Studio 2013, there is no need for this. Except you might have to change the platform toolset to use **Visual Studio 2013 - Windows XP (v120_XP)** instead. For both TwinPad and wxWidgets. This is necessary to make TwinPad work under Windows XP! The plugin will throw Access Denied with error 998 for inaccessible memory location. wxWidgets have an issue with Thread Local Storage (TLS) when the library is used in a DLL (Dynamic Link Library) as you might have read in the `Setup.h` file when changing wxUSE_COMPILER_TLS value. See this bug [ticket](trac.wxwidgets.org/ticket/13116). They fixed it for earlier versions of Visual Studio (v11) and when using Windows SDK v7.1, but it remains for newer Visual Studio v14 (2015) and newer Windows SDK v8.1
+
+> **Note 2:** If you are using wxWidgets development build downloaded via github terminal window, you might not have `setup.h` file. You have to copy `setup0.h` and paste then rename it to `setup.h`. The file is found in `\wxWidgets\include\wx\msw` For more information, read the `install.txt` file included in wxWidgets for Microsoft Windows (MSW).
 
 One last thing, almost done. You need to set Environment Variable for Windows so that Visual Studio can see wxWidgets directory using $(WXWIN) variable. By doing this, it makes wxWidgets installation portable to other computers or even yours if you decided to change the directory of wxWidgets, and you don't have to modify your project files to accommodate.
 
