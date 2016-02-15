@@ -199,9 +199,6 @@ namespace
 		wxEntry((HINSTANCE)hDLL);
 		wxGetApp().CleanUp();
 		wxEntryCleanup();
-#if _WIN32
-		wxToolTip::DeleteToolTipCtrlWindow();	// See Readme.md for this unofficially added function to wxWidgets
-#endif
 		return  1;
 	}
 

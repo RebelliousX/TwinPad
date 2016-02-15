@@ -602,7 +602,8 @@ void _PADEventExtra( int pad )
 }
 
 // PADkeyEvent is called every vsync (return NULL if no event)
-keyEvent* CALLBACK PADkeyEvent() {
+keyEvent* CALLBACK PADkeyEvent() 
+{
 
 	if (!Configurations.IsEnabled_KeyEvents())
 		return NULL;
