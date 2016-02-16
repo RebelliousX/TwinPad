@@ -7,7 +7,7 @@ The plugin features a unique function to record macros and replay them when need
 ---
 ### Dependencies
 TwinPad uses wxWidgets library, and it uses the latest development build of
-wxWidgets v3.1.0, You **must** use a version of wxWidgets starting from this commit [35f35ea](https://github.com/wxWidgets/wxWidgets/commit/35f35ea407d602f73c5fbe38a4bf6cc243ac3368) or higher. That commit contains a fix to wxToolTip behavior under Windows, and it is crucial for TwinPad to work correctly.
+wxWidgets v3.1.0, You **must** use a version of wxWidgets starting from this commit [35f35ea](https://github.com/wxWidgets/wxWidgets/commit/35f35ea407d602f73c5fbe38a4bf6cc243ac3368) (or [64e14e8](https://github.com/wxWidgets/wxWidgets/commit/64e14e850d9096ebc83dd077569b1c0b7862c737) if you are using wxWidgets without precompiled headers). That first commit contains a fix to wxToolTip behavior under Windows, and it is crucial for TwinPad to work correctly.
 
 >**Note**: For more details about wxToolTip bug that was fixed at the aforementioned commit, [click here](http://trac.wxwidgets.org/ticket/17360). 
 
