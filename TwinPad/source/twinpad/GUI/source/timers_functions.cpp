@@ -55,7 +55,7 @@ keyInformation GetKey()
 		GetKeyboardStatus();
 		if (!keyIsDown)
 		{
-			for (unsigned char i = 0; i < 255; ++i)
+			for (int i = 0; i < 256; ++i)
 				if (DIKEYDOWN(KeyState, i))	// Key pressed
 				{
 					if (!IsValidKey(i))

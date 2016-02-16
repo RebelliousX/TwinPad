@@ -46,7 +46,11 @@ s32 CALLBACK PADopen(HWND hDsp)
 
 void CALLBACK PADclose()
 { 
-	_PADclose(); 
+	TermDI();
+
+	hGSPUwnd = hGFXwnd = NULL;
+	curByte[0] = curByte[1] = 0;
+	cmdLen[0] = cmdLen[1] = 0;
 }
 
 u32 CALLBACK PADquery()
@@ -107,13 +111,9 @@ u8 CALLBACK PADstartPoll(int pad)
 	return 0xff;
 }
 
-void _PADclose() 
+keyEvent* CALLBACK PADkeyEvent()
 {
-	TermDI();
-	
-	hGSPUwnd = hGFXwnd = NULL;
-	curByte[0] = curByte[1] = 0;
-	cmdLen[0]  = cmdLen[1]  = 0;
+	return _PADkeyEvent();
 }
 
 // // // // // // // // // // // // // // // //PSX related functions// // // // // // // // // // // // // // /

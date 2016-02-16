@@ -1,5 +1,5 @@
 #pragma once
 
 s32  _PADopen(HWND hDsp);
-void _PADclose();
+keyEvent* _PADkeyEvent();
 u8 _PADpoll(u8 value);

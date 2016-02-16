@@ -239,14 +239,6 @@ u8  _PADpoll(u8 value)
 				// Read PAD status.
 				AllInOne(curPad);
 
-				//if(lanalog[curPad].button) status[curPad] &= ~(1<<9);
-				//else status[curPad] |= (1<<9);
-				//if(ranalog[curPad].button) status[curPad] &= ~(1<<10);
-				//else status[curPad] |= (1<<10);
-
-				//lanalog[curPad].button = 0; // reset them :p (l3)
-				//ranalog[curPad].button = 0; // reset them :p (r3)
-
 				stdpar[curPad][2] = status[curPad] >> 8;
 				stdpar[curPad][3] = status[curPad] & 0xff;
 				stdpar[curPad][4] = ranalog[curPad].x;
@@ -465,8 +457,6 @@ void _PADEvent(int pad) {
 			default: break;
 			}
 		}
-		// else /*release code became obsolete*/
-			//status[pad] |= (1 << i);
 }
 
 void _PADEventExtra( int pad )
@@ -574,7 +564,7 @@ void _PADEventExtra( int pad )
 				ranalog[pad].button = 0;
 			}
 
-	// Special Keys to TOGGLE between Sensitivity of Analog controls, (Walk/Run)
+	// Special Keys to TOGGLE between Sensitivity of *all* controls including analog, (Walk/Run)
 	static bool toggle[2] = { false, false };
 
 	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][24]))							// Walk/Run is pressed now
@@ -602,9 +592,8 @@ void _PADEventExtra( int pad )
 }
 
 // PADkeyEvent is called every vsync (return NULL if no event)
-keyEvent* CALLBACK PADkeyEvent() 
+keyEvent* _PADkeyEvent() 
 {
-
 	if (!Configurations.IsEnabled_KeyEvents())
 		return NULL;
 
