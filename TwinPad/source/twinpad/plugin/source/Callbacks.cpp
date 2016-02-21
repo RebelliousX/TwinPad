@@ -46,7 +46,7 @@ s32 CALLBACK PADopen(HWND hDsp)
 
 void CALLBACK PADclose()
 { 
-	TermDI();
+	TerminateInputManager();
 
 	hGSPUwnd = hGFXwnd = NULL;
 	curByte[0] = curByte[1] = 0;

@@ -2,8 +2,8 @@
 
 ////////// Library files	/////////////////////////////////////////
 #ifdef _WIN32
-#	pragma comment(lib, "dxguid.lib")
-#	pragma comment(lib, "dinput8.lib")
+//#	pragma comment(lib, "dxguid.lib")
+//#	pragma comment(lib, "dinput8.lib")
 #	pragma comment(lib, "rpcrt4.lib")
 #	pragma comment(lib, "wsock32.lib")
 #	pragma comment(lib, "winmm.lib")
@@ -11,19 +11,20 @@
 #	ifdef _DEBUG
 #		pragma comment(lib, "wxmsw31ud_core.lib")
 #		pragma comment(lib, "wxbase31ud.lib")
+#		pragma comment(lib, "OIS_static_d.lib")
 #	else
 #		pragma comment(lib, "wxmsw31u_core.lib")
 #		pragma comment(lib, "wxbase31u.lib")
+#		pragma comment(lib, "OIS_static.lib")
 #	endif
 #endif
 
 /////////////////////////////////////////////////////////////////////
 
-// Set to 0 if you want to use wx.h instead of precompiled header
-#ifndef WX_PRECOM
-	#include "wx/wx.h"
-#else
-	#include "wx/wxprec.h"
+// For compilers that support precompilation, includes "wx/wx.h".
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#	include <wx/wx.h>
 #endif
 
 #include "PS2Etypes.h"
@@ -47,8 +48,7 @@
 #include "labels.h"
 #include "CALLBACKS.h"
 
-#include "DI_Globals.h"
-#include <dinput.h>
+#include "InputManager.h"
 
 // For handling memory leaks, show the culprit line of code in VS output window
 // When debugging, it changes all "new" operator to call "DEBUG_NEW" allowing for memory leaks to

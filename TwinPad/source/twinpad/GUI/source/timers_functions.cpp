@@ -52,11 +52,11 @@ keyInformation GetKey()
 	{
 		static bool keyIsDown = false;
 		static unsigned char key = 0;
-		GetKeyboardStatus();
+		CaptureInputDevicesStatus();
 		if (!keyIsDown)
 		{
 			for (int i = 0; i < 256; ++i)
-				if (DIKEYDOWN(KeyState, i))	// Key pressed
+				if (IM.IsKeyDown(i))	// Key pressed
 				{
 					if (!IsValidKey(i))
 						return keyInfo;		// empty key info
@@ -67,7 +67,7 @@ keyInformation GetKey()
 		}
 		else
 		{
-			if (!DIKEYDOWN(KeyState, key))	// Key released
+			if (!IM.IsKeyDown(key))	// Key released
 			{
 				wxString keyName = "";
 				for (int i = 0; i < sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES); ++i)	// Size of array 144

@@ -20,7 +20,7 @@ void ExecuteCombo(const int pad)
 			CCombo *thisCombo = Configurations.Combos[i];
 			if (thisCombo->GetPad() == pad)
 			{
-				if (DIKEYDOWN(KeyState, thisCombo->GetKey()) && thisCombo->GetKey() != 0)
+				if (IM.IsKeyDown(thisCombo->GetKey()) && thisCombo->GetKey() != 0)
 				{
 					*ComboStatus = true;
 					*activeCombo = i;

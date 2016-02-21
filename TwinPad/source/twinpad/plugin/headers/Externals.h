@@ -6,8 +6,6 @@ extern HANDLE gwxMainThread;
 extern HWND hGFXwnd;
 extern HWND hGSPUwnd;
 
-extern unsigned char KeyState[256], BufferKeyState[256];
-
 typedef struct {
 	u8 x,y;
 	u8 button;
@@ -16,7 +14,6 @@ typedef struct {
 extern bool inside;  // if mouse inside the window..
 extern Analog lanalog[2];
 extern Analog ranalog[2];
-extern POINT MousePt;
 extern RECT WndRect, rectMouseArea;
 extern int ScreenWidth;
 extern int ScreenHeight;
@@ -53,5 +50,7 @@ public:
 extern CPressure Pressure;
 
 extern unsigned int defaultPressure[2];
+
+extern InputManager IM;
 
 #endif

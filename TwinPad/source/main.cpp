@@ -104,7 +104,7 @@ public:
 		TwinPad_Frame twinPad_Frame("TwinPad Configuration Utility");
 		hGFXwnd = (HWND)twinPad_Frame.GetHWND();
 
-		if (!InitDI())
+		if (!InitializeInputManager())
 		{
 			wxMessageBox("Can't Initialize DirectInput!", "Failure...", wxICON_ERROR);
 			GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
@@ -120,7 +120,7 @@ public:
 		twinPad_Frame.ShowModal();
 
 		// Terminate DirectInput for TwinPad Config window
-		TermDI();
+		TerminateInputManager();
 		
 		GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
 		Configurations.Clean();

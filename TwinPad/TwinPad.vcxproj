@@ -142,8 +142,8 @@
     <ClInclude Include="source\twinpad\plugin\headers\Callbacks.h" />
     <ClInclude Include="source\twinpad\plugin\headers\COMBOs.h" />
     <ClInclude Include="source\twinpad\plugin\headers\DirectInput.h" />
-    <ClInclude Include="source\twinpad\plugin\headers\DI_Globals.h" />
     <ClInclude Include="source\twinpad\plugin\headers\Externals.h" />
+    <ClInclude Include="source\twinpad\plugin\headers\InputManager.h" />
     <ClInclude Include="source\twinpad\plugin\headers\Loading.h" />
     <ClInclude Include="source\twinpad\plugin\headers\PS2Etypes.h" />
     <ClInclude Include="source\twinpad\plugin\headers\TwinPad.h" />

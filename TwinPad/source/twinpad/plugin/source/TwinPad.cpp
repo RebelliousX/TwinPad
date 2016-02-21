@@ -12,7 +12,6 @@ Analog lanalog[2], ranalog[2];
 
 static keyEvent curEvent, oldEvent;
 RECT WndRect, rectMouseArea;
-POINT MousePt;
 u16 status[2];
 CPressure Pressure;
 unsigned int defaultPressure[2] = { 255, 255 };			// Full pressure
@@ -33,9 +32,6 @@ int padOpened = 0;
 unsigned char minXY[2] = { 0, 0 };
 unsigned char maxXY[2] = { 255, 255 };
 unsigned char states[2][10]; // To check if it was pressed before..
-
-
-unsigned char KeyState[256], BufferKeyState[256];
 
 int lbutDown = 0, rbutDown = 0, mbutDown = 0;
 bool inside = false;
@@ -126,7 +122,7 @@ s32  _PADopen(HWND hDsp)
 	}
 
 	// If DirectInput Fails, return error..
-	if (g_DI == NULL)
+	if (/*g_DI == NULL*/ !IM.GetInputSystemStatus())
 	{
 		if (!IsWindow (hDsp) && !IsBadReadPtr ((u32*)hDsp, 4))
                 hGSPUwnd = *(HWND*)hDsp;
@@ -144,7 +140,7 @@ s32  _PADopen(HWND hDsp)
 		if (hGFXwnd == NULL)
 			hGFXwnd = hGSPUwnd = GetActiveWindow();
 
-		if( !InitDI())
+		if( !InitializeInputManager())
 			return 1;
 	}
 
@@ -403,7 +399,7 @@ void AllInOne(int pad)
 		0, 0, 0, 0, 0, 0, };
 
 	// Get Current Keyboard status, and save the old status.
-	GetKeyboardStatus();
+	CaptureInputDevicesStatus();
 	
 	// Process KeyPresses
 	if (Configurations.IsEnabled_PAD1() && pad == 0)
@@ -420,7 +416,7 @@ void AllInOne(int pad)
 			// Initializing rectangles for mouse capture.
 			InitRects();
 			// Get Current Mouse status.
-			GetMouseStatus();
+			ClipMouseArea();
 			// Process Mouse Input
 			ProcMouseInput();
 		}
@@ -436,7 +432,7 @@ void _PADEvent(int pad) {
 	int i;
 	_PADEventExtra(pad);
 	for (i=0; i<16; i++)
-		if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][i]))
+		if (IM.IsKeyDown(Configurations.m_pad[pad][i]))
 		{
 			status[pad] &= ~(1 << i);
 
@@ -462,7 +458,7 @@ void _PADEvent(int pad) {
 void _PADEventExtra( int pad )
 {
 	// Left Analog stick as Keyboard..
-	if ( DIKEYDOWN(KeyState, Configurations.m_pad[pad][16]) ) // up (forward)
+	if (IM.IsKeyDown(Configurations.m_pad[pad][16])) // up (forward)
 	{
 		states[pad][0] = 1;
 		lanalog[pad].y = minXY[pad];
@@ -472,7 +468,7 @@ void _PADEventExtra( int pad )
 				states[pad][0] = 0;
 				lanalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][18])) // down (backward)
+	if (IM.IsKeyDown(Configurations.m_pad[pad][18])) // down (backward)
 	{
 		states[pad][1] = 1;
 		lanalog[pad].y = maxXY[pad];
@@ -482,7 +478,7 @@ void _PADEventExtra( int pad )
 				states[pad][1] = 0;
 				lanalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][17])) // right
+	if (IM.IsKeyDown(Configurations.m_pad[pad][17])) // right
 	{
 		states[pad][2] = 1;
 		lanalog[pad].x = maxXY[pad];
@@ -492,7 +488,7 @@ void _PADEventExtra( int pad )
 				states[pad][2] = 0;
 				lanalog[pad].x = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][19])) // left
+	if (IM.IsKeyDown(Configurations.m_pad[pad][19])) // left
 	{
 		states[pad][3] = 1;
 		lanalog[pad].x = minXY[pad];
@@ -503,7 +499,7 @@ void _PADEventExtra( int pad )
 				lanalog[pad].x = 0x80;
 			}
 	// Right Analog stick as Keyboard..
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][20])) // up (forward)
+	if (IM.IsKeyDown(Configurations.m_pad[pad][20])) // up (forward)
 	{
 		states[pad][4] = 1;
 		ranalog[pad].y = minXY[pad];
@@ -513,7 +509,7 @@ void _PADEventExtra( int pad )
 				states[pad][4] = 0;
 				ranalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][22])) // down (backward)
+	if (IM.IsKeyDown(Configurations.m_pad[pad][22])) // down (backward)
 	{
 		states[pad][5] = 1;
 		ranalog[pad].y = maxXY[pad];
@@ -523,7 +519,7 @@ void _PADEventExtra( int pad )
 				states[pad][5] = 0;
 				ranalog[pad].y = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][21])) // right
+	if (IM.IsKeyDown(Configurations.m_pad[pad][21])) // right
 	{
 		states[pad][6] = 1;
 		ranalog[pad].x = maxXY[pad];
@@ -533,7 +529,7 @@ void _PADEventExtra( int pad )
 				states[pad][6] = 0;
 				ranalog[pad].x = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][23])) // left
+	if (IM.IsKeyDown(Configurations.m_pad[pad][23])) // left
 	{
 		states[pad][7] = 1;
 		ranalog[pad].x = minXY[pad];
@@ -543,7 +539,7 @@ void _PADEventExtra( int pad )
 				states[pad][7] = 0;
 				ranalog[pad].x = 0x80;
 			}
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][9]))	 // L3
+	if (IM.IsKeyDown(Configurations.m_pad[pad][9]))	 // L3
 	{
 		states[pad][8] = 1;
 		lanalog[pad].button = 1;
@@ -553,7 +549,7 @@ void _PADEventExtra( int pad )
 				states[pad][8] = 0;
 				lanalog[pad].button = 0;
 			}
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][10])) // R3
+	if (IM.IsKeyDown(Configurations.m_pad[pad][10])) // R3
 	{
 		states[pad][9] = 1;
 		ranalog[pad].button = 1;
@@ -567,10 +563,10 @@ void _PADEventExtra( int pad )
 	// Special Keys to TOGGLE between Sensitivity of *all* controls including analog, (Walk/Run)
 	static bool toggle[2] = { false, false };
 
-	if (DIKEYDOWN(KeyState, Configurations.m_pad[pad][24]))							// Walk/Run is pressed now
+	if (IM.IsKeyDown(Configurations.m_pad[pad][24]))							// Walk/Run is pressed now
 		toggle[pad] = true;
 
-	if (!DIKEYDOWN(KeyState, Configurations.m_pad[pad][24]) && toggle[pad] == true)	// Walk/Run is released (was pressed before)
+	if (!IM.IsKeyDown(Configurations.m_pad[pad][24]) && toggle[pad] == true)	// Walk/Run is released (was pressed before)
 	{
 		toggle[pad] = false;
 
@@ -597,14 +593,25 @@ keyEvent* _PADkeyEvent()
 	if (!Configurations.IsEnabled_KeyEvents())
 		return NULL;
 
-	for (int i = 0; i < 256; ++i)
+	/*for (int i = 0; i < 256; ++i)
 		if (BufferKeyState[i] != KeyState[i])
-			{
-				curEvent.evt = DIKEYDOWN(KeyState, i) ? KEYPRESS : KEYRELEASE;
-				curEvent.key = MapVirtualKey(i, 1);
-				memcpy(BufferKeyState, KeyState, sizeof(KeyState));
-				return &curEvent;
-			}
+		{
+			curEvent.evt = IM.IsKeyDown(i) ? KEYPRESS : KEYRELEASE;
+			curEvent.key = MapVirtualKey(i, 1);
+			memcpy(BufferKeyState, KeyState, sizeof(KeyState));
+			return &curEvent;
+		}*/
+
+	for (int i = 0; i < 256; ++i)
+	{
+		if (IM.WasBufferKeyDown(i) != IM.IsKeyDown(i))
+		{
+			curEvent.evt = IM.IsKeyDown(i) ? KEYPRESS : KEYRELEASE;
+			curEvent.key = MapVirtualKey(i, 1);
+			IM.SaveKeyboardState();
+			return &curEvent;
+		}
+	}
 
 	return 0;
 }

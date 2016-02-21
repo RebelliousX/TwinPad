@@ -23,25 +23,25 @@ void MouseInputMapper(int button)
 		static int RelativeX, RelativeY;
 		static int mouseX, mouseY;
 
+		IM.GetMousePosition(mouseX, mouseY);
+
 		if (Configurations.m_mouseSensitivity == 1)
 		{   // Accurate and Old mode.
-			mouseX = MousePt.x - WndRect.left;
-			mouseY = MousePt.y - WndRect.top;
 			// ScreenWidth or Height means screens or windows Width or Height..
 			RelativeX = (int)((static_cast<float>(mouseX) / ScreenWidth) * 255);
 			RelativeY = (int)((static_cast<float>(mouseY) / ScreenHeight) * 255);
 		}
 		else
 		{   // Trying to shrink the Dead Zone in the Center of the Window..
-			if (MousePt.x < (ScreenWidth / 2))
-				mouseX = MousePt.x - WndRect.left - rectMouseArea.left;
+			if (mouseX < (ScreenWidth / 2))
+				mouseX = mouseX - WndRect.left - rectMouseArea.left;
 			else
-				mouseX = MousePt.x - WndRect.left + rectMouseArea.left;
+				mouseX = mouseX - WndRect.left + rectMouseArea.left;
 
-			if (MousePt.y < (ScreenHeight / 2))
-				mouseY = MousePt.y - WndRect.top - rectMouseArea.top;
+			if (mouseY < (ScreenHeight / 2))
+				mouseY = mouseY - WndRect.top - rectMouseArea.top;
 			else
-				mouseY = MousePt.y - WndRect.top + rectMouseArea.top;
+				mouseY = mouseY - WndRect.top + rectMouseArea.top;
 			
 			float Xfactor = (float)rectMouseArea.right / ScreenWidth;
 			float Yfactor = (float)rectMouseArea.bottom / ScreenHeight;
@@ -97,17 +97,17 @@ void ProcMouseInput()
 
 	for (int mouseButton = 0; mouseButton < 8; ++mouseButton)
 	{
-		if ((MouseState.rgbButtons[mouseButton] & 0x80) && Configurations.m_mouse[mouseButton] != 36) // 36 is no button configured
+		if ((/*MouseState.rgbButtons[mouseButton] & 0x80*/IM.IsButtonDown(mouseButton)) && Configurations.m_mouse[mouseButton] != 36) // 36 is no button configured
 			MouseInputMapper(Configurations.m_mouse[mouseButton]);
 	}
 
 	// Mouse wheel, scroll up/down
-	if (MouseState.lZ != 0)
+	if (/*MouseState.lZ*/ IM.GetMouseWheel() != 0)
 	{
 		if (Configurations.m_mouse[8] == 36 || Configurations.m_mouse[9] == 36)
 		{
 			short prs = 255;
-			prs += ((short)MouseState.lZ / 120) * 5;
+			prs += ((short)/*MouseState.lZ*/ IM.GetMouseWheel() / 120) * 5;
 			if (prs >= 255) prs = 255;
 			if (prs <= 0) prs = 0;
 
@@ -118,11 +118,11 @@ void ProcMouseInput()
 		else
 		{
 			// Scroll Up
-			if (Configurations.m_mouse[8] != 36 && MouseState.lZ > 0)
+			if (Configurations.m_mouse[8] != 36 && /*MouseState.lZ*/ IM.GetMouseWheel() > 0)
 				MouseInputMapper(Configurations.m_mouse[8]);
 
 			// Scroll Down
-			if (Configurations.m_mouse[9] != 36 && MouseState.lZ < 0)
+			if (Configurations.m_mouse[9] != 36 && /*MouseState.lZ*/ IM.GetMouseWheel() < 0)
 				MouseInputMapper(Configurations.m_mouse[9]);
 		}
 	}
@@ -130,9 +130,9 @@ void ProcMouseInput()
 
 void InitRects()
 {
-	static int counter = 0;
+	static int counter = 60;
 
-	if (counter++  == 60) // update every (second or half)..
+	if (counter++  > 59) // update every (second or half)..
 	{
 		POINT ptClientUL;
 		POINT ptClientBR;
@@ -151,6 +151,8 @@ void InitRects()
 
 		ScreenWidth = rectMouseArea.right;
 		ScreenHeight = rectMouseArea.bottom;
+		
+		IM.SetWindowExtents(ScreenWidth, ScreenHeight);
 
 		if (Configurations.m_mouseSensitivity > 1)
 		{

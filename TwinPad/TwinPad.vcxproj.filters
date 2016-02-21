@@ -54,9 +54,6 @@
     <ClInclude Include="source\twinpad\plugin\headers\COMBOs.h">
       <Filter>Header Files\Plugin</Filter>
     </ClInclude>
-    <ClInclude Include="source\twinpad\plugin\headers\DI_Globals.h">
-      <Filter>Header Files\Plugin</Filter>
-    </ClInclude>
     <ClInclude Include="source\twinpad\plugin\headers\DirectInput.h">
       <Filter>Header Files\Plugin</Filter>
     </ClInclude>
@@ -77,6 +74,9 @@
     </ClInclude>
     <ClInclude Include="source\stdafx.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\twinpad\plugin\headers\InputManager.h">
+      <Filter>Header Files\Plugin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
