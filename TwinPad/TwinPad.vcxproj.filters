@@ -54,9 +54,6 @@
     <ClInclude Include="source\twinpad\plugin\headers\COMBOs.h">
       <Filter>Header Files\Plugin</Filter>
     </ClInclude>
-    <ClInclude Include="source\twinpad\plugin\headers\DirectInput.h">
-      <Filter>Header Files\Plugin</Filter>
-    </ClInclude>
     <ClInclude Include="source\twinpad\plugin\headers\Externals.h">
       <Filter>Header Files\Plugin</Filter>
     </ClInclude>
@@ -104,9 +101,6 @@
     <ClCompile Include="source\twinpad\plugin\source\COMBOs.cpp">
       <Filter>Source Files\Plugin</Filter>
     </ClCompile>
-    <ClCompile Include="source\twinpad\plugin\source\DirectInput.cpp">
-      <Filter>Source Files\Plugin</Filter>
-    </ClCompile>
     <ClCompile Include="source\twinpad\plugin\source\Loading.cpp">
       <Filter>Source Files\Plugin</Filter>
     </ClCompile>
@@ -121,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="source\stdafx.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\twinpad\plugin\source\InputManager.cpp">
+      <Filter>Source Files\Plugin</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -9,6 +9,9 @@
 // grid after it is initialized, using method SetGrid()
 CCellLocator Cell_Locator;
 
+// Global Input Manager object
+extern InputManager IM;
+
 void SetupComboTab(wxPanel *panel)
 {
 	// Create Animation controls, we don't want to reference to anim controls in Keyboard tab,
@@ -381,18 +384,7 @@ void SaveGridToCombo(wxString &strUserInput)
 	if (keyName == "NONE")
 		keyValue = 0;
 	else
-	{
-		for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
-		{
-			wxString name = DIK_KEYCODES[i].name;
-			name = name.substr(4, name.length());
-			if (name == keyName)
-			{
-				keyValue = DIK_KEYCODES[i].keyValue;
-				break;
-			}
-		}
-	}
+		keyValue = IM.GetKeyCode(keyName.ToStdString());
 
 	// Get which pad is assigned for the combo
 	int pad = (GUI_Controls.cmbWhichPad->GetStringSelection() == "Pad 1") ? 0 : 1;

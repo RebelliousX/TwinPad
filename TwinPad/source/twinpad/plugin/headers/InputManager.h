@@ -7,9 +7,17 @@
 
 #include <vector>
 
+bool InitializeInputManager(unsigned int);
+bool TerminateInputManager();
+void CaptureInputDevicesStatus();
+void ClipMouseArea();
+
 class InputManager
 {
 public:
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////// Constructor, Destructor, Input Manager Creation and Destruction //////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	InputManager()
 	{
 		for (int i = 0; i < 256; ++i)
@@ -17,7 +25,6 @@ public:
 		Keyboard = 0;
 		Mouse = 0;
 		Joysticks.clear();
-		joystickIDs.clear();
 		InputSystem = 0;
 		windowHandle = 0;
 		numJoysticks = 0;
@@ -59,7 +66,10 @@ public:
 		Joysticks.resize(numJoysticks);
 
 		for (unsigned int i = 0; i < numJoysticks; ++i)
-			Joysticks[i] = static_cast<OIS::JoyStick *>(InputSystem->createInputObject(OIS::OISJoyStick, false, ""));
+		{
+			Joysticks[i].Joystick = static_cast<OIS::JoyStick *>(InputSystem->createInputObject(OIS::OISJoyStick, false, ""));
+			Joysticks[i].joystickID = Joysticks[i].Joystick->getID();
+		}
 	}
 	
 	// Destroys Input Manager system and cleanup
@@ -68,7 +78,7 @@ public:
 		InputSystem->destroyInputObject(Keyboard);
 		InputSystem->destroyInputObject(Mouse);
 		for (unsigned int i = 0; i < numJoysticks; ++i)
-			InputSystem->destroyInputObject(Joysticks[i]);
+			InputSystem->destroyInputObject(Joysticks[i].Joystick);
 		OIS::InputManager::destroyInputSystem(InputSystem);
 
 		for (int i = 0; i < 256; ++i)
@@ -76,13 +86,16 @@ public:
 		Keyboard = 0;
 		Mouse = 0;
 		Joysticks.clear();
-		joystickIDs.clear();
 		InputSystem = 0;
 		windowHandle = 0;
 		numJoysticks = 0;
 		ScreenWidth = 0;
 		ScreenHeight = 0;
 	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////// Get Input status, Capture Devices state, Scan and Save Keyboard //////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Get status of Input Manager system (true if created successfuly, false otherwise)
 	inline bool GetInputSystemStatus()
@@ -99,7 +112,7 @@ public:
 		MouseState->width = ScreenWidth;
 		MouseState->height = ScreenHeight;
 		for (unsigned int i = 0; i < numJoysticks; ++i)
-			Joysticks[i]->capture();
+			Joysticks[i].Joystick->capture();
 	}
 
 	// Scan Keyboard for pressed keys and save them
@@ -115,6 +128,10 @@ public:
 		memcpy(BufferKeyState, KeyState, sizeof(KeyState));
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////// Keyboard and Keys handling functions /////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	// Test if a specified keyboard key is down (KeyCode is the same as DirectInput scancodes)
 	inline bool IsKeyDown(int keycode)
 	{
@@ -126,6 +143,22 @@ public:
 	{
 		return !!(BufferKeyState[keycode] & 0x80);
 	}
+
+	// Get the name of the key by using its scancode
+	inline const std::string &GetKeyName(int keycode)
+	{
+		return Keyboard->getAsString((OIS::KeyCode)keycode);
+	}
+
+	// Get the keycode from its name
+	inline int GetKeyCode(const std::string & keyname)
+	{
+		return Keyboard->getAsKeyCode(keyname);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////// Mouse and Scroll Wheel handling functions ////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Test if a specified mouse button is down
 	inline bool IsButtonDown(unsigned int buttonIndex)
@@ -167,6 +200,23 @@ public:
 		ScreenHeight = height;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////// Joysticks handling functions /////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+private:
+	struct JoystickInfo
+	{
+		JoystickInfo()
+		{
+			Joystick = 0;
+			joystickID = 0;
+		}
+
+		OIS::JoyStick *Joystick;
+		int joystickID;
+	};
+
 private:
 	unsigned char KeyState[256];
 	unsigned char BufferKeyState[256];
@@ -174,8 +224,7 @@ private:
 	OIS::Keyboard *Keyboard;
 	OIS::Mouse *Mouse;
 	OIS::InputManager *InputSystem;
-	std::vector<OIS::JoyStick *> Joysticks;
-	std::vector<unsigned long> joystickIDs;
+	std::vector<JoystickInfo> Joysticks;
 
 	const OIS::MouseState *MouseState;
 	unsigned long windowHandle;

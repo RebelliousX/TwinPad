@@ -6,6 +6,8 @@
 
 // Global defined in combo_gui.cpp
 extern CCellLocator Cell_Locator;
+// Global InputManager object
+extern InputManager IM;
 
 // // // // // // // // // // COMBO tab event handling functions // // // // // // // // // //
 // -----------------------------------------------------------------------------------------/
@@ -403,14 +405,7 @@ void ShowFirstComboOnGrid()
 				}
 			}
 
-			for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
-			{
-				if (DIK_KEYCODES[i].keyValue == (*it)->GetKey())
-				{
-					GUI_Controls.lblComboKey->SetLabel(DIK_KEYCODES[i].name.substr(4, DIK_KEYCODES[i].name.length()));
-					break;
-				}
-			}
+			GUI_Controls.lblComboKey->SetLabel(IM.GetKeyName((*it)->GetKey()));
 
 			if ((*it)->GetPad() == 0)
 				GUI_Controls.cmbWhichPad->SetStringSelection("Pad 1");
@@ -693,17 +688,7 @@ void OnChangeComboName(wxCommandEvent &ev)
 		if (keyName == "NONE")
 			keyValue = 0;
 		else
-		{
-			for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
-			{
-				wxString name = DIK_KEYCODES[i].name;
-				name = name.substr(4, name.length());		// Skip "DIK_"
-				if (name == keyName)
-				{
-					keyValue = DIK_KEYCODES[i].keyValue;
-				}
-			}
-		}
+			keyValue = IM.GetKeyCode(keyName.ToStdString());
 
 		// Get which pad is assigned for the combo
 		int pad = (GUI_Controls.cmbWhichPad->GetStringSelection() == "Pad 1") ? 0 : 1;
@@ -769,16 +754,7 @@ void OnChangeComboName(wxCommandEvent &ev)
 		if ((*it)->GetName() == strCurrent)
 		{
 			unsigned char keyValue = (*it)->GetKey();
-			for (int i = 0; i < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++i)
-			{
-				if (DIK_KEYCODES[i].keyValue == keyValue)
-				{
-					wxString keyName = DIK_KEYCODES[i].name;
-					keyName = keyName.substr(4, keyName.length());		// Skip "DIK_"
-					GUI_Controls.lblComboKey->SetLabel(keyName);
-					break;
-				}
-			}
+			GUI_Controls.lblComboKey->SetLabel(IM.GetKeyName(keyValue));
 
 			if ((*it)->GetPad() == 0)
 				GUI_Controls.cmbWhichPad->SetStringSelection("Pad 1");

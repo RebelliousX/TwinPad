@@ -122,15 +122,7 @@ void CreateControls(TwinPad_Frame *window)
 	{
 		wxString keyName;
 		if (Configurations.m_pad[0][i] != 0)
-		{
-			for (int j = 0; j < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++j)
-				if (DIK_KEYCODES[j].keyValue == Configurations.m_pad[0][i])
-				{
-					keyName = DIK_KEYCODES[j].name;
-					keyName = keyName.substr(4, keyName.length());
-					break;
-				}
-		}
+			keyName = IM.GetKeyName(Configurations.m_pad[0][i]);
 		else
 			keyName = "NONE";
 

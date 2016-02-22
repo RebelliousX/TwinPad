@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "stdafx.h"
 #include "timers_functions.h"
-#include "DirectInput.h"
 #include "Externals.h"
 #include "twinpad_gui.h"
 #include "labels.h"
@@ -69,12 +68,7 @@ keyInformation GetKey()
 		{
 			if (!IM.IsKeyDown(key))	// Key released
 			{
-				wxString keyName = "";
-				for (int i = 0; i < sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES); ++i)	// Size of array 144
-					if (key == DIK_KEYCODES[i].keyValue)
-						keyName = DIK_KEYCODES[i].name;
-				keyName = keyName.substr(4, keyName.length());		// Skip "DIK_"
-				keyInfo.keyName = keyName;
+				keyInfo.keyName = IM.GetKeyName(key);
 				keyInfo.keyValue = key;
 				key = 0;
 				keyIsDown = false;

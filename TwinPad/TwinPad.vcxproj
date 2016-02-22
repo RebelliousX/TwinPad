@@ -141,7 +141,6 @@
     <ClInclude Include="source\twinpad\GUI\headers\twinpad_gui.h" />
     <ClInclude Include="source\twinpad\plugin\headers\Callbacks.h" />
     <ClInclude Include="source\twinpad\plugin\headers\COMBOs.h" />
-    <ClInclude Include="source\twinpad\plugin\headers\DirectInput.h" />
     <ClInclude Include="source\twinpad\plugin\headers\Externals.h" />
     <ClInclude Include="source\twinpad\plugin\headers\InputManager.h" />
     <ClInclude Include="source\twinpad\plugin\headers\Loading.h" />
@@ -209,12 +208,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='PCSX2|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="source\twinpad\plugin\source\DirectInput.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='PCSXR|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='PCSX2|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="source\twinpad\plugin\source\InputManager.cpp" />
     <ClCompile Include="source\twinpad\plugin\source\Loading.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='PCSXR|Win32'">Use</PrecompiledHeader>

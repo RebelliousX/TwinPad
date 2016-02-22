@@ -5,7 +5,6 @@
 #include "Externals.h"
 #include "COMBOs.h"
 #include "Loading.h"
-#include "DirectInput.h"
 
 // The following data types will be used as global externs.
 Analog lanalog[2], ranalog[2];
@@ -140,7 +139,7 @@ s32  _PADopen(HWND hDsp)
 		if (hGFXwnd == NULL)
 			hGFXwnd = hGSPUwnd = GetActiveWindow();
 
-		if( !InitializeInputManager())
+		if( !InitializeInputManager((unsigned int)hGFXwnd))
 			return 1;
 	}
 

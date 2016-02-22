@@ -12,7 +12,6 @@
 
 #include "main.h"
 #include "twinpad_gui.h"
-#include "DirectInput.h"
 
 HMODULE hDLL = NULL;						// DLL handle, passed to DirectInput
 HWND hGFXwnd = NULL, hGSPUwnd = NULL;		// Both for getting HWND from GPU/GS/TwinPad window
@@ -23,6 +22,13 @@ HWND hGFXwnd = NULL, hGSPUwnd = NULL;		// Both for getting HWND from GPU/GS/Twin
 TwinPad_Frame::TwinPad_Frame(wxString title) : wxDialog(0, wxID_ANY, title, wxDefaultPosition, wxDefaultSize,
 	wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxSTAY_ON_TOP)
 {
+	if (!InitializeInputManager((unsigned int)this->GetHWND()))
+	{
+		wxMessageBox("Can't Initialize DirectInput!", "Failure...", wxICON_ERROR);
+		GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
+		throw 1;
+	}
+
 	tmrAnimate = new CReAnimate(this);
 	tmrAutoNavigate = new CAutoNav(this);
 	tmrGetKey = new CGetKey(this);
@@ -46,6 +52,8 @@ TwinPad_Frame::~TwinPad_Frame()
 	tmrGetKey = 0;
 	delete tmrGetComboKey;
 	tmrGetComboKey = 0;
+	// Terminate DirectInput for TwinPad Config window
+	TerminateInputManager();
 }
 
 void TwinPad_Frame::OnClose(wxCloseEvent &event)
@@ -102,14 +110,6 @@ public:
 	void OnShowWindow(wxThreadEvent &event)
 	{
 		TwinPad_Frame twinPad_Frame("TwinPad Configuration Utility");
-		hGFXwnd = (HWND)twinPad_Frame.GetHWND();
-
-		if (!InitializeInputManager())
-		{
-			wxMessageBox("Can't Initialize DirectInput!", "Failure...", wxICON_ERROR);
-			GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
-			return;
-		}
 
 		// Show window as modal, wait until it closes, although it is not real modal since the parent
 		// window is not disabled. We can disable it by creating dummy window in the ctor and reparent
@@ -119,9 +119,6 @@ public:
 		// and if the user calls for another window, it will not show up. See ConfigureTwinPad() below.
 		twinPad_Frame.ShowModal();
 
-		// Terminate DirectInput for TwinPad Config window
-		TerminateInputManager();
-		
 		GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
 		Configurations.Clean();
 	}

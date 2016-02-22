@@ -3,6 +3,9 @@
 #include "twinpad_gui.h"
 #include "functions_gui.h"
 
+// Global Input Manager object
+extern InputManager IM;
+
 // This function handles the click event for both keyboard tab and combo tab
 void CPS_Anim::OnClickAnimInKeyboardTab(wxMouseEvent &event)
 {
@@ -75,15 +78,7 @@ void OnRadBtnPadChange(wxCommandEvent &ev)
 		if (key == 0)
 			name = "NONE";
 		else
-			for (int j = 0; j < (sizeof(DIK_KEYCODES) / sizeof(*DIK_KEYCODES)); ++j)
-				if (key == DIK_KEYCODES[j].keyValue)
-				{
-					name = DIK_KEYCODES[j].name;
-					break;
-				}
-
-		if (name != "NONE")
-			name = name.substr(4, name.length());	// Skip "DIK_"
+			name = IM.GetKeyName(key);
 
 		if (i < 24)
 		{

@@ -2,7 +2,6 @@
 #include "twinpad_gui.h"
 #include "timers_functions.h"
 #include "events_functions.h"
-#include "DirectInput.h"
 
 // Globals defined in TwinPad_Gui.cpp
 extern CTwinPad_Gui GUI_Controls;

@@ -102,12 +102,12 @@ void ProcMouseInput()
 	}
 
 	// Mouse wheel, scroll up/down
-	if (/*MouseState.lZ*/ IM.GetMouseWheel() != 0)
+	if (IM.GetMouseWheel() != 0)
 	{
 		if (Configurations.m_mouse[8] == 36 || Configurations.m_mouse[9] == 36)
 		{
 			short prs = 255;
-			prs += ((short)/*MouseState.lZ*/ IM.GetMouseWheel() / 120) * 5;
+			prs += ((short)IM.GetMouseWheel() / 120) * 5;
 			if (prs >= 255) prs = 255;
 			if (prs <= 0) prs = 0;
 
@@ -118,11 +118,11 @@ void ProcMouseInput()
 		else
 		{
 			// Scroll Up
-			if (Configurations.m_mouse[8] != 36 && /*MouseState.lZ*/ IM.GetMouseWheel() > 0)
+			if (Configurations.m_mouse[8] != 36 && IM.GetMouseWheel() > 0)
 				MouseInputMapper(Configurations.m_mouse[8]);
 
 			// Scroll Down
-			if (Configurations.m_mouse[9] != 36 && /*MouseState.lZ*/ IM.GetMouseWheel() < 0)
+			if (Configurations.m_mouse[9] != 36 && IM.GetMouseWheel() < 0)
 				MouseInputMapper(Configurations.m_mouse[9]);
 		}
 	}

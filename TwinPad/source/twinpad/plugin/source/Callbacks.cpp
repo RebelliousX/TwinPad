@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "DirectInput.h"
 #include "twinpad_gui.h"
 #include "main.h"				// for ConfigureTwinPad_Plugin()
 #include "Externals.h"
