@@ -183,17 +183,7 @@ void OnClickCancel(wxMouseEvent &ev)
 void OnClickAutoNavigate(wxMouseEvent &ev)
 {
 	GUI_Controls.indexOfButton = 0;
-	// Don't allow user to change pad until done
-	GUI_Controls.pad1RadioBtn->Enable(false);
-	GUI_Controls.pad2RadioBtn->Enable(false);
-
-	// It is very weird that the main app class catch all key events (to ignore them)
-	// and still, it somehow pass events to some controls like radio buttons or push buttons.
-	GUI_Controls.btnAutoNavigate->Enable(false);
-	GUI_Controls.btnNullifiesAll->Enable(false);
-	GUI_Controls.btnOK->Enable(false);
-	GUI_Controls.btnCancel->Enable(false);
-
+	
 	GUI_Controls.mainFrame->tmrAutoNavigate->Start(50);		// 50 millisecond
 }
 

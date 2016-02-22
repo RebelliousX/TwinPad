@@ -24,8 +24,8 @@ TwinPad_Frame::TwinPad_Frame(wxString title) : wxDialog(0, wxID_ANY, title, wxDe
 {
 	if (!InitializeInputManager((unsigned int)this->GetHWND()))
 	{
-		wxMessageBox("Can't Initialize DirectInput!", "Failure...", wxICON_ERROR);
-		GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
+		wxMessageBox("Can't initialize Input Manager System!", "Failure...", wxICON_ERROR);
+		GUI_Controls.mainFrame = 0;
 		throw 1;
 	}
 
@@ -91,33 +91,24 @@ public:
 		return true;
 	}
 
-	int FilterEvent(wxEvent& event)
-	{
-		if ((((wxKeyEvent&)event).GetKeyCode() == WXK_LEFT) ||
-			(((wxKeyEvent&)event).GetKeyCode() == WXK_RIGHT) ||
-			(((wxKeyEvent&)event).GetKeyCode() == WXK_TAB))
-			return 1;
-
-		// To prevent navigation of controls using arrow keys and tab, ignore all key down events
-		if (event.GetEventType() == wxEVT_KEY_DOWN ||
-			event.GetEventType() == wxEVT_KEY_UP)
-			if (GUI_Controls.curTab == 0)	// Keyboard tab
-				return 1;
-		// Accept all other events (it will crash otherwise)
-		return -1;
-	}
-
 	void OnShowWindow(wxThreadEvent &event)
 	{
-		TwinPad_Frame twinPad_Frame("TwinPad Configuration Utility");
+		try
+		{
+			TwinPad_Frame twinPad_Frame("TwinPad Configuration Utility");
 
-		// Show window as modal, wait until it closes, although it is not real modal since the parent
-		// window is not disabled. We can disable it by creating dummy window in the ctor and reparent
-		// Then disable the window and re-enable it at the destructor. But, I would like not to use MS
-		// functions to get the top window's handle for that, I am trying to get rid of them,
-		// (with the exception being the use of DirectInput). Currently, even if the parent is enabled, 
-		// and if the user calls for another window, it will not show up. See ConfigureTwinPad() below.
-		twinPad_Frame.ShowModal();
+			// Show window as modal, wait until it closes, although it is not real modal since the parent
+			// window is not disabled. We can disable it by creating dummy window in the ctor and reparent
+			// Then disable the window and re-enable it at the destructor. But, I would like not to use MS
+			// functions to get the top window's handle for that, I am trying to get rid of them,
+			// (with the exception being the use of DirectInput). Currently, even if the parent is enabled, 
+			// and if the user calls for another window, it will not show up. See ConfigureTwinPad() below.
+			twinPad_Frame.ShowModal();
+		}
+		catch (...)
+		{
+			TerminateInputManager();	// Destroys whatever was initialized just to make sure
+		}
 
 		GUI_Controls.mainFrame = 0;		// To prevent showing more than one window at a time
 		Configurations.Clean();

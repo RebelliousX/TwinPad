@@ -83,6 +83,9 @@ keyInformation GetKey()
 // Get one Key for the Keyboard tab when user 
 void OnTimeGetKeyForKeyboard()
 {
+	if (GUI_Controls.mainFrame->IsEnabled())
+		GUI_Controls.mainFrame->Disable();
+
 	keyInformation keyInfo = GetKey();
 	if (!keyInfo.keyName.IsEmpty())
 	{
@@ -104,11 +107,16 @@ void OnTimeGetKeyForKeyboard()
 		// reset timer for the next time
 		GUI_Controls.indexOfButton = -1;
 		GUI_Controls.mainFrame->tmrGetKey->Stop();
+
+		GUI_Controls.mainFrame->Enable();
 	}
 }
 
 void OnTimeAutoNavigateAndAssign()
 {
+	if (GUI_Controls.mainFrame->IsEnabled())
+		GUI_Controls.mainFrame->Disable();
+
 	static int curIndex = 0;	// Start navigation with the first button: L2
 
 	GUI_Controls.indexOfButton = curIndex;
@@ -122,12 +130,7 @@ void OnTimeAutoNavigateAndAssign()
 		GUI_Controls.indexOfButton = -1;
 		GUI_Controls.mainFrame->tmrAutoNavigate->Stop();
 
-		GUI_Controls.pad1RadioBtn->Enable(true);
-		GUI_Controls.pad2RadioBtn->Enable(true);
-		GUI_Controls.btnAutoNavigate->Enable(true);
-		GUI_Controls.btnNullifiesAll->Enable(true);
-		GUI_Controls.btnOK->Enable(true);
-		GUI_Controls.btnCancel->Enable(true);
+		GUI_Controls.mainFrame->Enable();
 	}
 
 	if (curIndex == GUI_Controls.indexOfButton)
@@ -175,6 +178,9 @@ void OnTimeGetKeyForCombo()
 		GUI_Controls.lblComboKey->Refresh();
 	}
 
+	if (GUI_Controls.mainFrame->IsEnabled())
+		GUI_Controls.mainFrame->Disable();
+
 	keyInformation keyInfo;
 	keyInfo = GetKey();
 	if (!keyInfo.keyName.IsEmpty())
@@ -185,5 +191,7 @@ void OnTimeGetKeyForCombo()
 		GUI_Controls.lblComboKey->SetForegroundColour(wxColor("White"));
 		GUI_Controls.lblComboKey->Refresh();
 		counter = 20;
+
+		GUI_Controls.mainFrame->Enable();
 	}
 }
