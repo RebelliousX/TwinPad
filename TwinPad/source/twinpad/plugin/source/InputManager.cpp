@@ -41,7 +41,7 @@ void ClipMouseArea()
 		bool isPressed = false;
 		
 		for (int i = 0; i < 8; ++i)
-			if (IM.IsButtonDown(i))
+			if (IM.IsMouseButtonDown(i))
 			{
 				ClipCursor(&WndRect);
 				inside = true;

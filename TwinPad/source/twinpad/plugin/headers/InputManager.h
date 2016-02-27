@@ -68,7 +68,8 @@ public:
 		for (unsigned int i = 0; i < numJoysticks; ++i)
 		{
 			Joysticks[i].Joystick = static_cast<OIS::JoyStick *>(InputSystem->createInputObject(OIS::OISJoyStick, false, ""));
-			Joysticks[i].joystickID = Joysticks[i].Joystick->getID();
+			Joysticks[i].joystickIndex = Joysticks[i].Joystick->getID();
+			Joysticks[i].joystickID = Joysticks[i].Joystick->getJoyStickUniqueID();
 		}
 	}
 	
@@ -161,7 +162,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Test if a specified mouse button is down
-	inline bool IsButtonDown(unsigned int buttonIndex)
+	inline bool IsMouseButtonDown(unsigned int buttonIndex)
 	{
 		return MouseState->buttonDown((OIS::MouseButtonID)buttonIndex);
 	}
@@ -204,17 +205,46 @@ public:
 	////////////////////////////// Joysticks handling functions /////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// Get the number of Joysticks found
+	inline int GetJoysticksCount()
+	{
+		return numJoysticks;
+	}
+
+	// Get a string that represents the GUID (Global Unique IDentifier)
+	// returns null string if joystick index is greater than joysticks count
+	inline const std::string& GetJoystickGUID(unsigned int joystick_index)
+	{
+		return (joystick_index < numJoysticks) ? Joysticks[joystick_index].joystickID : "";
+	}
+
+	// Get the number of buttons for a joystick at a specified index
+	// returns 0 if joystic index is greater than joysticks count
+	inline int GetJoystickButtonsCount(unsigned int joystick_index)
+	{
+		return (joystick_index < numJoysticks) ? Joysticks[joystick_index].Joystick->getNumberOfComponents(OIS::OIS_Button) : 0;
+	}
+
+	// Get the number of axes for a joystick at a specified index
+	// returns 0 if joystic index is greater than joysticks count
+	inline int GetJoystickAxesCount(unsigned int joystick_index)
+	{
+		return (joystick_index < numJoysticks) ? Joysticks[joystick_index].Joystick->getNumberOfComponents(OIS::OIS_Axis) : 0;
+	}
+
 private:
 	struct JoystickInfo
 	{
 		JoystickInfo()
 		{
 			Joystick = 0;
-			joystickID = 0;
+			joystickID = "";
+			joystickIndex = 0;
 		}
 
 		OIS::JoyStick *Joystick;
-		int joystickID;
+		std::string joystickID;
+		int joystickIndex;
 	};
 
 private:

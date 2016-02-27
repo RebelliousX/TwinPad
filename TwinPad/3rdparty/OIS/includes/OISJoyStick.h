@@ -205,6 +205,9 @@ namespace OIS
 		/** @remarks Returns the state of the joystick - is valid for both buffered and non buffered mode */
 		const JoyStickState& getJoyStickState() const { return mState; }
 
+		/** @remarks Returns a string representing the unique ID of the joystick - must be overridden in subclass for each platform */
+		virtual const std::string getJoyStickUniqueID() { return ""; }
+		
 		//! The minimal axis value
 		static const int MIN_AXIS = -32768;
 

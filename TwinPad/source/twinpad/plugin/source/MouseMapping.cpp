@@ -97,7 +97,7 @@ void ProcMouseInput()
 
 	for (int mouseButton = 0; mouseButton < 8; ++mouseButton)
 	{
-		if ((/*MouseState.rgbButtons[mouseButton] & 0x80*/IM.IsButtonDown(mouseButton)) && Configurations.m_mouse[mouseButton] != 36) // 36 is no button configured
+		if ((/*MouseState.rgbButtons[mouseButton] & 0x80*/IM.IsMouseButtonDown(mouseButton)) && Configurations.m_mouse[mouseButton] != 36) // 36 is no button configured
 			MouseInputMapper(Configurations.m_mouse[mouseButton]);
 	}
 

@@ -74,6 +74,8 @@ namespace OIS
 		std::map<int, int> axis_map;
 		//! Maps OIS axis values to it's range
 		std::map<int, Range> axis_range;
+		//! Joystick unique ID
+		std::string joystickUniqueID;
 	};
 
 	typedef std::vector< JoyStickInfo > JoyStickInfoList;

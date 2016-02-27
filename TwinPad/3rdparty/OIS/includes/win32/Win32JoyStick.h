@@ -25,6 +25,8 @@ restrictions:
 
 #include "OISJoyStick.h"
 #include "win32/Win32Prereqs.h"
+#include <sstream>
+#include <iomanip>
 
 namespace OIS
 {
@@ -48,6 +50,28 @@ namespace OIS
 
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
+
+		/**
+		@remarks
+		Returns a string of the 128 bit GUID (Global Unique ID) structure
+		the string contains hex numbers in this format: "{AABBCCDD-AABB-AABB-AABB-AABBCCDDEEFF}"
+		*/
+		const std::string getJoyStickUniqueID() override
+		{
+			std::stringstream ssGUID;
+			ssGUID << std::hex << std::uppercase << "{" <<
+				std::setw(8) << std::setfill('0') << mJoyInfo.deviceID.Data1 << "-" <<
+				std::setw(4) << std::setfill('0') << mJoyInfo.deviceID.Data2 << "-" <<
+				std::setw(4) << std::setfill('0') << mJoyInfo.deviceID.Data3 << "-";
+			for (int i = 0; i < 8; ++i)
+			{
+				if (i == 2)
+					ssGUID << "-";
+				ssGUID << std::setw(2) << std::setfill('0') << (int)mJoyInfo.deviceID.Data4[i];
+			}
+			ssGUID << "}";
+			return ssGUID.str();
+		}
 
 #ifdef OIS_WIN32_XINPUT_SUPPORT
 		/**
