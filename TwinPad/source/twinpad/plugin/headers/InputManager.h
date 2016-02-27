@@ -243,6 +243,7 @@ private:
 		}
 
 		OIS::JoyStick *Joystick;
+		OIS::JoyStickState joystickState;
 		std::string joystickID;
 		int joystickIndex;
 	};
@@ -253,10 +254,10 @@ private:
 
 	OIS::Keyboard *Keyboard;
 	OIS::Mouse *Mouse;
-	OIS::InputManager *InputSystem;
-	std::vector<JoystickInfo> Joysticks;
-
 	const OIS::MouseState *MouseState;
+	std::vector<JoystickInfo> Joysticks;
+	OIS::InputManager *InputSystem;
+
 	unsigned long windowHandle;
 	unsigned int numJoysticks;
 	unsigned int ScreenWidth;
